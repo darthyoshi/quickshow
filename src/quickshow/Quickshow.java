@@ -6,7 +6,8 @@ import ddf.*;
 
 
 public class Quickshow extends PApplet {
-
+	ControlP5 audioList;
+	
 	public void setup() {
 		setSize(900, 600);
 		
