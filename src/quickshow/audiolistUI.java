@@ -17,10 +17,15 @@ public class audiolistUI {
 		audioList.setFont(audioList.getFont().getFont(), 15);
 		list = audioList.addListBox(title);
 		list.setSize(width, height);
-		list.setPosition(650, 50);
+		list.setPosition(675, 50);
 		list.disableCollapse();
-		list.setBarHeight(16);
+		list.setBarHeight(18);
 		
+		//Need to find a way to display the list without initializing
+		for (int i=0;i<80;i++) {
+			ListBoxItem lbi = list.addItem("item "+i, i);
+			lbi.setColorBackground(0xffff0000);
+		}
 	}
 	
 	//Class method for audio list
