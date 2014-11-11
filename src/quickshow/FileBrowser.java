@@ -27,6 +27,12 @@ public class FileBrowser {
         "mp3", "wav", "aiff", "au", "snd"
     };
     
+    /**
+     * Class constructor. 
+     * @param parent the Quickshow object creating this instance
+     * @param thumbWidth the thumbnail width
+     * @param thumbHeight the thumbnail height
+     */
     FileBrowser(Quickshow parent, int thumbWidth, int thumbHeight) {
         this.parent = parent;
         this.thumbHeight = thumbHeight;
@@ -37,10 +43,19 @@ public class FileBrowser {
         thumbs = new HashMap<String, PImage>();
     }
     
+    /**
+     * TODO implement
+     */
     public void updateAndDraw() {
         //draw stuff
     }
     
+    /**
+     * Changes the FileBrowser directory.
+     * @param newDir the new directory path
+     * @param isAudioMode specifies whether the FileBrowser instance is reading
+     *   audio files
+     */
     private void changeDir(String newDir, boolean isAudioMode) {
         thumbs.clear();
         
@@ -105,28 +120,48 @@ public class FileBrowser {
         }
     }
     
+    /**
+     * TODO implement loading audio file
+     * @return
+     */
     public AudioItem loadAudio() {
         AudioItem result = null;
         
         return result;
     }
     
+    /**
+     * TODO implement loading image file
+     * @return
+     */
     public PImage loadImg() {
         PImage result = null;
         
         return result;
     }
     
+    /**
+     * TODO implement loading video file
+     * @return
+     */
     public Movie loadVideo() {
         Movie result = null;
         
         return result;
     }
     
+    /**
+     * TODO implement loading multiple audio files
+     * @return
+     */
     public ArrayList<AudioItem> loadAudioMulti() {
         return audios;
     }
     
+    /**
+     * TODO implement loading multiple image and/or video files 
+     * @return
+     */
     public ArrayList<Object> loadVisualMulti() {
         return visuals;
     }
