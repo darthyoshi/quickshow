@@ -3,7 +3,7 @@ package quickshow;
 import processing.core.PApplet;
 import controlP5.*;
 import ddf.*;
-
+import java.util.*;
 
 public class Quickshow extends PApplet {
 	ControlP5 audioList;
@@ -11,6 +11,7 @@ public class Quickshow extends PApplet {
 	
 	ControlP5 visualThumbnail;
 	visualthumbnailUI thumbnails;
+	ArrayList <AudioItem> audioFiles;
 	
 	public void setup() {
 		setSize(900, 600);

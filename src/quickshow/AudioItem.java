@@ -7,9 +7,13 @@ class AudioItem {
     private String title;
     private String author;
     private int length;
+    private Minim minimAudioObject;
     
     public AudioItem(Minim minim, String filename) {
         audio = minim.loadFile(filename);
+        
+        //Need this to generate waveform in the UI
+        minimAudioObject = minim;
         
         AudioMetaData meta = audio.getMetaData();
         
@@ -32,5 +36,9 @@ class AudioItem {
     
     public int getLength() {
         return length;
+    }
+    
+    public Minim getMinimObject(){
+    	return minimAudioObject;
     }
 }
