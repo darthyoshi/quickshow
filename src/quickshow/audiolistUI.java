@@ -22,8 +22,8 @@ public class audiolistUI {
 		list.setBarHeight(18);
 		
 		//Need to find a way to display the list without initializing
-		for (int i=0;i<80;i++) {
-			ListBoxItem lbi = list.addItem("item "+i, i);
+		for (int i=0;i<30;i++) {
+			ListBoxItem lbi = list.addItem("empty", i);
 			lbi.setColorBackground(0xffff0000);
 		}
 	}
@@ -32,12 +32,24 @@ public class audiolistUI {
 	
 	//add item to the audio list
 	public void addToList(){
+		num_items++;
 		
+		//Removes place holder item
+		list.removeItem("empty");
+		
+		//Adds the actual song
+		ListBoxItem songToAdd = list.addItem("Find a better name", num_items+1);
+		songToAdd.setColorBackground(0xffff0000);
 	}
 	
 	//Future feature to remove songs from the list
-	public void removeFromList(){
+	public void removeFromList(String itemToRemove){
+		//Remove song
+		list.removeItem(itemToRemove);
 		
+		//Add a place holder
+		ListBoxItem placeHolder = list.addItem("empty", num_items+1);
+		placeHolder.setColorBackground(0xffff0000);
 	}
 	
 	//To select all items in the list
@@ -50,5 +62,8 @@ public class audiolistUI {
 		
 	}
 	
+	public void addToSelectedSongs(){
+		
+	}
 	
 }

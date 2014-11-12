@@ -16,12 +16,16 @@ public class Quickshow extends PApplet {
 		setSize(900, 600);
 		audioList = new ControlP5(this);
 		audioListbox = new audiolistUI(audioList);
-		
+		rect(30, 30, 620, 400);
 		visualThumbnail = new ControlP5(this);
-		thumbnails = new visualthumbnailUI(visualThumbnail);
 	}
 
 	public void draw() {
+		
+		//Background for the thumbnails
+		rect(30, 30, 620, 375);
+		fill(255,0,0);
+		
 	}
 	
 	public void update(){

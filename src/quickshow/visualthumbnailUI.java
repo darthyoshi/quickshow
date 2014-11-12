@@ -1,17 +1,20 @@
 package quickshow;
 
+import processing.core.PShape;
+
+import com.jogamp.opengl.util.packrect.Rect;
+
 import controlP5.*;
-
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.BorderLayout;
-
-import processing.core.PApplet;
 
 public class visualthumbnailUI {
 	int num_items;
+	PShape rect1;
 	
-	public visualthumbnailUI(ControlP5 visualThumbnail){
-
+	final private int width = 500;
+	final private int height = 400;
+	
+	public visualthumbnailUI(){
+		
+		
 	}
 }
