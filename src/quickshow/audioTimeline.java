@@ -26,6 +26,7 @@ public class audioTimeline {
 	public void generateWaveForm(){	
 		//For debugging purposes
 		audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
+	//	audioClip = audiotest.loadSample("data/audio/rockofages.mp3", 2048);
 		
 		float leftChannel[];
 		float rightChannel[];
@@ -40,7 +41,9 @@ public class audioTimeline {
 		//if(!(audioClip.getChannel(AudioSample.LEFT) == null))
 			leftChannel = audioClip.getChannel(AudioSample.LEFT);
 			
-		//if(!(audioClip.getChannel(AudioSample.RIGHT) == null))
+			
+		//System.out.println("Audio Sample right " + AudioSample.RIGHT + " Audio sample left " + AudioSample.LEFT);
+		//if(!(AudioSample.RIGHT))
 			//rightChannel = audioClip.getChannel(AudioSample.RIGHT);
 		
 		//Allocate array for both channel sample
@@ -107,9 +110,9 @@ public class audioTimeline {
 	}
 	
 	public void drawWaveform(Quickshow q){
-		int width = 300;
-		int height = 300;
-		float scaleMod = ((float)width / (float)leftSpectra.length);
+		int width = 900;
+		int height = 600;
+		float scaleMod = 0.08f; //((float)width / (float)leftSpectra.length);
 		
 		  for(int s = 0; s < leftSpectra.length; s++)
 		  {
@@ -120,13 +123,12 @@ public class audioTimeline {
 		    {
 		        total += leftSpectra[s][i];
 		    }
-		    total = total / 10;
+		    total = total / 20;
 		    
 		    q.line(s*scaleMod,total+height/2,s*scaleMod,-total+height/2);
-		    //System.out.println("leftSpectra is: "+ leftSpectra[s][i]);
 		  }
 		  
-		  q.line(leftSpectra.length * scaleMod, 1000, leftSpectra.length *scaleMod, 0+300);
+		  q.line(leftSpectra.length * scaleMod, 500, leftSpectra.length *scaleMod, 0+300);
 	}
 	
 	//Helper Functions for generation of waveform data
@@ -134,10 +136,4 @@ public class audioTimeline {
 		if (i < j) return i;
 		else return j;
 	}
-//	private void arraycopy(float[] channel, int chunkStartIndex, float[] destSample, int i, int chunkSize){
-//		for (int j = chunkStartIndex; j < chunkSize; j++, i++){
-//			destSample[i] = channel[j];
-//		}
-//	}
-	
 }
