@@ -1,8 +1,8 @@
-package quickshow;
+package quickshow.datatypes;
 
 import ddf.minim.*;
 
-class AudioItem {
+public class AudioItem {
     private AudioPlayer audio;
     private String title;
     private String author;
