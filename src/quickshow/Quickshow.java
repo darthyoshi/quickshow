@@ -1,8 +1,10 @@
 package quickshow;
 
 import processing.core.PApplet;
+import quickshow.datatypes.AudioItem;
 import controlP5.*;
 import ddf.*;
+
 import java.util.*;
 
 public class Quickshow extends PApplet {
