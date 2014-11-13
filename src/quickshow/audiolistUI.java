@@ -2,6 +2,7 @@ package quickshow;
 
 import controlP5.*;
 import java.util.Vector;
+import quickshow.datatypes.AudioItem;
 
 public class audiolistUI {
 	//ControlP5 audioList;
@@ -9,14 +10,14 @@ public class audiolistUI {
 	int num_items;
 	final int width = 200;
 	final int height = 350;
+	final int MAX_SONGS = 3;
 	final String title = "Songs/Audio";
 	//protected String [] selectedSongList;
-	Vector <String> selectedSongList; 
+	Vector <AudioItem> selectedSongList;
 	Vector <AudioItem> songList;
 	
 	//Constructors
 	public audiolistUI(ControlP5 audioList){
-		this.num_items = 0;
 		audioList.setFont(audioList.getFont().getFont(), 15);
 		list = audioList.addListBox(title);
 		list.setSize(width, height);
@@ -25,7 +26,7 @@ public class audiolistUI {
 		list.setBarHeight(18);
 		
 		//Vectors to store information about the Listbox
-		selectedSongList = new Vector<String>();
+		selectedSongList = new Vector<AudioItem>();
 		songList = new Vector<AudioItem>();
 		
 		//Need to find a way to display the list without initializing
@@ -39,41 +40,30 @@ public class audiolistUI {
 	
 	//add item to the audio list
 	public void addToList(AudioItem audio){
-		num_items++;
 		
 		//Removes place holder item
 		list.removeItem("empty");
 		
 		//Generate the Label for the listBoxItem
-		String songTitle = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
+		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
 		
 		//Adds the actual song
-		ListBoxItem songToAdd = list.addItem(songTitle, num_items+1);
+		ListBoxItem songToAdd = list.addItem(audio.getTitle(), num_items+1);
+		songToAdd.setText(songDisplay);
 		songToAdd.setColorBackground(0xffff0000);
+		songList.add(audio);
 	}
 	
 	//Future feature to remove songs from the list
 	public void removeFromList(String itemToRemove){
 		//Remove song
 		list.removeItem(itemToRemove);
-		
-		//decrement counter
-		num_items--;
-		
+
 		//Add a place holder
 		ListBoxItem placeHolder = list.addItem("empty", num_items+1);
 		placeHolder.setColorBackground(0xffff0000);
 	}
 	
-	//To select all items in the list
-	public void selectAllSongs(){
-		for (int i = 0; i < songList.size(); i++){
-			String itemToAdd = songList.get(i).getAuthor() + " - " + songList.get(i).getTitle() 
-								+ " - "+ songList.get(i).getLength();
-			
-			if(!selectedSongList.contains(itemToAdd)) selectedSongList.add(itemToAdd);
-		}
-	}
 	
 	//Clear songs in the selectedSongList
 	public void clearSelectedSongs(){
@@ -81,13 +71,17 @@ public class audiolistUI {
 	}
 	
 	//Add the song to selected song list
-	public void addToSelectedSongs(String nameOfSelectedSongs){
-		selectedSongList.add(nameOfSelectedSongs);
+	public void addToSelectedSongs(AudioItem selectedSong){
+		selectedSongList.add(selectedSong);
 	}
 	
 	//Check if song is selected
 	public boolean isSongSelected(String songName){
 		return selectedSongList.contains(songName);
+	}
+	
+	public Vector<AudioItem> getSongList(){
+		return selectedSongList;
 	}
 
 }

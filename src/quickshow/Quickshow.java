@@ -15,12 +15,17 @@ public class Quickshow extends PApplet {
 	visualthumbnailUI thumbnails;
 	ArrayList <AudioItem> audioFiles;
 	
+	//Test variables for debug purposes
+	audioTimeline aT;
+	
 	public void setup() {
 		setSize(900, 600);
 		audioList = new ControlP5(this);
 		audioListbox = new audiolistUI(audioList);
 		rect(30, 30, 620, 400);
 		visualThumbnail = new ControlP5(this);
+		aT = new audioTimeline(this);
+		aT.generateWaveForm();
 	}
 
 	public void draw() {
@@ -28,6 +33,9 @@ public class Quickshow extends PApplet {
 		//Background for the thumbnails
 		rect(30, 30, 620, 375);
 		fill(255,0,0);
+		
+		
+		aT.drawWaveform(this);
 		
 	}
 	
