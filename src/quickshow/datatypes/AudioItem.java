@@ -18,7 +18,7 @@ public class AudioItem {
         audio = minim.loadFile(filename);
         
         //Need this to generate waveform in the UI
-        sample = minim.loadSample(filename);
+        sample = minim.loadSample(filename, 2048);
         
         AudioMetaData meta = audio.getMetaData();
         

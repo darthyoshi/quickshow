@@ -64,7 +64,6 @@ public class audiolistUI {
 		placeHolder.setColorBackground(0xffff0000);
 	}
 	
-	
 	//Clear songs in the selectedSongList
 	public void clearSelectedSongs(){
 		selectedSongList.clear();

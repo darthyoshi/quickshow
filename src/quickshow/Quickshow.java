@@ -11,10 +11,11 @@ public class Quickshow extends PApplet {
 	ControlP5 audioList;
 	audiolistUI audioListbox;
 	
-	ControlP5 visualThumbnail;
 	visualthumbnailUI thumbnails;
 	ArrayList <AudioItem> audioFiles;
 	
+	ControlP5 buttons;
+	controlbuttonUI cbU;
 	FileBrowser browse;
 	
 	//Test variables for debug purposes
@@ -26,9 +27,12 @@ public class Quickshow extends PApplet {
 		setSize(900, 600);
 		audioList = new ControlP5(this);
 		audioListbox = new audiolistUI(audioList);
-		visualThumbnail = new ControlP5(this);
 		
-		//Test purposes delete this after
+		buttons = new ControlP5(this);
+		cbU = new controlbuttonUI(buttons);
+		
+		
+		//Test purposes delete/modify this after
 		aT = new audioTimeline(this);
 		aT.generateWaveForm();
 		
@@ -38,7 +42,7 @@ public class Quickshow extends PApplet {
 		//Test purposes delete lines above
 		
 		browse = new FileBrowser(this, ".");
-		browse.toggle(true, false);
+		browse.toggle(false, false);
 	}
 
 	public void draw() {

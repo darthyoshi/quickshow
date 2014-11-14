@@ -32,10 +32,11 @@ public class audioTimeline {
 	 * the needs of the application
 	 * 
 	 */
-	//public void generateWaveForm(AudioSample audioClip){
+	//public void generateWaveForm(Vector ){
 	public void generateWaveForm(){	
 		//For debugging purposes
 		audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
+		//audiotest.load
 		
 		float leftChannel[];
 		float leftSample[];
@@ -90,6 +91,9 @@ public class audioTimeline {
 		
 	}
 	
+	/*
+	 * draw the waveforms
+	 */
 	public void drawWaveform(Quickshow q){
 		//float scaleMod = 0.08f; //((float)width / (float)leftSpectra.length);
 		float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
@@ -107,6 +111,9 @@ public class audioTimeline {
 		  }
 	}
 	
+	/*
+	 * Retrieve the song list
+	 */
 	public void sendSelectedSongs(Vector <AudioItem> songList){
 		selectedSongs = songList;
 	}
