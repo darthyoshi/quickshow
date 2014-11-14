@@ -1,9 +1,11 @@
 package quickshow;
 
 import java.util.Arrays;
-import java.lang.System.*;
+import java.util.Vector;
+import quickshow.datatypes.AudioItem;
 import ddf.minim.*;
 import ddf.minim.analysis.FFT;
+
 
 public class audioTimeline {
 	
@@ -12,9 +14,17 @@ public class audioTimeline {
 	float rightSpectra[][];
 	Minim audiotest;
 	AudioSample audioClip;
+	private final int timeLineWidth = 840;
+	private final int timeLineHeight = 65;
+	Vector <AudioItem> selectedSongs;
+	
 	
 	public audioTimeline(Quickshow q){
 		audiotest = new Minim(q);
+	}
+	
+	public void drawBackgroundCanvas(Quickshow q){
+		q.rect(30, 425, timeLineWidth, timeLineHeight);
 	}
 	
 	/*
@@ -26,41 +36,28 @@ public class audioTimeline {
 	public void generateWaveForm(){	
 		//For debugging purposes
 		audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
-	//	audioClip = audiotest.loadSample("data/audio/rockofages.mp3", 2048);
 		
 		float leftChannel[];
-		float rightChannel[];
 		float leftSample[];
-		float rightSample[];
 		int fftSize = 1024;
 		FFT fft = new FFT( fftSize, audioClip.sampleRate() );
 		int leftChunk;
-		int rightChunk;
 		
 		//Get audio sample from both channels
 		//if(!(audioClip.getChannel(AudioSample.LEFT) == null))
 			leftChannel = audioClip.getChannel(AudioSample.LEFT);
 			
-			
-		//System.out.println("Audio Sample right " + AudioSample.RIGHT + " Audio sample left " + AudioSample.LEFT);
-		//if(!(AudioSample.RIGHT))
-			//rightChannel = audioClip.getChannel(AudioSample.RIGHT);
-		
 		//Allocate array for both channel sample
 		leftSample = new float[fftSize];
-		//rightSample = new float[fftSize];
 		
 		//Calculate chunks for both channel
 		leftChunk = leftChannel.length/fftSize + 1;
-		//rightChunk = rightChannel.length/fftSize + 1;
 		
 		//Allocate the spectra for both channels
 		leftSpectra = new float[leftChunk][fftSize/2];
-		//rightSpectra = new float[rightChunk][fftSize/2];
 		
 		//generate waveform data for both channels
-		  for(int i = 0; i < leftChunk; ++i)
-		  {
+		  for(int i = 0; i < leftChunk; ++i) {
 		    int chunkStartIndex = i * fftSize;
 		   
 		    // the chunk size will always be fftSize, except for the 
@@ -76,62 +73,45 @@ public class audioTimeline {
 		               leftchunkSize // how many samples to copy
 		              );
 		    
-		   /* arraycopy( rightChannel, // source of the copy
-		               chunkStartIndex, // index to start in the source
-		               leftSample, // destination of the copy
-		               0, // index to copy to
-		               rightchunkSize // how many samples to copy
-		              );*/
-		      
 		    // if the chunk was smaller than the fftSize, we need to pad the analysis buffer with zeroes        
-		    if ( leftchunkSize < fftSize )
-		    {
+		    if ( leftchunkSize < fftSize ){
 		      // we use a system call for this
 		      Arrays.fill( leftSample, leftchunkSize, leftSample.length - 1, 0.0f );
 		    }
-		    /*if ( rightchunkSize < fftSize )
-		    {
-		      // we use a system call for this
-		      Arrays.fill( rightSample, rightchunkSize, rightSample.length - 1, 0.0f );
-		    }*/
 		    
 		    // now analyze this buffer
 		    fft.forward(leftSample);
-		    //fft.forward(rightSample);
 		   
 		    // and copy the resulting spectrum into our spectra array
-		    for(int j = 0; j < 512; ++j)
-		    {
+		    for(int j = 0; j < 512; ++j) {
 		      leftSpectra[i][j] = fft.getBand(j);
-		      //rightSpectra[i][j] = fft.getBand(j);
 		    }
 		  }
 		
 	}
 	
 	public void drawWaveform(Quickshow q){
-		int width = 900;
-		int height = 600;
-		float scaleMod = 0.08f; //((float)width / (float)leftSpectra.length);
+		//float scaleMod = 0.08f; //((float)width / (float)leftSpectra.length);
+		float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
 		
-		  for(int s = 0; s < leftSpectra.length; s++)
-		  {
+		  for(int s = 0; s < leftSpectra.length; s++) {
 		    //stroke(255);
 		    int i = 0;
 		    float total = 0; 
-		    for(i = 0; i < leftSpectra[s].length-1; i++)
-		    {
+		    for(i = 0; i < leftSpectra[s].length-1; i++){
 		        total += leftSpectra[s][i];
 		    }
-		    total = total / 20;
+		    total = total / 40;
 		    
-		    q.line(s*scaleMod,total+height/2,s*scaleMod,-total+height/2);
+		    q.line((s*scaleMod) + 30,total+460,(s*scaleMod) + 30,-total+460);
 		  }
-		  
-		  q.line(leftSpectra.length * scaleMod, 500, leftSpectra.length *scaleMod, 0+300);
 	}
 	
-	//Helper Functions for generation of waveform data
+	public void sendSelectedSongs(Vector <AudioItem> songList){
+		selectedSongs = songList;
+	}
+	
+	//private Helper Functions for generation of waveform data
 	private int min(int i, int j){
 		if (i < j) return i;
 		else return j;

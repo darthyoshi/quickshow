@@ -3,10 +3,10 @@ package quickshow;
 import processing.core.*;
 import quickshow.datatypes.*;
 import controlP5.*;
-import ddf.*;
 
 import java.util.*;
 
+@SuppressWarnings("serial")
 public class Quickshow extends PApplet {
 	ControlP5 audioList;
 	audiolistUI audioListbox;
@@ -19,34 +19,44 @@ public class Quickshow extends PApplet {
 	
 	//Test variables for debug purposes
 	audioTimeline aT;
+	visualTimeline vT;
 	
 	public void setup() {
 		setSize(900, 600);
 		audioList = new ControlP5(this);
 		audioListbox = new audiolistUI(audioList);
-		rect(30, 30, 620, 400);
 		visualThumbnail = new ControlP5(this);
+		
+		//Test purposes delete this after
 		aT = new audioTimeline(this);
 		aT.generateWaveForm();
+		rect(30, 30, 620, 370);
 		
-		browse = new FileBrowser(this, ".");
-		browse.toggle(true, false);
+		vT = new visualTimeline();
+		//Test purposes delete lines above
+		
+		//browse = new FileBrowser(this, ".");
+		//browse.toggle(true, false);
 	}
 
 	public void draw() {
 	    background(0xaaaaaa);
 	    
-	    if(browse.isEnabled()) {
-	        browse.draw();
-	    }
-	    
-	    else {
-			//Background for the thumbnails
-    		rect(30, 30, 620, 375);
-    		fill(255,0,0);
-    		
-    		aT.drawWaveform(this);
-	    }
+//	    if(browse.isEnabled()) {
+//	        browse.draw();
+//	    }
+//	    
+//	    else {
+//			//Background for the thumbnails
+//    		rect(30, 30, 620, 375);
+//    		fill(255,0,0);
+//    		
+//    		aT.drawWaveform(this);
+//	    }
+	    rect(30, 30, 620, 370);
+	    aT.drawBackgroundCanvas(this);
+	    aT.drawWaveform(this);
+	    vT.drawBackgroundCanvas(this);
 	}
 	
 	/**

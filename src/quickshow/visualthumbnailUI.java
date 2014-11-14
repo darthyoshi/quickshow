@@ -13,8 +13,10 @@ public class visualthumbnailUI {
 	final private int width = 500;
 	final private int height = 400;
 	
-	public visualthumbnailUI(){
+	public visualthumbnailUI(Quickshow q){
 		
+		//Draw the background canvas for the thumbnails
+		q.rect(30, 30, 620, 400);
 		
 	}
 }

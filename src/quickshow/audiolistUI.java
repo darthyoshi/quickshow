@@ -80,6 +80,7 @@ public class audiolistUI {
 		return selectedSongList.contains(songName);
 	}
 	
+	//Return the vector with the selected songs
 	public Vector<AudioItem> getSongList(){
 		return selectedSongList;
 	}
