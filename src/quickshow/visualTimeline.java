@@ -9,6 +9,6 @@ public class visualTimeline {
 	}
 	
 	public void drawBackgroundCanvas(Quickshow q){
-		q.rect(30, 525, timeLineWidth, timeLineHeight);
+		q.rect(30, 500, timeLineWidth, timeLineHeight);
 	}
 }

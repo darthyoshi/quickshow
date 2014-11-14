@@ -10,13 +10,15 @@ public class visualthumbnailUI {
 	int num_items;
 	PShape rect1;
 	
-	final private int width = 500;
-	final private int height = 400;
+	final private int width = 620;
+	final private int height = 370;
 	
-	public visualthumbnailUI(Quickshow q){
+	public visualthumbnailUI(){
+
 		
-		//Draw the background canvas for the thumbnails
-		q.rect(30, 30, 620, 400);
-		
+	}
+	
+	public void drawBackgroundCanvas(Quickshow q){
+		q.rect(30, 30, width, height);
 	}
 }

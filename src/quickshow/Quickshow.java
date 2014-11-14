@@ -20,6 +20,7 @@ public class Quickshow extends PApplet {
 	//Test variables for debug purposes
 	audioTimeline aT;
 	visualTimeline vT;
+	visualthumbnailUI vThumb;
 	
 	public void setup() {
 		setSize(900, 600);
@@ -30,33 +31,32 @@ public class Quickshow extends PApplet {
 		//Test purposes delete this after
 		aT = new audioTimeline(this);
 		aT.generateWaveForm();
-		rect(30, 30, 620, 370);
 		
 		vT = new visualTimeline();
+		
+		vThumb = new visualthumbnailUI();
 		//Test purposes delete lines above
 		
-		//browse = new FileBrowser(this, ".");
-		//browse.toggle(true, false);
+		browse = new FileBrowser(this, ".");
+		browse.toggle(true, false);
 	}
 
 	public void draw() {
 	    background(0xaaaaaa);
 	    
-//	    if(browse.isEnabled()) {
-//	        browse.draw();
-//	    }
-//	    
-//	    else {
-//			//Background for the thumbnails
-//    		rect(30, 30, 620, 375);
-//    		fill(255,0,0);
-//    		
-//    		aT.drawWaveform(this);
-//	    }
-	    rect(30, 30, 620, 370);
+	    if(browse.isEnabled()) {
+	        browse.draw();
+	    }
+	    
+	    else {
+			//Background for the thumbnails
+    			    rect(30, 30, 620, 370);
 	    aT.drawBackgroundCanvas(this);
 	    aT.drawWaveform(this);
 	    vT.drawBackgroundCanvas(this);
+	    vThumb.drawBackgroundCanvas(this);
+	    }
+
 	}
 	
 	/**
