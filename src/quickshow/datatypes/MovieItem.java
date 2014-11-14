@@ -1,7 +1,6 @@
 package quickshow.datatypes;
 
-import quickshow.Quickshow;
-import processing.video.*;
+import processing.video.Movie;
 
 public class MovieItem extends VisualItem {
     Movie movie;
@@ -9,12 +8,12 @@ public class MovieItem extends VisualItem {
     /**
      * Class constructor.
      * @param parent the Quickshow object
-     * @param filename the file name of the video to load
+     * @param fileName the file name of the video to load
      */
-    public MovieItem(Quickshow parent, String filename) {
-        super(parent);
+    public MovieItem(quickshow.Quickshow parent, String fileName) {
+        super(parent, fileName);
         
-        movie = new Movie(parent, filename);
+        movie = new Movie(parent, fileName);
     }
     
     /**
@@ -24,5 +23,4 @@ public class MovieItem extends VisualItem {
     public Movie getMovie() {
         return movie;
     }
-
 }

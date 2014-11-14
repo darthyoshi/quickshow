@@ -1,20 +1,25 @@
 package quickshow.datatypes;
 
-import java.util.*;
-import processing.video.*;
-import processing.core.*;
-import quickshow.*;
+import java.util.ArrayList;
+import quickshow.Quickshow;
 
 public abstract class VisualItem {
     ArrayList<String> annotationTexts;
     ArrayList<Integer[]> annotationTimes;
     Quickshow parent;
+    String fileName;
+
+    private final String[] imgExt = {
+        "bmp", "jpg", "png", "gif" 
+    };
     
     /**
      * Class constructor.
-     * @param parent the Quickshow object 
+     * @param parent the Quickshow object
+     * @param fileName the file name of the media item to load  
      */
-    public VisualItem(Quickshow parent) {
+    public VisualItem(Quickshow parent, String fileName) {
+        this.fileName = fileName;
         this.parent = parent;
         
         annotationTexts = new ArrayList<String>();
@@ -25,9 +30,9 @@ public abstract class VisualItem {
      * Adds a text annotation to the VisualItem.
      * @param text the annotation
      * @param startTime the time when the annotation should appear
-     * @param stopTime the time when the anootation should disappear
+     * @param stopTime the time when the annotation should disappear
      */
-    void addAnnotation(String text, int startTime, int stopTime) {
+    public void addAnnotation(String text, int startTime, int stopTime) {
         annotationTexts.add(text);
         
         Integer[] times = new Integer[2];
@@ -40,9 +45,28 @@ public abstract class VisualItem {
      * Removes a text annotation from the VisualItem.
      * @param index the index of the annotation to remove
      */
-    void removeAnnotation(int index) {
+    public void removeAnnotation(int index) {
         annotationTexts.remove(index);
         annotationTimes.remove(index);
+    }
+    
+    /**
+     * Retrieves the media type of this VIsualItem.
+     * @return the item media type
+     */
+    public String checkType() {
+        short i;
+        
+        String[] fileNameParts = fileName.split("\\.");
+        for(i = 0; i < imgExt.length; i++) {
+            if(fileNameParts[fileNameParts.length-1]
+                .equalsIgnoreCase(imgExt[i]))
+            {
+                break;
+            }
+        }
+        
+        return (i < imgExt.length ? "image" : "video");
     }
 
 }

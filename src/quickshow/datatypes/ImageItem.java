@@ -1,7 +1,6 @@
 package quickshow.datatypes;
 
-import processing.core.*;
-import quickshow.*;
+import processing.core.PImage;
 
 public class ImageItem extends VisualItem {
     PImage image;
@@ -11,10 +10,10 @@ public class ImageItem extends VisualItem {
      * @param parent the Quickshow object
      * @param filename the file name of the image to load
      */
-    public ImageItem(Quickshow parent, String filename) {
-        super(parent);
+    public ImageItem(quickshow.Quickshow parent, String fileName) {
+        super(parent, fileName);
         
-        image = parent.loadImage(filename);
+        image = parent.loadImage(fileName);
     }
     
     /**
