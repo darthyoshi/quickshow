@@ -50,7 +50,6 @@ public class Quickshow extends PApplet {
 	    
 	    else {
 			//Background for the thumbnails
-    			    rect(30, 30, 620, 370);
 	    aT.drawBackgroundCanvas(this);
 	    aT.drawWaveform(this);
 	    vT.drawBackgroundCanvas(this);
