@@ -1,3 +1,9 @@
+/**
+ * @file visualthumbnailUI.java
+ * @author Moses Lee
+ * @description TODO add description 
+ */
+
 package quickshow;
 
 import processing.core.PShape;

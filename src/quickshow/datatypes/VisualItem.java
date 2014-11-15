@@ -1,3 +1,9 @@
+/**
+ * @file VisualItem.java
+ * @author Kay Choi
+ * @description An abstract wrapper class for video and image media items. 
+ */
+
 package quickshow.datatypes;
 
 import java.util.ArrayList;

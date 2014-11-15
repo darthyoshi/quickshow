@@ -1,3 +1,9 @@
+/**
+ * @file MovieItem.java
+ * @author Kay Choi
+ * @description A wrapper class for video media items. 
+ */
+
 package quickshow.datatypes;
 
 import processing.video.Movie;

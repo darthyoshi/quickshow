@@ -1,3 +1,10 @@
+/**
+ * @file Quickshow.java
+ * @author Kay Choi, Moses Lee
+ * @description The main Quickshow class. Functions as a hub for all other
+ *   application components. 
+ */
+
 package quickshow;
 
 import processing.core.*;

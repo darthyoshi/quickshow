@@ -3,6 +3,7 @@
  * @author Kay Choi
  * @description The Quickshow file browser class. 
  */
+
 package quickshow;
 
 import java.util.*;

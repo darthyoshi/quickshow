@@ -1,3 +1,9 @@
+/**
+ * @file MediaItem.java
+ * @author Kay Choi
+ * @description An abstract wrapper class for all media items. 
+ */
+
 package quickshow.datatypes;
 
 public abstract class MediaItem {

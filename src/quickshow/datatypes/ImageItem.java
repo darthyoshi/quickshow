@@ -1,3 +1,9 @@
+/**
+ * @file ImageItem.java
+ * @author Kay Choi
+ * @description A wrapper class for image media items. 
+ */
+
 package quickshow.datatypes;
 
 import processing.core.PImage;

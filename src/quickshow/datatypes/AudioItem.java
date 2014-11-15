@@ -1,3 +1,9 @@
+/**
+ * @file AudioItem.java
+ * @author Kay Choi
+ * @description A wrapper class for audio media items. 
+ */
+
 package quickshow.datatypes;
 
 import ddf.minim.*;
