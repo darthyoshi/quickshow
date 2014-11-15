@@ -3,6 +3,7 @@ package quickshow;
 import processing.core.*;
 import quickshow.datatypes.*;
 import controlP5.*;
+import ddf.minim.*;
 
 import java.util.*;
 
@@ -11,21 +12,24 @@ public class Quickshow extends PApplet {
 	ControlP5 audioList;
 	audiolistUI audioListbox;
 	
+	Minim minim;
+	
+	ControlP5 visualThumbnail;
 	visualthumbnailUI thumbnails;
 	ArrayList <AudioItem> audioFiles;
-	
+
 	ControlP5 buttons;
-	controlbuttonUI cbU;
+//	controlbuttonUI cbU;
 	FileBrowser browse;
 	
 	//Test variables for debug purposes
-	audioTimeline aT;
+/*	audioTimeline aT;
 	visualTimeline vT;
 	visualthumbnailUI vThumb;
-	
+	*/
 	public void setup() {
 		setSize(900, 600);
-		audioList = new ControlP5(this);
+/*		audioList = new ControlP5(this);
 		audioListbox = new audiolistUI(audioList);
 		
 		buttons = new ControlP5(this);
@@ -40,9 +44,11 @@ public class Quickshow extends PApplet {
 		
 		vThumb = new visualthumbnailUI();
 		//Test purposes delete lines above
+*/	
+		minim = new Minim(this);
 		
-		browse = new FileBrowser(this, ".");
-		browse.toggle(false, false);
+		browse = new FileBrowser(this, minim, ".");
+		browse.toggle(true);
 	}
 
 	public void draw() {
@@ -54,10 +60,11 @@ public class Quickshow extends PApplet {
 	    
 	    else {
 			//Background for the thumbnails
-	    aT.drawBackgroundCanvas(this);
-	    aT.drawWaveform(this);
-	    vT.drawBackgroundCanvas(this);
-	    vThumb.drawBackgroundCanvas(this);
+/*    	    aT.drawBackgroundCanvas(this);
+    	    aT.drawWaveform(this);
+    	    vT.drawBackgroundCanvas(this);
+    	    vThumb.drawBackgroundCanvas(this);
+*/
 	    }
 
 	}
@@ -75,7 +82,13 @@ public class Quickshow extends PApplet {
             (theEvent.isGroup() &&
             theEvent.getGroup().getParent().getName().equals("fileBrowser"))
         ) {
-                browse.controlEvent(theEvent);
+            browse.controlEvent(theEvent);
+                
+            if(!browse.isEnabled() && browse.isReady()) {
+                ArrayList<MediaItem> results = browse.getResults();
+                
+                //TODO pass results to media player
+            }
 	    }
     }
 	 

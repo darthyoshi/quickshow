@@ -3,15 +3,10 @@ package quickshow.datatypes;
 import java.util.ArrayList;
 import quickshow.Quickshow;
 
-public abstract class VisualItem {
+public abstract class VisualItem extends MediaItem {
     ArrayList<String> annotationTexts;
     ArrayList<Integer[]> annotationTimes;
     Quickshow parent;
-    String fileName;
-
-    private final String[] imgExt = {
-        "bmp", "jpg", "png", "gif" 
-    };
     
     /**
      * Class constructor.
@@ -19,7 +14,8 @@ public abstract class VisualItem {
      * @param fileName the file name of the media item to load  
      */
     public VisualItem(Quickshow parent, String fileName) {
-        this.fileName = fileName;
+        super(fileName);
+        
         this.parent = parent;
         
         annotationTexts = new ArrayList<String>();
@@ -49,24 +45,4 @@ public abstract class VisualItem {
         annotationTexts.remove(index);
         annotationTimes.remove(index);
     }
-    
-    /**
-     * Retrieves the media type of this VIsualItem.
-     * @return the item media type
-     */
-    public String checkType() {
-        short i;
-        
-        String[] fileNameParts = fileName.split("\\.");
-        for(i = 0; i < imgExt.length; i++) {
-            if(fileNameParts[fileNameParts.length-1]
-                .equalsIgnoreCase(imgExt[i]))
-            {
-                break;
-            }
-        }
-        
-        return (i < imgExt.length ? "image" : "video");
-    }
-
 }

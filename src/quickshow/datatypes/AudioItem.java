@@ -2,7 +2,7 @@ package quickshow.datatypes;
 
 import ddf.minim.*;
 
-public class AudioItem {
+public class AudioItem extends MediaItem {
     private AudioPlayer audio;
     private String title;
     private String author;
@@ -12,13 +12,15 @@ public class AudioItem {
     /**
      * Class constructor.
      * @param minim the Minim object controlling the audio
-     * @param filename the file name of the audio file to load
+     * @param fileName the file name of the audio file to load
      */
-    public AudioItem(Minim minim, String filename) {
-        audio = minim.loadFile(filename);
+    public AudioItem(Minim minim, String fileName) {
+        super(fileName);
+        
+        audio = minim.loadFile(fileName);
         
         //Need this to generate waveform in the UI
-        sample = minim.loadSample(filename, 2048);
+        sample = minim.loadSample(fileName);
         
         AudioMetaData meta = audio.getMetaData();
         

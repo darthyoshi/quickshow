@@ -21,43 +21,67 @@ public class FileBrowser {
     private ArrayList<PImage> thumbs;
     private ArrayList<Integer> selectedIndex;
     
+    private ArrayList<MediaItem> results;
+    
     private int[] selectBox = {0, 0, 0, 0};
     private boolean isSelecting = false;
     
     private ControlP5 control;
-    private Button openButton;
+    private Button openButton, cancelButton;
     private Button scrollUpButton, scrollDownButton;
     private Button scrollBottomButton, scrollTopButton;
+    private Button parentDirButton;
     private Textfield pathField;
-    private Textlabel pageLabel;
+    private Button pageLabel;
     private DropdownList mediaTypeList;
     
-    private int currentDisplayIndex = 0;
+    private ddf.minim.Minim minim;
+    
+    private int curDisplayIndex = 0;
+    private boolean isAudioMode = false;
     
     int thumbWidth, thumbHeight;
     int firstThumbX = 111, firstThumbY = 120;
 
     private boolean debug = true;
     
-    private final String[] imgExt = {
+    private static final String[] imgExt = {
         "bmp", "jpg", "png", "gif" 
     };
     
-    private final String[] videoExt = {
+    private static final String[] videoExt = {
         "mov", "avi", "mpg", "mp4"
     };
     
-    private final String[] audioExt = {
+    private static final String[] audioExt = {
         "mp3", "wav", "aiff", "au", "snd"
     };
     
     /**
-     * Class constructor. 
-     * @param parent the Quickshow object creating this instance
+     * Class constructor.
+     * @param parent the Quickshow object creating this instance 
+     * @param minim the Minim object handling the audio file
+     * @param curDir the initial FileBrowser directory
      */
-    FileBrowser(Quickshow parent, String curDir) {
+    FileBrowser(Quickshow parent, ddf.minim.Minim minim, String curDir) {
         this.parent = parent;
-        this.curDir = (new File(curDir)).getAbsolutePath();
+        
+        String[] pathParts = (new File(curDir)).getAbsolutePath().split("\\/");
+        StringBuilder path = new StringBuilder();
+        
+        if(debug) {
+            for(String part:pathParts) {
+                parent.println(part);
+            }
+        }
+        
+        for(short i = 0; i < pathParts.length - 1; i++) {
+            path.append("/" + pathParts[i]);
+        }
+        
+        this.curDir = path.toString();
+        
+        this.minim = minim;
         
         thumbHeight = 102;
         thumbWidth = 136;
@@ -67,6 +91,8 @@ public class FileBrowser {
         fileNames = new ArrayList<String>();
         thumbs = new ArrayList<PImage>();
         selectedIndex = new ArrayList<Integer>(20);
+        
+        results = new ArrayList<MediaItem>();
 
         control.setFont(control.getFont().getFont(), 15);
         
@@ -75,7 +101,7 @@ public class FileBrowser {
         pathField = control.addTextfield("")
             .setText(this.curDir)
             .setPosition(30, 30)
-            .setSize(840, 30)
+            .setSize(780, 30)
             .setLock(true)
             .setFocus(false)
             .setVisible(false)
@@ -84,10 +110,20 @@ public class FileBrowser {
         openButton = control.addButton("openButton")
             .setCaptionLabel("Open")
             .setPosition(750, 540)
-            .setSize(120, 30)
+            .setSize(55, 30)
             .setVisible(false)
             .setLock(true)
             .setGroup(group);
+        openButton.getCaptionLabel().align(control.CENTER, control.CENTER);
+        
+        cancelButton = control.addButton("cancelButton")
+            .setCaptionLabel("Cancel")
+            .setVisible(false)
+            .setLock(true)
+            .setSize(55, 30)
+            .setPosition(815, 540)
+            .setGroup(group);
+        cancelButton.getCaptionLabel().align(control.CENTER, control.CENTER);
         
         scrollUpButton = control.addButton("scrollUpButton")
             .setSize(30, 75)
@@ -96,6 +132,7 @@ public class FileBrowser {
             .setPosition(840, 145)
             .setCaptionLabel("^")
             .setGroup(group);
+        scrollUpButton.getCaptionLabel().align(control.CENTER, control.CENTER);
         
         scrollTopButton = control.addButton("scrollTopButton")
             .setSize(30, 75)
@@ -104,6 +141,7 @@ public class FileBrowser {
             .setPosition(840, 70)
             .setCaptionLabel("^\n^")
             .setGroup(group);
+        scrollTopButton.getCaptionLabel().align(control.CENTER, control.CENTER);
         
         scrollDownButton = control.addButton("scrollDownButton")
             .setSize(30, 75)
@@ -112,7 +150,9 @@ public class FileBrowser {
             .setPosition(840, 380)
             .setCaptionLabel("v")
             .setGroup(group);
-            
+        scrollDownButton.getCaptionLabel()
+            .align(control.CENTER, control.CENTER);
+        
         scrollBottomButton = control.addButton("scrollBottomButton")
             .setSize(30, 75)
             .setVisible(false)
@@ -120,20 +160,39 @@ public class FileBrowser {
             .setPosition(840, 455)
             .setCaptionLabel("v\nv")
             .setGroup(group);
-        
+        scrollBottomButton.getCaptionLabel()
+            .align(control.CENTER, control.CENTER);
+
+        String label = "Visual (bmp, jpg, png, gif, mov, avi, mpg, mp4)";
         mediaTypeList = control.addDropdownList("mediaTypeList")
+            .setCaptionLabel(label)
             .setPosition(30, 570)
             .setSize(710, 30)
             .setVisible(false)
             .setBarHeight(30)
             .setGroup(group);
+        mediaTypeList.getCaptionLabel().align(control.LEFT, control.CENTER);
+        mediaTypeList.addItem(label, 0);
+        mediaTypeList.addItem("Audio (mp3, wav, aiff, au, snd)", 1);
         
-        mediaTypeList.addItem("Visual (.bmp, .jpg, .png, .gif, .mov, .avi, .mpg, .mp4)", 0);
-        mediaTypeList.addItem("Audio (.mp3, .wav, .aiff, .au, snd)", 1);
+        pageLabel = control.addButton("pageLabel")
+            .setVisible(false)
+            .setLock(true)
+            .setPosition(840, 225)
+            .setSize(30, 150)
+            .setCaptionLabel("");
+        pageLabel.getCaptionLabel().align(control.CENTER, control.TOP);
         
-        //TODO instantiate page number label 
+        parentDirButton = control.addButton("parentDirButton")
+            .setCaptionLabel("..")
+            .setLock(true)
+            .setGroup(group)
+            .setVisible(false)
+            .setPosition(815, 30)
+            .setSize(55, 30);
+        parentDirButton.getCaptionLabel().align(control.CENTER, control.CENTER);
         
-        changeDir(curDir, false);
+        changeDir(this.curDir);
     }
     
     /**
@@ -142,24 +201,32 @@ public class FileBrowser {
      */
     public void controlEvent(ControlEvent e) {
         switch(e.getName()) {
-        case "openButton":
-            openButton();
-            break;
-            
         case "scrollUpButton":
             scrollUpButton();
-            break;
-            
-        case "scrollTopButton":
-            scrollTopButton();
             break;
             
         case "scrollDownButton":
             scrollDownButton();
             break;
             
+        case "parentDirButton":
+            parentDirButton();
+            break;
+            
+        case "scrollTopButton":
+            scrollTopButton();
+            break;
+            
         case "scrollBottomButton":
             scrollBottomButton();
+            break;
+            
+        case "openButton":
+            openButton();
+            break;
+            
+        case "cancelButton":
+            cancelButton();
             break;
             
         case "mediaTypeList":
@@ -168,9 +235,66 @@ public class FileBrowser {
     }
     
     /**
-     * TODO implement open button actions
+     * ControlP5 UI handler. Changes to parent directory if applicable.
+     */
+    private void parentDirButton() {
+        File file = (new File(curDir)).getParentFile();
+        String parentName = "";
+        
+        if(file != null) {
+            parentName = file.getAbsolutePath();
+            changeDir(parentName);
+        }
+        
+        if(debug) {
+            parent.println("parent button pressed" +
+                (file != null ? (", cd to " + parentName) : ""));
+        }
+    }
+    
+    /**
+     * ControlP5 UI handler. Closes the FileBrowser without loading any items.
+     */
+    private void cancelButton() {
+        selectedIndex.clear();
+        results.clear();
+        
+        toggle(false);
+        
+        if(debug) {
+            parent.println("cancel button pressed");
+        }
+    }
+    
+    /**
+     * TODO implement load all
      */
     private void openButton() {
+        if(selectedIndex.size() == 1) {
+            File file = new File(curDir + '/' + fileNames.get(curDisplayIndex + 
+                selectedIndex.get(0)));
+            
+            if(file.isDirectory()) {
+                changeDir(file.getAbsolutePath());
+            }
+            
+            else {
+                if(selectedIndex.size() == 0) {
+                    
+                }
+                
+                if(isAudioMode) {
+                    loadAudio();
+                }
+                
+                else {
+                    loadVisual();
+                }
+                
+                toggle(false);
+            }
+        }
+        
         if(debug) {
             parent.println("open button pressed");
         }
@@ -180,12 +304,18 @@ public class FileBrowser {
      * ControlP5 UI handler. Displays the previous page.
      */
     private void scrollUpButton() {
-        if(currentDisplayIndex > 0) {
-            currentDisplayIndex -= 20;
+        selectedIndex.clear();
+        
+        if(curDisplayIndex > 0) {
+            curDisplayIndex -= 20;
+
+            pageLabel.setCaptionLabel("\n\n\n" + ((curDisplayIndex/20) + 1) +
+                "\n\nof\n\n" + ((thumbs.size()/20) + 1));
         }
         
         if(debug) {
-            parent.println("scroll up button pressed");
+            parent.println("scroll up button pressed, curDisplayIndex: "
+                + curDisplayIndex);
         }
     }
     
@@ -193,10 +323,16 @@ public class FileBrowser {
      * ControlP5 UI handler. Displays the first page.
      */
     private void scrollTopButton() {
-        currentDisplayIndex = 0;
+        selectedIndex.clear();
+        
+        curDisplayIndex = 0;
+            
+        pageLabel.setCaptionLabel("\n\n\n1\n\nof\n\n" +
+            ((thumbs.size()/20) + 1));
         
         if(debug) {
-            parent.println("scroll top button pressed");
+            parent.println("scroll top button pressed, curDisplayIndex: " 
+                + curDisplayIndex);
         }
     }
     
@@ -204,12 +340,18 @@ public class FileBrowser {
      * ControlP5 UI handler. Displays the next page.
      */
     private void scrollDownButton() {
-        if(currentDisplayIndex + 20 < thumbs.size()) {
-            currentDisplayIndex += 20;
+        selectedIndex.clear();
+        
+        if(curDisplayIndex + 20 < thumbs.size()) {
+            curDisplayIndex += 20;
+            
+            pageLabel.setCaptionLabel("\n\n\n" + ((curDisplayIndex/20) + 1) +
+                "\n\nof\n\n" + ((thumbs.size()/20) + 1));
         }
         
         if(debug) {
-            parent.println("scroll down button pressed");
+            parent.println("scroll down button pressed, curDisplayIndex: " +
+                curDisplayIndex);
         }
     }
     
@@ -217,10 +359,16 @@ public class FileBrowser {
      * ControlP5 UI handler. Displays the last page.
      */
     private void scrollBottomButton() {
-        currentDisplayIndex = (thumbs.size()/20) * 20;
+        selectedIndex.clear();
+        
+        curDisplayIndex = (thumbs.size()/20) * 20;
+        
+        pageLabel.setCaptionLabel("\n\n\n" + ((thumbs.size()/20) + 1) + 
+            "\n\nof\n\n" + (int)(Math.ceil(thumbs.size()/20.)));
         
         if(debug) {
-            parent.println("scroll bottom button pressed");
+            parent.println("scroll bottom button pressed, curDisplayIndex: " 
+                + curDisplayIndex);
         }
     }
     
@@ -229,13 +377,9 @@ public class FileBrowser {
      * @param e the initiating ControlEvent
      */
     private void mediaTypeList(ControlEvent e) {
-        if(e.getValue() == 0) {
-            changeDir(curDir, false);
-        }
-        
-        else {
-            changeDir(curDir, true);
-        }
+        isAudioMode = e.getValue() != 0; 
+    
+        changeDir(curDir);
     }
     
     /**
@@ -262,26 +406,29 @@ public class FileBrowser {
         parent.stroke(0xff5522ff);
         
         short i, j, imgIndex;
+        String fileName;
         for(imgIndex = 0, i = 0; i < 4; i++) {
             //draw thumbnail rows
-            for(j = 0; j < 5 && j+5*i < thumbs.size(); j++, imgIndex++) {
-//            for(j = 0; j < 5; j++, imgIndex++) {
+            for(j = 0; j < 5 && curDisplayIndex+j+5*i < thumbs.size();
+                j++, imgIndex++)
+            {
                 //draw thumbnail columns
                 parent.image(
-                //    thumbs.get(0),
-                    thumbs.get(currentDisplayIndex+j+5*i),
-                    109 + j*162, 120 + i*115,
-                    thumbWidth, thumbHeight
+                    thumbs.get(curDisplayIndex+j+5*i),
+                    109 + j*162, 120 + i*115
                 );
                 
-                parent.text(
-              //      fileNames.get(0),
-                    fileNames.get(currentDisplayIndex+j+5*i),
-                    111 + j*162,
-                    165 + i*115
-                );
+                fileName = fileNames.get(curDisplayIndex+j+5*i);
                 
-                if(selectedIndex.contains((int)imgIndex)) {
+                if(fileName.length() >= 15) {
+                    fileName = fileName.substring(0, 15) + "..";
+                }
+                
+                parent.text(fileName, 111 + j*162, 165 + i*115);
+                
+                if(!selectedIndex.isEmpty() && 
+                    selectedIndex.contains((int)imgIndex)) 
+                {
                     parent.rect(111 + j*162, 130 + i*115, 125, 100);
                 }
             }
@@ -298,10 +445,8 @@ public class FileBrowser {
     /**
      * Changes the FileBrowser directory.
      * @param newDir the new directory path
-     * @param isAudioMode specifies whether the FileBrowser is currently reading
-     *   audio files
      */
-    private void changeDir(String newDir, boolean isAudioMode) {
+    private void changeDir(String newDir) {
         thumbs.clear();
         fileNames.clear();
         
@@ -316,6 +461,7 @@ public class FileBrowser {
         String[] fileNameParts;
         short i;
         PImage thumb = parent.loadImage("data/img/folderThumbNail.png");
+        thumb.resize(thumbWidth, thumbHeight);
         
         pathField.setText(file.getAbsolutePath());
 
@@ -334,6 +480,7 @@ public class FileBrowser {
         //list audio files
         if(isAudioMode) {
             thumb = parent.loadImage("data/img/audioThumbNail.png");
+            thumb.resize(thumbWidth, thumbHeight);
             
             fileIter = files.iterator();
             while(fileIter.hasNext()) {
@@ -345,6 +492,7 @@ public class FileBrowser {
                         .equalsIgnoreCase(audioExt[i]))
                     {
                         fileNames.add(fileName);
+                      
                         thumbs.add(thumb);
                     }
                 }
@@ -353,9 +501,7 @@ public class FileBrowser {
 
         //list image/video files
         else {
-            thumb = parent.createImage(thumbWidth, thumbHeight, parent.RGB);
-        
-            fileIter = files.iterator();
+             fileIter = files.iterator();
             while(fileIter.hasNext()) { 
                 fileName = fileIter.next().getName();
                 fileNameParts = fileName.split("\\.");
@@ -368,9 +514,9 @@ public class FileBrowser {
                     {
                         thumb = parent.loadImage(filePath);
                         thumb.resize(thumbWidth, thumbHeight);
-
-                        fileNames.add(fileName);
                         thumbs.add(thumb);
+               
+                        fileNames.add(fileName);
 
                         break;
                     }
@@ -385,9 +531,9 @@ public class FileBrowser {
                         {
                             thumb = (new Movie(parent, filePath)).get();
                             thumb.resize(thumbWidth, thumbHeight);
-
-                            fileNames.add(fileName);
                             thumbs.add(thumb);
+               
+                            fileNames.add(fileName);
 
                             break;
                         }
@@ -395,69 +541,40 @@ public class FileBrowser {
                 }
             }
         }
+        
+        pageLabel.setCaptionLabel("\n\n\n1\n\nof\n\n" +
+            ((thumbs.size()/20) + 1));
+        
+        selectedIndex.clear();
+        
+        if(debug) {
+            parent.println("#items in directory: " + thumbs.size());
+        }
     }
     
     /**
-     * Loads an audio file.
-     * @param minim the Minim object handling the audio file
-     * @param filename the name of the audio file to load
-     * @return an AudioItem object representing the loaded audio file 
+     * Loads the selected audio files.
      */
-    public AudioItem loadAudio(ddf.minim.Minim minim, String filename) {
-        return new AudioItem(minim, curDir + '/' + filename);
-    }
-
-    /**
-     * Loads an image file.
-     * @param filename the name of the image file to load
-     * @return a PImage object representing the loaded image file 
-     */
-    public ImageItem loadImg(String filename) {
-        return new ImageItem(parent, curDir + '/' + filename);
-    }
-
-    /**
-     * Loads a video file.
-     * @param filename the name of the video file to load
-     * @return a Movie object representing the loaded video file 
-     */
-    public MovieItem loadVideo(String filename) {
-        return new MovieItem(parent, curDir + '/' + filename);
-    }
-    
-    /**
-     * Loads multiple audio files.
-     * @param minim the Minim object controlling the audio
-     * @return an ArrayList containing the selected AudioItems
-     */
-    public ArrayList<AudioItem> loadAudioMulti(ddf.minim.Minim minim) {
-        ArrayList<AudioItem> audios = new ArrayList<AudioItem>();
+    private void loadAudio() {
+        results.clear();
         
         for(Integer index : selectedIndex) {
-            audios.add(
-                new AudioItem(
-                    minim,
-                    curDir + '/' + fileNames.get(currentDisplayIndex + index)
-                )
-            );
+            results.add(new AudioItem(minim,
+                curDir + '/' + fileNames.get(curDisplayIndex + index)));
         }
-        
-        audios.trimToSize();
-        return audios;
     }
     
     /**
-     * Loads multiple visual media files. 
-     * @return an ArrayList containing the selected VisualItems
+     * Loads the selected visual media files.
      */
-    public ArrayList<VisualItem> loadVisualMulti() {
-        ArrayList<VisualItem> visuals = new ArrayList<VisualItem>();
+    private void loadVisual() {
+        results.clear();
         
         String[] fileNameParts;
         String fileName;
         short i;
         for(Integer index : selectedIndex) {
-            fileName = fileNames.get(currentDisplayIndex + index);
+            fileName = fileNames.get(curDisplayIndex + index);
             fileNameParts = fileName.split("\\.");
             
             //file is image
@@ -465,7 +582,7 @@ public class FileBrowser {
                 if(fileNameParts[fileNameParts.length-1]
                     .equalsIgnoreCase(imgExt[i]))
                 {
-                    visuals.add(new ImageItem(parent, curDir + '/' + fileName));
+                    results.add(new ImageItem(parent, curDir + '/' + fileName));
 
                     break;
                 }
@@ -473,12 +590,9 @@ public class FileBrowser {
             
             //file is video
             if(i == imgExt.length) {
-                visuals.add(new MovieItem(parent, curDir + '/' + fileName));
+                results.add(new MovieItem(parent, curDir + '/' + fileName));
             }
         }
-        
-        visuals.trimToSize();
-        return visuals;
     }
     
     /**
@@ -496,8 +610,6 @@ public class FileBrowser {
      */
     public void mouseClicked(int mouseX, int mouseY) {
         if(mouseX >= 30 && mouseX <= 840  && mouseY >= 70 && mouseY <= 530) {
-            selectedIndex.clear();
-            
             short row = (short)((mouseY - 68)/115);
             short col = (short)((mouseX - 61)/162);
             
@@ -507,7 +619,7 @@ public class FileBrowser {
                 col*162 + 111 + 62 >= mouseX;
             
             if(rowSelect && colSelect) {
-                selectedIndex.add(currentDisplayIndex+5*row+col);
+                selectedIndex.add(curDisplayIndex+5*row+col);
             }
                     
             if(debug) {
@@ -515,7 +627,8 @@ public class FileBrowser {
                     "mouse clicked: " + mouseX + ',' + mouseY +
                     ", thumbnail: " + row + ' ' + col +
                     ", rowSelect: " + rowSelect + ", colSelect: " + colSelect +
-                    ", selectedIndex: " + selectedIndex.get(0)
+                    (selectedIndex.isEmpty() ?
+                        "" : ", selectedIndex: " + selectedIndex.get(0))
                 );
             }
         }
@@ -583,14 +696,16 @@ public class FileBrowser {
      * @param mouseY the y-coordinate of the mouse
      */
     public void mouseReleased(int mouseX, int mouseY) {
-        selectedIndex.clear();
-        
         isSelecting = false;
         
-        int minSelX = (selectBox[0] > selectBox[2] ? selectBox[2] : selectBox[0]);
-        int maxSelX = (selectBox[0] < selectBox[2] ? selectBox[2] : selectBox[0]);
-        int minSelY = (selectBox[1] > selectBox[3] ? selectBox[3] : selectBox[1]);
-        int maxSelY = (selectBox[1] < selectBox[3] ? selectBox[3] : selectBox[1]);
+        int minSelX = (selectBox[0] > selectBox[2] ?
+            selectBox[2] : selectBox[0]);
+        int maxSelX = (selectBox[0] < selectBox[2] ? 
+            selectBox[2] : selectBox[0]);
+        int minSelY = (selectBox[1] > selectBox[3] ?
+            selectBox[3] : selectBox[1]);
+        int maxSelY = (selectBox[1] < selectBox[3] ?
+            selectBox[3] : selectBox[1]);
         
         short maxRow = (short)((maxSelY - 68)/115);
         short minRow = (short)((minSelY - 68)/115);
@@ -622,15 +737,17 @@ public class FileBrowser {
                 }
                 
                 if(rowSelect && colSelect) {
-                    selectedIndex.add(currentDisplayIndex+i*5+j);
+                    selectedIndex.add(curDisplayIndex+i*5+j);
                 }
             }
         }
         
         if(debug) {
-            parent.println("mouse released: " + mouseX + ' ' + mouseY + 
+            parent.println(
+                "mouse released: " + mouseX + ' ' + mouseY + 
                 "\nminSel: " + minRow + ' ' + minCol + 
-                "\nmaxSel: " + maxRow + ' ' + maxCol);
+                "\nmaxSel: " + maxRow + ' ' + maxCol
+            );
         }
     }
     
@@ -642,6 +759,8 @@ public class FileBrowser {
      */
     public void mousePressed(int mouseX, int mouseY) {
         if(mouseX >= 30 && mouseX <= 840  && mouseY >= 70 && mouseY <= 530) {
+            selectedIndex.clear();
+            
             selectBox[0] = selectBox[2] = mouseX;
             selectBox[1] = selectBox[3] = mouseY;
             
@@ -655,13 +774,14 @@ public class FileBrowser {
     
     /**
      * Toggles display of the FileBrowser.
-     * @param visible whether the FileBrowser should be visible 
-     * @param isAudioMode whether the FileBrowser is scanning for audio files
+     * @param visible whether the FileBrowser should be visible
      */
-    public void toggle(boolean visible, boolean isAudioMode) {
+    public void toggle(boolean visible) {
         pathField.setVisible(visible);
                 
         openButton.setVisible(visible).setLock(!visible);
+        
+        cancelButton.setVisible(visible).setLock(!visible);
         
         scrollUpButton.setVisible(visible).setLock(!visible);
         
@@ -672,6 +792,10 @@ public class FileBrowser {
         scrollBottomButton.setVisible(visible).setLock(!visible);
         
         mediaTypeList.setVisible(visible);    
+        
+        pageLabel.setVisible(visible);
+        
+        parentDirButton.setVisible(visible).setLock(!visible);
     }
     
     /**
@@ -682,4 +806,19 @@ public class FileBrowser {
         return pathField.isVisible();
     }
     
+    /**
+     * Retrieves the loaded media items.
+     * @return an ArrayList containing the selected MediaItems
+     */
+    public ArrayList<MediaItem> getResults() {
+        return results;
+    }
+    
+    /**
+     * Checks if MediaItems have been loaded.
+     * @return true if MediaItems have been loaded
+     */
+    public boolean isReady() {
+        return !results.isEmpty();
+    }
 }
