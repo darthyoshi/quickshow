@@ -9,6 +9,8 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 public class Quickshow extends PApplet {
+    boolean debug = true;
+    
 	ControlP5 audioList;
 	audiolistUI audioListbox;
 	
@@ -87,6 +89,9 @@ public class Quickshow extends PApplet {
             if(!browse.isEnabled() && browse.isReady()) {
                 ArrayList<MediaItem> results = browse.getResults();
                 
+                if(debug) {
+                    println(results.size());
+                }
                 //TODO pass results to media player
             }
 	    }

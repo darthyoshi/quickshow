@@ -14,6 +14,8 @@ import quickshow.datatypes.*;
 import controlP5.*;
 
 public class FileBrowser {
+    private boolean debug = true;
+    
     private Quickshow parent;
     private String curDir;
     
@@ -43,8 +45,6 @@ public class FileBrowser {
     int thumbWidth, thumbHeight;
     int firstThumbX = 111, firstThumbY = 120;
 
-    private boolean debug = true;
-    
     private static final String[] imgExt = {
         "bmp", "jpg", "png", "gif" 
     };
@@ -248,7 +248,7 @@ public class FileBrowser {
         
         if(debug) {
             parent.println("parent button pressed" +
-                (file != null ? (", cd to " + parentName) : ""));
+                (file != null ? ("\ncd to " + parentName) : ""));
         }
     }
     
@@ -256,21 +256,32 @@ public class FileBrowser {
      * ControlP5 UI handler. Closes the FileBrowser without loading any items.
      */
     private void cancelButton() {
+        if(debug) {
+            parent.println("cancel button pressed");
+        }
+        
         selectedIndex.clear();
         results.clear();
         
         toggle(false);
-        
-        if(debug) {
-            parent.println("cancel button pressed");
-        }
     }
     
     /**
-     * TODO implement load all
+     * ControlP5 UI handler. Enters selected directory or loads selected files.
      */
     private void openButton() {
-        if(selectedIndex.size() == 1) {
+        if(debug) {
+            parent.println("open button pressed" + 
+                "\n#selected items: " + selectedIndex.size());
+        }
+        
+        if(selectedIndex.isEmpty()) {
+            loadAll();
+            
+            toggle(false);
+        }
+        
+        else if(selectedIndex.size() == 1) {
             File file = new File(curDir + '/' + fileNames.get(curDisplayIndex + 
                 selectedIndex.get(0)));
             
@@ -279,10 +290,6 @@ public class FileBrowser {
             }
             
             else {
-                if(selectedIndex.size() == 0) {
-                    
-                }
-                
                 if(isAudioMode) {
                     loadAudio();
                 }
@@ -293,10 +300,6 @@ public class FileBrowser {
                 
                 toggle(false);
             }
-        }
-        
-        if(debug) {
-            parent.println("open button pressed");
         }
     }
     
@@ -314,8 +317,8 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("scroll up button pressed, curDisplayIndex: "
-                + curDisplayIndex);
+            parent.println("scroll up button pressed"
+                + "\ncurDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -331,8 +334,8 @@ public class FileBrowser {
             ((thumbs.size()/20) + 1));
         
         if(debug) {
-            parent.println("scroll top button pressed, curDisplayIndex: " 
-                + curDisplayIndex);
+            parent.println("scroll top button pressed"
+                + "\ncurDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -350,8 +353,8 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("scroll down button pressed, curDisplayIndex: " +
-                curDisplayIndex);
+            parent.println("scroll down button pressed"
+                + "\ncurDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -367,8 +370,8 @@ public class FileBrowser {
             "\n\nof\n\n" + (int)(Math.ceil(thumbs.size()/20.)));
         
         if(debug) {
-            parent.println("scroll bottom button pressed, curDisplayIndex: " 
-                + curDisplayIndex);
+            parent.println("scroll bottom button pressed"
+                + "\ncurDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -421,7 +424,7 @@ public class FileBrowser {
                 fileName = fileNames.get(curDisplayIndex+j+5*i);
                 
                 if(fileName.length() >= 15) {
-                    fileName = fileName.substring(0, 15) + "..";
+                    fileName = fileName.substring(0, 14) + "..";
                 }
                 
                 parent.text(fileName, 111 + j*162, 165 + i*115);
@@ -556,8 +559,6 @@ public class FileBrowser {
      * Loads the selected audio files.
      */
     private void loadAudio() {
-        results.clear();
-        
         for(Integer index : selectedIndex) {
             results.add(new AudioItem(minim,
                 curDir + '/' + fileNames.get(curDisplayIndex + index)));
@@ -568,8 +569,6 @@ public class FileBrowser {
      * Loads the selected visual media files.
      */
     private void loadVisual() {
-        results.clear();
-        
         String[] fileNameParts;
         String fileName;
         short i;
@@ -591,6 +590,53 @@ public class FileBrowser {
             //file is video
             if(i == imgExt.length) {
                 results.add(new MovieItem(parent, curDir + '/' + fileName));
+            }
+        }
+    }
+    
+    /**
+     * Loads all applicable media files in the current directory.
+     */
+    private void loadAll() {
+        File file;
+        
+        if(isAudioMode) {
+            for(String fileName : fileNames) {
+                file = new File(curDir + '/' + fileName);
+                
+                if(file.isFile()) {
+                    results.add(new AudioItem(minim, file.getAbsolutePath()));
+                }
+            }
+        }
+        
+        else {
+            String[] fileNameParts;
+            short i;
+            for(String fileName : fileNames) {
+                file = new File(curDir + '/' + fileName);
+                
+                if(file.isFile()) {
+                    fileNameParts = fileName.split("\\.");
+                    
+                    //file is image
+                    for(i = 0; i < imgExt.length; i++) {
+                        if(fileNameParts[fileNameParts.length-1]
+                            .equalsIgnoreCase(imgExt[i]))
+                        {
+                            results.add(new ImageItem(parent, curDir + '/'
+                                + fileName));
+
+                            break;
+                        }
+                    }
+                    
+                    //file is video
+                    if(i == imgExt.length) {
+                        results.add(new MovieItem(parent, curDir + '/' 
+                            + fileName));
+                    }
+                }
             }
         }
     }
@@ -625,8 +671,9 @@ public class FileBrowser {
             if(debug) {
                 parent.println(
                     "mouse clicked: " + mouseX + ',' + mouseY +
-                    ", thumbnail: " + row + ' ' + col +
-                    ", rowSelect: " + rowSelect + ", colSelect: " + colSelect +
+                    "\nthumbnail: " + row + ' ' + col +
+                    "\nrowSelect: " + rowSelect +
+                    "\ncolSelect: " + colSelect +
                     (selectedIndex.isEmpty() ?
                         "" : ", selectedIndex: " + selectedIndex.get(0))
                 );
@@ -752,8 +799,7 @@ public class FileBrowser {
     }
     
     /**
-     * Handler for mouse press. Initializes the multiple selection box if
-     *   applicable.
+     * Handler for mouse press. Initializes the selection box if applicable.
      * @param mouseX the x-coordinate of the mouse
      * @param mouseY the y-coordinate of the mouse
      */
@@ -807,11 +853,16 @@ public class FileBrowser {
     }
     
     /**
-     * Retrieves the loaded media items.
+     * Retrieves the loaded media items. The loaded items are then cleared from
+     *   the FileBrowser.
      * @return an ArrayList containing the selected MediaItems
      */
     public ArrayList<MediaItem> getResults() {
-        return results;
+        ArrayList<MediaItem> tmp = (ArrayList<MediaItem>) results.clone();
+        
+        results.clear();
+        
+        return tmp;
     }
     
     /**
