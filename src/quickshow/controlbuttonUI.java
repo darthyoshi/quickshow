@@ -25,6 +25,7 @@ public class controlbuttonUI {
 		playButton = buttonUI.addButton("Play");
 		playButton.setPosition(30, 10);
 		
+		
 		shareExportButton = buttonUI.addButton("Share/Export");
 		shareExportButton.setPosition(120, 10);
 		
@@ -65,7 +66,12 @@ public class controlbuttonUI {
 		loadMedia = buttonUI.addButton("Load Media");
 		loadMedia.setPosition(675, 10);
 		loadMedia.setSize(193, 15);
+		
+		
 	}
 	
 	
+	public void didLoadMediaClick(){
+		
+	}
 }
