@@ -52,7 +52,7 @@ public class Quickshow extends PApplet {
 		aT.generateWaveForm();
 		
 		vTimeline = new visualTimeline(this);
-		thumbnails = new visualthumbnailUI(this, control);
+		thumbnails = new visualthumbnailUI(this);
 		//Test purposes delete/modify lines above
 		
 		browse = new FileBrowser(this, minim, control, ".");
@@ -151,7 +151,6 @@ public class Quickshow extends PApplet {
 	            cbU.toggle(false);
 	            aT.toggle(false);
 	            audioListbox.toggle(false);
-	            thumbnails.toggle(false);
 	            break;
 	        }
 	        break;
@@ -229,7 +228,6 @@ public class Quickshow extends PApplet {
             
         cbU.toggle(true);
         audioListbox.toggle(true);
-        thumbnails.toggle(true);
     }
     
     /**

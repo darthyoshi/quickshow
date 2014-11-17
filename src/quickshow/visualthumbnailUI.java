@@ -18,8 +18,6 @@ import controlP5.*;
 public class visualthumbnailUI {
     private Quickshow parent;
     
-    private ControlP5 control;
-    
 	int num_items;
 	PShape rect1;
 	PImage p;
@@ -38,9 +36,8 @@ public class visualthumbnailUI {
 	private float scaleFactor = 1.0f;
 	
 
-	public visualthumbnailUI(Quickshow parent, ControlP5 control){
+	public visualthumbnailUI(Quickshow parent){
 	    this.parent = parent;
-	    this.control = control;
 	    items = new ArrayList<VisualItem>();
 	    selectedItems = new ArrayList<VisualItem>();
 	}
@@ -84,9 +81,5 @@ public class visualthumbnailUI {
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
 		items.addAll(vItems);
-	}
-	
-	public void toggle(boolean visible) {
-	    
 	}
 }

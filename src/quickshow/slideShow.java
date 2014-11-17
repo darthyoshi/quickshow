@@ -1,8 +1,15 @@
+/**
+ * @file slideShow.java
+ * @author Kay Choi, Moses Lee
+ * @description TODO add description 
+ */
+
 package quickshow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import controlP5.Button;
 import controlP5.ControlP5;
 import processing.core.*;
 import processing.video.*;
@@ -12,7 +19,10 @@ import ddf.minim.*;
 public class slideShow {
 	private Quickshow parent;
 	private Minim minim;
+	
 	private ControlP5 control;
+	private Button playButton;
+	private Button stopButton;
     
 	private PImage curFrame;
 	private Movie movie;
@@ -40,6 +50,8 @@ public class slideShow {
 		
 		audios = new ArrayList<AudioItem>();
 		visuals = new ArrayList<VisualItem>();
+		
+		//TODO initialize UI components
 	}
 	
 	/**
@@ -109,9 +121,11 @@ public class slideShow {
     	            curFrame = movie;
     	        }
 	        }
-	    
-	        parent.image(curFrame, 0, 0);
 	    }
+	    
+        parent.image(curFrame, 0, 0);
+	    
+	    //TODO display UI elements
 	}
 	
 	/**
@@ -142,7 +156,6 @@ public class slideShow {
 	 */
 	private void nextVisualItem() {
 	    movie = null;
-	    curFrame = null;
 	    
 	    if(visualIter.hasNext()) {
 	        curVisualItem = visualIter.next();
@@ -171,13 +184,13 @@ public class slideShow {
 	    curAudioItem.getAudio().pause();
 	    curAudioItem = null;
 
-        curVisualItem = null;
+	    curVisualItem = null;
+	    
         if(movie != null) {
             movie.stop();
             movie = null;
         }
-        curFrame = null;
-	    
+        
 	    toggle(false);
 	}
 	

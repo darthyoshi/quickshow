@@ -456,6 +456,7 @@ public class FileBrowser {
     private void changeDir(String newDir) {
         thumbs.clear();
         fileNames.clear();
+        selectedIndex.clear();
         
         curDir = newDir;
 
@@ -679,6 +680,8 @@ public class FileBrowser {
             }
             
             else if(System.currentTimeMillis() - clickInterval < 500) {
+                dblClick = false;
+                
                 openButton();
             }
                     
