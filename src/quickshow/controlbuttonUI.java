@@ -30,63 +30,63 @@ public class controlbuttonUI {
 		Group group = buttonUI.addGroup("buttonUI").setLabel("");
 		
 		//For the entire slideshow
-		playButton = buttonUI.addButton("Play");
-		playButton.setPosition(30, 10);
+
+		//buttonUI.addListener(l);
+		playButton = buttonUI.addButton("Play")
+	        .setPosition(30, 10)
+	        .setGroup(group);
 		playButton.getCaptionLabel().alignX(buttonUI.CENTER);
-		playButton.setGroup(group);
 		
-		shareExportButton = buttonUI.addButton("Share/Export");
-		shareExportButton.setPosition(120, 10);
-		shareExportButton.setGroup(group);
+		shareExportButton = buttonUI.addButton("Share/Export")
+	        .setPosition(120, 10)
+	        .setGroup(group);
 		
-		resetShowButton = buttonUI.addButton("Reset");
-		resetShowButton.setPosition(210, 10);
-		resetShowButton.setGroup(group);
+		resetShowButton = buttonUI.addButton("Reset")
+	        .setPosition(210, 10)
+	        .setGroup(group);
 		
-		shuffleToggle = buttonUI.addToggle("Shuffle Slides");
-		shuffleToggle.setMode(ControlP5.SWITCH);
-		shuffleToggle.setPosition(300, 10);
-		shuffleToggle.setCaptionLabel("Shuffle Slides");
-		shuffleToggle.setGroup(group);
+		shuffleToggle = buttonUI.addToggle("Shuffle Slides")
+	        .setMode(ControlP5.SWITCH)
+	        .setPosition(300, 10)
+	        .setCaptionLabel("Shuffle Slides")
+	        .setGroup(group);
 		
 		//For audioList
-		clearSongsButton = buttonUI.addButton("Clear selected songs");
-		clearSongsButton.setPosition(675, 400);
-		clearSongsButton.setSize(193, 15);
-		clearSongsButton.setGroup(group);
+		clearSongsButton = buttonUI.addButton("Clear selected songs")
+	        .setPosition(675, 400)
+	        .setSize(193, 15)
+	        .setGroup(group);
 		
 		//For the Thumbnail selector
-		selectAllImages = buttonUI.addButton("Select All Pictures");
-		selectAllImages.setPosition(200, 400);
-		selectAllImages.setSize(150,15);
-		selectAllImages.setGroup(group);
+		selectAllImages = buttonUI.addButton("Select All Pictures")
+		    .setPosition(200, 400)
+		    .setSize(150,15)
+		    .setGroup(group);
 		
-		selectAllVideos = buttonUI.addButton("Select All Clips");
-		selectAllVideos.setPosition(370, 400);
-		selectAllVideos.setSize(150, 15);
-		selectAllVideos.setGroup(group);
+		selectAllVideos = buttonUI.addButton("Select All Clips")
+		    .setPosition(370, 400)
+		    .setSize(150, 15)
+		    .setGroup(group);
 		
-		clearVisualTimeline = buttonUI.addButton("Clear slides");
-		clearVisualTimeline.setPosition(30, 400);
-		clearVisualTimeline.setSize(150,15);
-		clearVisualTimeline.setGroup(group);
+		clearVisualTimeline = buttonUI.addButton("Clear slides")
+		    .setPosition(30, 400)
+		    .setSize(150,15)
+		    .setGroup(group);
 		
 		//To control the visual timeline thumbnail
-		nextSlides = buttonUI.addButton("Next");
-		nextSlides.setPosition(805, 570);
-		nextSlides.setGroup(group);
+		nextSlides = buttonUI.addButton("Next")
+		    .setPosition(805, 570)
+		    .setGroup(group);
 		
-		prevSlides = buttonUI.addButton("Previous");
-		prevSlides.setPosition(30, 570);
-		prevSlides.setGroup(group);
+		prevSlides = buttonUI.addButton("Previous")
+		    .setPosition(30, 570)
+		    .setGroup(group);
 		
 		//Load media
-		loadMedia = buttonUI.addButton("Load Media");
-		loadMedia.setPosition(675, 10);
-		loadMedia.setSize(193, 15);
-		loadMedia.setGroup(group);
-		
-		
+		loadMedia = buttonUI.addButton("Load Media")
+		    .setPosition(675, 10)
+		    .setSize(193, 15)
+		    .setGroup(group);
 	}
 	
 	
