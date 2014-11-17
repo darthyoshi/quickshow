@@ -30,6 +30,9 @@ public class FileBrowser {
     private int[] selectBox = {0, 0, 0, 0};
     private boolean isSelecting = false;
     
+    private long clickInterval;
+    private boolean dblClick = false;
+    
     private ControlP5 control;
     private Group group;
     private Button openButton, cancelButton;
@@ -65,18 +68,21 @@ public class FileBrowser {
      * Class constructor.
      * @param parent the Quickshow object creating this instance 
      * @param minim the Minim object handling the audio file
+     * @param control the ControlP5 object handling UI elements
      * @param curDir the initial FileBrowser directory
      */
-    FileBrowser(Quickshow parent, ddf.minim.Minim minim, String curDir) {
+    FileBrowser(Quickshow parent, ddf.minim.Minim minim, ControlP5 control, String curDir) {
         this.parent = parent;
         
         String[] pathParts = (new File(curDir)).getAbsolutePath().split("\\/");
         StringBuilder path = new StringBuilder();
         
         if(debug) {
+            parent.print("path: ");
             for(String part:pathParts) {
-                parent.println(part);
+                parent.print(part + '/');
             }
+            parent.println();
         }
         
         for(short i = 0; i < pathParts.length - 1; i++) {
@@ -90,15 +96,13 @@ public class FileBrowser {
         thumbHeight = 102;
         thumbWidth = 136;
         
-        control = new ControlP5(parent);
+        this.control = control;
         
         fileNames = new ArrayList<String>();
         thumbs = new ArrayList<PImage>();
         selectedIndex = new ArrayList<Integer>(20);
         
         results = new ArrayList<MediaItem>();
-
-        control.setFont(control.getFont().getFont(), 15);
         
         group = control.addGroup("fileBrowser").setLabel("").setVisible(false);
         
@@ -198,7 +202,7 @@ public class FileBrowser {
      * Callback method for handling ControlP5 UI events.
      * @param e the ControlEvent to handle
      */
-    public void controlEvent(ControlEvent e, Quickshow q){
+    public void controlEvent(ControlEvent e){
         switch(e.getName()) {
         case "scrollUpButton":
             scrollUpButton();
@@ -226,12 +230,6 @@ public class FileBrowser {
             
         case "cancelButton":
             cancelButton();
-            
-            //For the Main UI
-            q.aT.toggle(true);
-            q.audioListbox.toggle(true);
-            q.cbU.toggle(true);
-            
             break;
             
         case "mediaTypeList":
@@ -671,6 +669,16 @@ public class FileBrowser {
             
             if(rowSelect && colSelect) {
                 selectedIndex.add(curDisplayIndex+5*row+col);
+            }
+            
+            if(!dblClick) {
+                dblClick = true;
+                
+                clickInterval = System.currentTimeMillis();
+            }
+            
+            else if(System.currentTimeMillis() - clickInterval < 500) {
+                openButton();
             }
                     
             if(debug) {

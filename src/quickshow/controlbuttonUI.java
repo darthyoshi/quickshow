@@ -8,6 +8,10 @@ import controlP5.Group;
 import controlP5.Toggle;
 
 public class controlbuttonUI {
+    private Quickshow parent;
+    
+    private ControlP5 buttonUI;
+    
     Group group;
 	Button playButton;
 	Button shareExportButton;
@@ -28,7 +32,10 @@ public class controlbuttonUI {
 	/*
 	 * TODO make sure to get interactivity
 	 */
-	public controlbuttonUI(ControlP5 buttonUI){
+	public controlbuttonUI(Quickshow parent, ControlP5 buttonUI){
+	    this.parent = parent;
+	    this.buttonUI = buttonUI;
+	    
 		group = buttonUI.addGroup("buttonUI").setLabel("");
 		
         lockButtons = new Button[10];
@@ -99,16 +106,16 @@ public class controlbuttonUI {
 	 */
 	public void toggle(boolean visible) {
 	    group.setVisible(visible);
-	    
-	    for(Button button : lockButtons) {
-	        button.setLock(!visible);
-	    }
+        
+        for(Button button : lockButtons) {
+            button.setLock(!visible);
+        }
 	}
 	
 	/**
 	 * 
 	 * 
-	 */
+	 *
 	public void controlEvent(ControlEvent e, Quickshow q){
 		String srcName = e.getLabel();
     	switch(srcName){
@@ -136,9 +143,9 @@ public class controlbuttonUI {
     		
     		q.browse.toggle(true);
     		toggle(false);
-    		q.aT.toggle(false);
+    	//	q.aT.toggle(false);
     		q.audioListbox.toggle(false);
     		break;
     	}
-	}
+	}*/
 }

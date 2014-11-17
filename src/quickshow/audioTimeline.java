@@ -8,6 +8,7 @@ import ddf.minim.analysis.FFT;
 
 
 public class audioTimeline {
+	private Quickshow parent;
 	
 	//Generate the wave form image
 	float leftSpectra[][];
@@ -19,13 +20,15 @@ public class audioTimeline {
 	ArrayList <AudioItem> selectedSongs;
 	
 	
-	public audioTimeline(Quickshow q){
-		audiotest = new Minim(q);
+	public audioTimeline(Quickshow q, Minim minim){
+	    parent = q;
+
+	    audiotest = minim;
 	}
 	
-	public void drawBackgroundCanvas(Quickshow q){
-		q.rectMode(q.CORNER);
-		q.rect(30, 425, timeLineWidth, timeLineHeight);
+	public void drawBackgroundCanvas(){
+		parent.rectMode(parent.CORNER);
+		parent.rect(30, 425, timeLineWidth, timeLineHeight);
 		
 	}
 	
@@ -96,7 +99,7 @@ public class audioTimeline {
 	/*
 	 * draw the waveforms
 	 */
-	public void drawWaveform(Quickshow q){
+	public void drawWaveform(){
 		int numOfItems = 1;
 		if(selectedSongs != null) numOfItems = selectedSongs.size();
 		
@@ -110,7 +113,7 @@ public class audioTimeline {
 		    }
 		    total = total / 40;
 		    
-		    q.line((s*scaleMod) + 30,total+460,(s*scaleMod) + 30,-total+460);
+		    parent.line((s*scaleMod) + 30,total+460,(s*scaleMod) + 30,-total+460);
 		}
 	}
 	
@@ -121,11 +124,11 @@ public class audioTimeline {
 		selectedSongs = songList;
 	}
 	
-	/*
+	/**
 	 * 
-	 * 
+	 * @param visible
 	 */
-	public void toggle(boolean onOff){
+	public void toggle(boolean visible){
 		
 	}
 	

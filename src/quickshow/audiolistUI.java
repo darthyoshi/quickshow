@@ -13,7 +13,11 @@ import java.util.ArrayList;
 import quickshow.datatypes.AudioItem;
 
 public class audiolistUI {
-	//ControlP5 audioList;
+    private Quickshow parent;
+    
+    private ControlP5 audioList;
+	private Group group;
+	
 	ListBox list;
 	int num_items;
 	private final int width = 200;
@@ -25,15 +29,17 @@ public class audiolistUI {
 	ArrayList <AudioItem> songList;
 	
 	//Constructors
-	public audiolistUI(ControlP5 audioList){
+	public audiolistUI(Quickshow parent, ControlP5 audioList){
+		this.parent = parent;
+		this.audioList = audioList;
 		
-		Group group = audioList.addGroup("AudioList").setLabel("");
+		group = audioList.addGroup("AudioList").setLabel("");
 		audioList.setFont(audioList.getFont().getFont(), 15);
-		list = audioList.addListBox(title);
-		list.setSize(width, height);
-		list.setPosition(675, 50);
-		list.disableCollapse();
-		list.setBarHeight(18);
+		list = audioList.addListBox(title)
+	        .setSize(width, height)
+	        .setPosition(675, 50)
+	        .disableCollapse()
+	        .setBarHeight(18);
 		list.setGroup(group);
 		
 		//Vectors to store information about the Listbox
@@ -41,8 +47,9 @@ public class audiolistUI {
 		songList = new ArrayList<AudioItem>();
 		
 		//Need to find a way to display the list without initializing
+		ListBoxItem lbi;
 		for (int i=0;i<30;i++) {
-			ListBoxItem lbi = list.addItem("empty", i);
+			lbi = list.addItem("empty", i);
 			lbi.setColorBackground(0xffff0000);
 			lbi.setId(i);
 		}
@@ -93,8 +100,12 @@ public class audiolistUI {
 		}
 	}
 	
-	public void toggle(boolean onOff){
-		list.setVisible(onOff);
+	/**
+	 * 
+	 * @param visible
+	 */
+	public void toggle(boolean visible){
+		group.setVisible(visible);
 	}
 	
 	

@@ -4,17 +4,20 @@ import java.util.ArrayList;
 
 import processing.video.*;
 import quickshow.datatypes.*;
+import ddf.minim.*;
 
 public class slideShow {
 	Quickshow parent;
+	Minim minim;
     
 	ArrayList <AudioItem> audios;
 	ArrayList <VisualItem> visuals;
 	
 	boolean isPlaying = false, isActive = false;
 	
-	public slideShow(Quickshow parent) {
+	public slideShow(Quickshow parent, Minim minim) {
 		this.parent = parent;
+		this.minim = minim;
 		
 		audios = new ArrayList<AudioItem>();
 		visuals = new ArrayList<VisualItem>();
@@ -45,7 +48,6 @@ public class slideShow {
 	    isPlaying = false;
 	    
 	    toggle(false);
-		
 	}
 	
 	public boolean isPlaying() {
@@ -59,6 +61,8 @@ public class slideShow {
 	 * Add helper functions below here
 	 */
 	
-	
+	public boolean isEnabled() {
+	    return false;
+	}
 	
 }

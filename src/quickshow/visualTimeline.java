@@ -8,19 +8,20 @@ public class visualTimeline {
 	private final int timeLineWidth = 840;
 	private final int timeLineHeight = 65;
 	Vector <VisualItem> itemsForDisplay;
+    private Quickshow parent;
 	
 	/*
 	 * Empty Constructor need to some how do something
 	 */
-	public visualTimeline(){
-		
+	public visualTimeline(Quickshow parent){
+		this.parent = parent;
 	}
 	
 	/*
 	 * Drawing a simple background canvas
 	 */
-	public void drawBackgroundCanvas(Quickshow q){
-		q.rect(30, 500, timeLineWidth, timeLineHeight);
+	public void drawBackgroundCanvas(){
+		parent.rect(30, 500, timeLineWidth, timeLineHeight);
 	}
 	
 	/*
