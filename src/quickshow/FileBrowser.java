@@ -100,7 +100,7 @@ public class FileBrowser {
 
         control.setFont(control.getFont().getFont(), 15);
         
-        group = control.addGroup("fileBrowser").setLabel("");
+        group = control.addGroup("fileBrowser").setLabel("").setVisible(false);
         
         lockButtons = new Button[7];
         
@@ -110,21 +110,18 @@ public class FileBrowser {
             .setSize(780, 30)
             .setLock(true)
             .setFocus(false)
-            .setVisible(false)
             .setGroup(group);
 
         lockButtons[0] = openButton = control.addButton("openButton")
             .setCaptionLabel("Open")
             .setPosition(750, 540)
             .setSize(55, 30)
-            .setVisible(false)
             .setLock(true)
             .setGroup(group);
         openButton.getCaptionLabel().align(control.CENTER, control.CENTER);
 
         lockButtons[1] = cancelButton = control.addButton("cancelButton")
             .setCaptionLabel("Cancel")
-            .setVisible(false)
             .setLock(true)
             .setSize(55, 30)
             .setPosition(815, 540)
@@ -133,7 +130,6 @@ public class FileBrowser {
 
         lockButtons[2] = scrollUpButton = control.addButton("scrollUpButton")
             .setSize(30, 75)
-            .setVisible(false)
             .setLock(true)
             .setPosition(840, 145)
             .setCaptionLabel("^")
@@ -142,7 +138,6 @@ public class FileBrowser {
 
         lockButtons[3] = scrollTopButton = control.addButton("scrollTopButton")
             .setSize(30, 75)
-            .setVisible(false)
             .setLock(true)
             .setPosition(840, 70)
             .setCaptionLabel("^\n^")
@@ -152,7 +147,6 @@ public class FileBrowser {
         lockButtons[4] = scrollDownButton = control
             .addButton("scrollDownButton")
             .setSize(30, 75)
-            .setVisible(false)
             .setLock(true)
             .setPosition(840, 380)
             .setCaptionLabel("v")
@@ -163,7 +157,6 @@ public class FileBrowser {
         lockButtons[5] = scrollBottomButton = control
             .addButton("scrollBottomButton")
             .setSize(30, 75)
-            .setVisible(false)
             .setLock(true)
             .setPosition(840, 455)
             .setCaptionLabel("v\nv")
@@ -176,7 +169,6 @@ public class FileBrowser {
             .setCaptionLabel(label)
             .setPosition(30, 570)
             .setSize(710, 30)
-            .setVisible(false)
             .setBarHeight(30)
             .setGroup(group);
         mediaTypeList.getCaptionLabel().align(control.LEFT, control.CENTER);
@@ -184,7 +176,6 @@ public class FileBrowser {
         mediaTypeList.addItem("Audio (mp3, wav, aiff, au, snd)", 1);
         
         pageLabel = control.addButton("pageLabel")
-            .setVisible(false)
             .setLock(true)
             .setPosition(840, 225)
             .setSize(30, 150)
@@ -195,7 +186,6 @@ public class FileBrowser {
             .setCaptionLabel("..")
             .setLock(true)
             .setGroup(group)
-            .setVisible(false)
             .setPosition(815, 30)
             .setSize(55, 30);
         parentDirButton.getCaptionLabel().align(control.CENTER, control.CENTER);
