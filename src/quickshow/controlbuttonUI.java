@@ -115,42 +115,7 @@ public class controlbuttonUI {
         for(Button button : lockButtons) {
             button.setLock(!visible);
         }
+        
+        shuffleToggle.setLock(!visible);
 	}
-	
-	/**
-	 * 
-	 * 
-	 *
-	public void controlEvent(ControlEvent e, Quickshow q){
-		String srcName = e.getLabel();
-    	switch(srcName){
-    	case "Play": 
-    		break;
-    	case "Share/Export": 
-    		break;
-    	case "Reset":
-    		break;
-    	case "Shuffle Slides": 
-    		break;
-    	case "Clear selected songs": 
-    		break;
-    	case "Select All Pictures": 
-    		break;
-    	case "Select All Clips": 
-    		break;
-    	case "Clear slides": 
-    		break;
-    	case "Next": 
-    		break;
-    	case "Previous": 
-    		break;
-    	case "Load Media":
-    		
-    		q.browse.toggle(true);
-    		toggle(false);
-    	//	q.aT.toggle(false);
-    		q.audioListbox.toggle(false);
-    		break;
-    	}
-	}*/
 }

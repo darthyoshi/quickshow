@@ -36,6 +36,7 @@ public class Quickshow extends PApplet {
 	
 	public void setup() {
 		setSize(900, 600);
+		frameRate(25);
 		
 		control = new ControlP5(this);
         control.setFont(control.getFont().getFont(), 15);
@@ -76,7 +77,7 @@ public class Quickshow extends PApplet {
 	    	//This line is a place holder
 
     	    aT.drawWaveform();
-			thumbnails.drawThumbNails(this);
+			thumbnails.drawThumbNails();
 	    }
 
 	}

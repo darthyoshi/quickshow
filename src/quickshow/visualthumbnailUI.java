@@ -55,7 +55,7 @@ public class visualthumbnailUI {
 	/*
 	 * 
 	 */
-	public void drawThumbNails(Quickshow q){
+	public void drawThumbNails(){
 		if(items != null) {
 		//Iterate through the items to display them as thumbnail
 			scaleFactor = 1.0f;
@@ -73,7 +73,7 @@ public class visualthumbnailUI {
 					}
 					my_new_height = (float) p.height * scaleFactor;
 					my_new_width = (float) p.width * scaleFactor;
-					q.image(p, 80, 80, my_new_height, my_new_width);
+					parent.image(p, 80, 80, my_new_height, my_new_width);
 				}
 			}
 		}
