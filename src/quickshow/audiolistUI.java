@@ -44,7 +44,9 @@ public class audiolistUI {
 		for (int i=0;i<30;i++) {
 			ListBoxItem lbi = list.addItem("empty", i);
 			lbi.setColorBackground(0xffff0000);
+			lbi.setId(i);
 		}
+		
 	}
 	
 	//Class method for audio list
@@ -82,8 +84,9 @@ public class audiolistUI {
 	
 	//Receive the list of songs
 	public void receiveSongs(ArrayList <AudioItem> fileList){
-		songList = fileList;
+		songList.addAll(fileList);
 		
+		System.out.println("Size of fileList: " + fileList.size());
 		//Display the songs on the list
 		for(int i = 0; i < songList.size(); i++){
 			addToList(songList.get(i));
@@ -93,6 +96,7 @@ public class audiolistUI {
 	/*
 	 * Helper functions
 	 */
+	//TODO Make sure to add more songs in the future and update the list
 	//add item to the audio list
 	protected void addToList(AudioItem audio){
 		
@@ -101,12 +105,12 @@ public class audiolistUI {
 		
 		//Generate the Label for the listBoxItem
 		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
-		
+		System.out.println(songDisplay);
 		//Adds the actual song
 		ListBoxItem songToAdd = list.addItem(audio.getTitle(), num_items+1);
 		songToAdd.setText(songDisplay);
 		songToAdd.setColorBackground(0xffff0000);
-		songList.add(audio);
+		//songList.add(audio);
 	}
 
 }

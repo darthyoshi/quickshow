@@ -112,7 +112,7 @@ public class Quickshow extends PApplet {
                             audios.add((AudioItem)item);
                         }
                         
-                        audioListbox.receiveSongs(results);
+                        audioListbox.receiveSongs(audios);
                     }
                     
                     else {
@@ -122,7 +122,7 @@ public class Quickshow extends PApplet {
                             visuals.add((VisualItem)item);
                         }
                         
-                        thumbnails.receiveVisualItems(results);
+                        thumbnails.receiveVisualItems(visuals);
                     }
                     
                 }
@@ -132,12 +132,26 @@ public class Quickshow extends PApplet {
 	         * TODO Need to implement a way to get this interfacing with the classes
 	         */
 	    case "buttonUI":
-	    	
+	    	srcName = theEvent.getLabel();
+	    	println(srcName);
+	    	switch(srcName){
+	    	case "Play": break;
+	    	case "Share/Export": break;
+	    	case "Reset": break;
+	    	case "Shuffle Slides": break;
+	    	case "Clear selected songs": break;
+	    	case "Select All Pictures": break;
+	    	case "Select All Clips": break;
+	    	case "Clear slides": break;
+	    	case "Next": break;
+	    	case "Previous": break;
+	    	case "Load Media": break;
+	    	}
 
 	        break;
 	    case "AudioList":
-	    	srcName = theEvent.getGroup().getParent().getName();
-	    	println(srcName);
+	    	int test = theEvent.getId();
+	    	println(srcName + test);
 	    }
     }
 	 

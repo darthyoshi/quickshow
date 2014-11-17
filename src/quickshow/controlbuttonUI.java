@@ -89,9 +89,5 @@ public class controlbuttonUI {
 		    .setGroup(group);
 	}
 	
-	
-	public void controlEvent(ControlEvent theEvent) {
-		  System.out.println(theEvent.getController().getName());
-		 // n = 0;
-	}
+
 }
