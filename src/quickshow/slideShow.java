@@ -6,47 +6,45 @@ import processing.video.*;
 import quickshow.datatypes.*;
 
 public class slideShow {
-	//MovieMaker show;
-	ArrayList <MediaItem> items;
-	ArrayList <AudioItem> audio;
-	ArrayList <ImageItem> images;
-	ArrayList <MovieItem> movies;
+	Quickshow parent;
+    
+	ArrayList <AudioItem> audios;
+	ArrayList <VisualItem> visuals;
 	
-	public slideShow(ArrayList<MediaItem> listOfItems){
-		//Constructor
-	}
+	boolean isPlaying = false;
 	
-	public void parseMediaItems(){
-		//This will cause Null pointer exception for now because we have not
-		//Instantiated these objects
-		for (int i = 0; i < items.size(); i++){
-			if(items.get(i).checkType().equals("audio")){
-				audio.add((AudioItem) items.get(i));
-			} else if (items.get(i).checkType().equals("image")){
-				images.add((ImageItem) items.get(i));
-			} else if (items.get(i).checkType().equals("video")){
-				
-			}
-			
-		}
-	}
-	
-	public void generateShow(){
+	public slideShow(Quickshow parent) {
+		this.parent = parent;
 		
+		audios = new ArrayList<AudioItem>();
+		visuals = new ArrayList<VisualItem>();
 	}
 	
+	public void addAudio(ArrayList<AudioItem>  newAudio) {
+	    audios.clear();
+	    audios.addAll(newAudio);
+	}
+	
+	public void addVisual(ArrayList<VisualItem>  newVisual) {
+	    visuals.clear();
+        visuals.addAll(newVisual);
+    }
+	
+	public void draw() {
+	    
+	}
 	
 	//For playback functionality
-	public void pause(){
+	public void togglePlayMode(){
+		isPlaying = !isPlaying;
+	}
+	
+	public void stop() {
 		
 	}
 	
-	public void play(){
-		
-	}
-	
-	public void stop(){
-		
+	public boolean isPlaying() {
+	    return isPlaying;
 	}
 	
 	/*

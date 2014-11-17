@@ -31,10 +31,12 @@ public class FileBrowser {
     private boolean isSelecting = false;
     
     private ControlP5 control;
+    private Group group;
     private Button openButton, cancelButton;
     private Button scrollUpButton, scrollDownButton;
     private Button scrollBottomButton, scrollTopButton;
     private Button parentDirButton;
+    private Button[] lockButtons;
     private Textfield pathField;
     private Button pageLabel;
     private DropdownList mediaTypeList;
@@ -98,7 +100,9 @@ public class FileBrowser {
 
         control.setFont(control.getFont().getFont(), 15);
         
-        Group group = control.addGroup("fileBrowser").setLabel("");
+        group = control.addGroup("fileBrowser").setLabel("");
+        
+        lockButtons = new Button[7];
         
         pathField = control.addTextfield("")
             .setText(this.curDir)
@@ -108,8 +112,8 @@ public class FileBrowser {
             .setFocus(false)
             .setVisible(false)
             .setGroup(group);
-            
-        openButton = control.addButton("openButton")
+
+        lockButtons[0] = openButton = control.addButton("openButton")
             .setCaptionLabel("Open")
             .setPosition(750, 540)
             .setSize(55, 30)
@@ -117,8 +121,8 @@ public class FileBrowser {
             .setLock(true)
             .setGroup(group);
         openButton.getCaptionLabel().align(control.CENTER, control.CENTER);
-        
-        cancelButton = control.addButton("cancelButton")
+
+        lockButtons[1] = cancelButton = control.addButton("cancelButton")
             .setCaptionLabel("Cancel")
             .setVisible(false)
             .setLock(true)
@@ -126,8 +130,8 @@ public class FileBrowser {
             .setPosition(815, 540)
             .setGroup(group);
         cancelButton.getCaptionLabel().align(control.CENTER, control.CENTER);
-        
-        scrollUpButton = control.addButton("scrollUpButton")
+
+        lockButtons[2] = scrollUpButton = control.addButton("scrollUpButton")
             .setSize(30, 75)
             .setVisible(false)
             .setLock(true)
@@ -135,8 +139,8 @@ public class FileBrowser {
             .setCaptionLabel("^")
             .setGroup(group);
         scrollUpButton.getCaptionLabel().align(control.CENTER, control.CENTER);
-        
-        scrollTopButton = control.addButton("scrollTopButton")
+
+        lockButtons[3] = scrollTopButton = control.addButton("scrollTopButton")
             .setSize(30, 75)
             .setVisible(false)
             .setLock(true)
@@ -145,7 +149,8 @@ public class FileBrowser {
             .setGroup(group);
         scrollTopButton.getCaptionLabel().align(control.CENTER, control.CENTER);
         
-        scrollDownButton = control.addButton("scrollDownButton")
+        lockButtons[4] = scrollDownButton = control
+            .addButton("scrollDownButton")
             .setSize(30, 75)
             .setVisible(false)
             .setLock(true)
@@ -154,8 +159,9 @@ public class FileBrowser {
             .setGroup(group);
         scrollDownButton.getCaptionLabel()
             .align(control.CENTER, control.CENTER);
-        
-        scrollBottomButton = control.addButton("scrollBottomButton")
+
+        lockButtons[5] = scrollBottomButton = control
+            .addButton("scrollBottomButton")
             .setSize(30, 75)
             .setVisible(false)
             .setLock(true)
@@ -184,8 +190,8 @@ public class FileBrowser {
             .setSize(30, 150)
             .setCaptionLabel("");
         pageLabel.getCaptionLabel().align(control.CENTER, control.TOP);
-        
-        parentDirButton = control.addButton("parentDirButton")
+
+        lockButtons[6] = parentDirButton = control.addButton("parentDirButton")
             .setCaptionLabel("..")
             .setLock(true)
             .setGroup(group)
@@ -825,25 +831,11 @@ public class FileBrowser {
      * @param visible whether the FileBrowser should be visible
      */
     public void toggle(boolean visible) {
-        pathField.setVisible(visible);
-                
-        openButton.setVisible(visible).setLock(!visible);
+        group.setVisible(visible);
         
-        cancelButton.setVisible(visible).setLock(!visible);
-        
-        scrollUpButton.setVisible(visible).setLock(!visible);
-        
-        scrollTopButton.setVisible(visible).setLock(!visible);
-        
-        scrollDownButton.setVisible(visible).setLock(!visible);
-            
-        scrollBottomButton.setVisible(visible).setLock(!visible);
-        
-        mediaTypeList.setVisible(visible);    
-        
-        pageLabel.setVisible(visible);
-        
-        parentDirButton.setVisible(visible).setLock(!visible);
+        for(Button button : lockButtons) {
+            button.setLock(!visible);
+        }
     }
     
     /**
