@@ -26,6 +26,7 @@ public class audioTimeline {
 	public void drawBackgroundCanvas(Quickshow q){
 		q.rectMode(q.CORNER);
 		q.rect(30, 425, timeLineWidth, timeLineHeight);
+		
 	}
 	
 	/*
@@ -118,6 +119,14 @@ public class audioTimeline {
 	 */
 	public void receiveSelectedSongs(ArrayList <AudioItem> songList){
 		selectedSongs = songList;
+	}
+	
+	/*
+	 * 
+	 * 
+	 */
+	public void toggle(boolean onOff){
+		
 	}
 	
 	//private Helper Functions for generation of waveform data

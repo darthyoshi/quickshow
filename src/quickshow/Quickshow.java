@@ -34,7 +34,7 @@ public class Quickshow extends PApplet {
 	
 	//Test variables for debug purposes
 	audioTimeline aT;
-	visualTimeline vT;
+	visualTimeline vTimeline;
 	visualthumbnailUI vThumb;
 	
 	
@@ -50,9 +50,8 @@ public class Quickshow extends PApplet {
 		aT = new audioTimeline(this);
 		aT.generateWaveForm();
 		
-		vT = new visualTimeline();
-		
-		vThumb = new visualthumbnailUI();
+		vTimeline = new visualTimeline();
+		thumbnails = new visualthumbnailUI();
 		//Test purposes delete lines above
 	
 		minim = new Minim(this);
@@ -69,10 +68,15 @@ public class Quickshow extends PApplet {
 	    
 	    else {
 			//Background for the thumbnails
+	    	stroke(0,0,0);
+	    	fill(255,255,255);
 	    	aT.drawBackgroundCanvas(this);
+    	    vTimeline.drawBackgroundCanvas(this);
+    	    thumbnails.drawBackgroundCanvas(this);
+    	    
+	    	//This line is a place holder
     	    aT.drawWaveform(this);
-    	    vT.drawBackgroundCanvas(this);
-    	    vThumb.drawBackgroundCanvas(this);
+    	    
 
 	    }
 
@@ -88,7 +92,6 @@ public class Quickshow extends PApplet {
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 	    String srcName = "";
-	    
 	    if(theEvent.isController()) {
 	        srcName = theEvent.getController().getParent().getName();
 	    }
@@ -97,10 +100,12 @@ public class Quickshow extends PApplet {
 	        srcName = theEvent.getGroup().getParent().getName();
 	    }
 	    
+	    println("in control Event == " + srcName);
+	    
 	    switch(srcName) {
 	    case "fileBrowser":
 	        if(browse.isEnabled()) {
-            browse.controlEvent(theEvent);
+            browse.controlEvent(theEvent, this);
                 
                 if(!browse.isEnabled() && browse.isReady()) {
                     ArrayList<MediaItem> results = browse.getResults();
@@ -128,7 +133,8 @@ public class Quickshow extends PApplet {
                         
                         thumbnails.receiveVisualItems(visuals);
                     }
-                    
+                    cbU.toggle(true);
+                    audioListbox.toggle(true);
                 }
 	        }
 	        break;
@@ -138,32 +144,7 @@ public class Quickshow extends PApplet {
 	    case "buttonUI":
 	    	srcName = theEvent.getLabel();
 	    	println(srcName);
-	    	switch(srcName){
-	    	case "Play": 
-	    		break;
-	    	case "Share/Export": 
-	    		break;
-	    	case "Reset":
-	    		break;
-	    	case "Shuffle Slides": 
-	    		break;
-	    	case "Clear selected songs": 
-	    		break;
-	    	case "Select All Pictures": 
-	    		break;
-	    	case "Select All Clips": 
-	    		break;
-	    	case "Clear slides": 
-	    		break;
-	    	case "Next": 
-	    		break;
-	    	case "Previous": 
-	    		break;
-	    	case "Load Media":
-	    		browse.toggle(true);
-	    		cbU.toggle(false);
-	    		break;
-	    	}
+	    	cbU.controlEvent(theEvent, this);
 	        break;
 	        
 	    case "AudioList":

@@ -93,6 +93,11 @@ public class audiolistUI {
 		}
 	}
 	
+	public void toggle(boolean onOff){
+		list.setVisible(onOff);
+	}
+	
+	
 	/*
 	 * Helper functions
 	 */

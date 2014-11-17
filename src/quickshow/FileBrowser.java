@@ -198,7 +198,7 @@ public class FileBrowser {
      * Callback method for handling ControlP5 UI events.
      * @param e the ControlEvent to handle
      */
-    public void controlEvent(ControlEvent e) {
+    public void controlEvent(ControlEvent e, Quickshow q){
         switch(e.getName()) {
         case "scrollUpButton":
             scrollUpButton();
@@ -226,6 +226,12 @@ public class FileBrowser {
             
         case "cancelButton":
             cancelButton();
+            
+            //For the Main UI
+            q.aT.toggle(true);
+            q.audioListbox.toggle(true);
+            q.cbU.toggle(true);
+            
             break;
             
         case "mediaTypeList":
