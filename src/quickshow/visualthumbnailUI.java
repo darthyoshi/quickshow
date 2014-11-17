@@ -10,15 +10,16 @@ import java.util.ArrayList;
 
 import processing.core.PImage;
 import processing.core.PShape;
-import quickshow.datatypes.ImageItem;
-import quickshow.datatypes.MediaItem;
-import quickshow.datatypes.VisualItem;
+import quickshow.datatypes.*;
 
-import com.jogamp.opengl.util.packrect.Rect;
 
 import controlP5.*;
 
 public class visualthumbnailUI {
+    private Quickshow parent;
+    
+    private ControlP5 control;
+    
 	int num_items;
 	PShape rect1;
 	PImage p;
@@ -28,16 +29,18 @@ public class visualthumbnailUI {
 	final private int width = 620;
 	final private int height = 370;
 	
-	public visualthumbnailUI(){
-		items = new ArrayList<VisualItem>();
-		
+
+	public visualthumbnailUI(Quickshow parent, ControlP5 control){
+	    this.parent = parent;
+	    this.control = control;
+
 	}
 	
 	/*
 	 * 
 	 */
-	public void drawBackgroundCanvas(Quickshow q){
-		q.rect(30, 30, width, height);
+	public void drawBackgroundCanvas(){
+		parent.rect(30, 30, width, height);
 	}
 	
 	/*
@@ -51,7 +54,6 @@ public class visualthumbnailUI {
 					p = ((ImageItem) v).getImage();
 					q.image(p, 50, 50);
 				}
-			
 			}
 		}
 	}
@@ -61,5 +63,9 @@ public class visualthumbnailUI {
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
 		items.addAll(vItems);
+	}
+	
+	public void toggle(boolean visible) {
+	    
 	}
 }

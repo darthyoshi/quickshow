@@ -18,16 +18,14 @@ import java.util.*;
 public class Quickshow extends PApplet {
     boolean debug = true;
     
-	ControlP5 audioList;
+	ControlP5 control;
 	audiolistUI audioListbox;
 	
 	Minim minim;
 	
-	ControlP5 visualThumbnail;
 	visualthumbnailUI thumbnails;
 	ArrayList <AudioItem> audioFiles;
 
-	ControlP5 buttons;
 	controlbuttonUI cbU;
 	FileBrowser browse;
 	slideShow show;
@@ -35,28 +33,28 @@ public class Quickshow extends PApplet {
 	//Test variables for debug purposes
 	audioTimeline aT;
 	visualTimeline vTimeline;
-	visualthumbnailUI vThumb;
-	
 	
 	public void setup() {
 		setSize(900, 600);
-		audioList = new ControlP5(this);
-		audioListbox = new audiolistUI(audioList);
 		
-		buttons = new ControlP5(this);
-		cbU = new controlbuttonUI(buttons);
-		
-		//Test purposes delete/modify this after
-		aT = new audioTimeline(this);
-		aT.generateWaveForm();
-		
-		vTimeline = new visualTimeline();
-		thumbnails = new visualthumbnailUI();
-		//Test purposes delete lines above
-	
+		control = new ControlP5(this);
+        control.setFont(control.getFont().getFont(), 15);
+        
 		minim = new Minim(this);
 		
-		browse = new FileBrowser(this, minim, ".");
+		audioListbox = new audiolistUI(this, control);
+		
+		cbU = new controlbuttonUI(this, control);
+		
+		//Test purposes delete/modify this after
+		aT = new audioTimeline(this, minim);
+		aT.generateWaveForm();
+		
+		vTimeline = new visualTimeline(this);
+		thumbnails = new visualthumbnailUI(this, control);
+		//Test purposes delete/modify lines above
+		
+		browse = new FileBrowser(this, minim, control, ".");
 	}
 
 	public void draw() {
@@ -71,13 +69,15 @@ public class Quickshow extends PApplet {
 	    	stroke(0,0,0);
 	    	fill(90,90,90);
 	    	rectMode(CORNER);
-	    	aT.drawBackgroundCanvas(this);
-    	    vTimeline.drawBackgroundCanvas(this);
-    	    thumbnails.drawBackgroundCanvas(this);
+	    	aT.drawBackgroundCanvas();
+    	    vTimeline.drawBackgroundCanvas();
+    	    thumbnails.drawBackgroundCanvas();
     	    
 	    	//This line is a place holder
-    	    aT.drawWaveform(this);
-    	    thumbnails.drawThumbNails(this);
+
+    	    aT.drawWaveform();
+			thumbnails.drawThumbNails(this);
+
     	    
 	    }
 
@@ -106,46 +106,54 @@ public class Quickshow extends PApplet {
 	    switch(srcName) {
 	    case "fileBrowser":
 	        if(browse.isEnabled()) {
-            browse.controlEvent(theEvent, this);
+	            browse.controlEvent(theEvent);
                 
-                if(!browse.isEnabled() && browse.isReady()) {
-                    ArrayList<MediaItem> results = browse.getResults();
-                    
-                    if(debug) {
-                        println("RESULT SIZE " + results.size());
-                    }
-                    
-                    if(browse.isAudioMode()) {
-                        ArrayList<AudioItem> audios = new ArrayList<AudioItem>();
-                        
-                        for(MediaItem item : results) {
-                            audios.add((AudioItem)item);
-                        }
-                        
-                        audioListbox.receiveSongs(audios);
-                    }
-                    
-                    else {
-                        ArrayList<VisualItem> visuals = new ArrayList<VisualItem>();
-                        
-                        for(MediaItem item : results) {
-                            visuals.add((VisualItem)item);
-                        }
-                        
-                        thumbnails.receiveVisualItems(visuals);
-                    }
-                    cbU.toggle(true);
-                    audioListbox.toggle(true);
+                if(!browse.isEnabled()) {
+                    closeFBActions();
                 }
 	        }
 	        break;
-	        /*
-	         * TODO Need to implement a way to get this interfacing with the classes
-	         */
+	        
 	    case "buttonUI":
-	    	srcName = theEvent.getLabel();
-	    	println(srcName);
-	    	cbU.controlEvent(theEvent, this);
+	        switch(theEvent.getName()){
+	        case "Play": 
+	            break;
+	        
+	        case "Share/Export": 
+	            break;
+	        
+	        case "Reset":
+	            break;
+	        
+	        case "Shuffle Slides": 
+	            break;
+	        
+	        case "Clear selected songs": 
+	            break;
+	        
+	        case "Select All Pictures": 
+	            break;
+	        
+	        case "Select All Clips": 
+	            break;
+	        
+	        case "Clear slides": 
+	            break;
+	        
+	        case "Next": 
+	            break;
+	        
+	        case "Previous": 
+	            break;
+	        
+	        case "Load Media":
+	            browse.toggle(true);
+	            cbU.toggle(false);
+	            aT.toggle(false);
+	            audioListbox.toggle(false);
+	            thumbnails.toggle(false);
+	            break;
+	        }
 	        break;
 	        
 	    case "AudioList":
@@ -157,6 +165,10 @@ public class Quickshow extends PApplet {
 	public void mouseClicked() {
 	    if(browse.isEnabled()) {
 	        browse.mouseClicked(mouseX, mouseY);
+	        
+	        if(!browse.isEnabled()) {
+	            closeFBActions();
+	        }
 	    }
         
     }
@@ -177,6 +189,43 @@ public class Quickshow extends PApplet {
         if(browse.isEnabled()) {
             browse.mousePressed(mouseX, mouseY);
         }
+    }
+    
+    /**
+     * TODO method header
+     */
+    private void closeFBActions() {
+        if(browse.isReady()) {
+            ArrayList<MediaItem> results = browse.getResults();
+            
+            if(debug) {
+                println("RESULT SIZE " + results.size());
+            }
+            
+            if(browse.isAudioMode()) {
+                ArrayList<AudioItem> audios = new ArrayList<AudioItem>();
+                
+                for(MediaItem item : results) {
+                    audios.add((AudioItem)item);
+                }
+                
+                audioListbox.receiveSongs(audios);
+            }
+            
+            else {
+                ArrayList<VisualItem> visuals = new ArrayList<VisualItem>();
+                
+                for(MediaItem item : results) {
+                    visuals.add((VisualItem)item);
+                }
+                
+                thumbnails.receiveVisualItems(visuals);
+            }
+        }
+            
+        cbU.toggle(true);
+        audioListbox.toggle(true);
+        thumbnails.toggle(true);
     }
     
     /**
