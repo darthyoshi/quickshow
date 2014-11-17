@@ -77,6 +77,7 @@ public class Quickshow extends PApplet {
     	    
 	    	//This line is a place holder
     	    aT.drawWaveform(this);
+    	    thumbnails.drawThumbNails(this);
     	    
 	    }
 

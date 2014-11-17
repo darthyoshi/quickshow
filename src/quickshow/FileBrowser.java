@@ -222,6 +222,7 @@ public class FileBrowser {
             
         case "openButton":
             openButton();
+
             break;
             
         case "cancelButton":

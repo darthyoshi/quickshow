@@ -8,7 +8,10 @@ package quickshow;
 
 import java.util.ArrayList;
 
+import processing.core.PImage;
 import processing.core.PShape;
+import quickshow.datatypes.ImageItem;
+import quickshow.datatypes.MediaItem;
 import quickshow.datatypes.VisualItem;
 
 import com.jogamp.opengl.util.packrect.Rect;
@@ -18,6 +21,7 @@ import controlP5.*;
 public class visualthumbnailUI {
 	int num_items;
 	PShape rect1;
+	PImage p;
 	ArrayList <VisualItem> items;
 	ArrayList <VisualItem> selectedItems;
 	
@@ -25,7 +29,7 @@ public class visualthumbnailUI {
 	final private int height = 370;
 	
 	public visualthumbnailUI(){
-
+		items = new ArrayList<VisualItem>();
 		
 	}
 	
@@ -39,11 +43,16 @@ public class visualthumbnailUI {
 	/*
 	 * 
 	 */
-	public void drawThumbNails(){
-		
+	public void drawThumbNails(Quickshow q){
+		if(items != null) {
 		//Iterate through the items to display them as thumbnail
-		for (VisualItem v: items){
+			for (VisualItem v: items){
+				if(v.checkType().equals("image")) {
+					p = ((ImageItem) v).getImage();
+					q.image(p, 50, 50);
+				}
 			
+			}
 		}
 	}
 	

@@ -15,7 +15,7 @@ import quickshow.datatypes.AudioItem;
 public class audiolistUI {
 	//ControlP5 audioList;
 	ListBox list;
-	int num_items;
+	int num_items = 0;
 	private final int width = 200;
 	private final int height = 350;
 	private final int MAX_SONGS = 3;
@@ -41,7 +41,7 @@ public class audiolistUI {
 		songList = new ArrayList<AudioItem>();
 		
 		//Need to find a way to display the list without initializing
-		for (int i=0;i<30;i++) {
+		for (int i=0;i<25;i++) {
 			ListBoxItem lbi = list.addItem("empty", i);
 			lbi.setColorBackground(0xffff0000);
 			lbi.setId(i);
@@ -93,6 +93,9 @@ public class audiolistUI {
 		}
 	}
 	
+	/*
+	 * Toggling visibility
+	 */
 	public void toggle(boolean onOff){
 		list.setVisible(onOff);
 	}
@@ -105,17 +108,24 @@ public class audiolistUI {
 	//add item to the audio list
 	protected void addToList(AudioItem audio){
 		
-		//Removes place holder item
-		list.removeItem("empty");
-		
-		//Generate the Label for the listBoxItem
 		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
-		System.out.println(songDisplay);
+		System.out.println("Song being added " + songDisplay);
+		ListBoxItem songToAdd;
+		
+		if(num_items > 25) {
+			list.addItem(songDisplay, num_items);
+		}
+		else {
+			songToAdd = list.getItem(num_items);
+			songToAdd.setText(songDisplay);
+			//songToAdd.
+		}
+		//Generate the Label for the listBoxItem
 		//Adds the actual song
-		ListBoxItem songToAdd = list.addItem(audio.getTitle(), num_items+1);
-		songToAdd.setText(songDisplay);
-		songToAdd.setColorBackground(0xffff0000);
-		//songList.add(audio);
+		//list.addItem(songDisplay, 0);
+		
+		System.out.println("After adding song");
+		num_items++;
 	}
 
 }
