@@ -7,7 +7,9 @@
 package quickshow;
 
 import controlP5.*;
-import java.util.Vector;
+
+import java.util.ArrayList;
+
 import quickshow.datatypes.AudioItem;
 
 public class audiolistUI {
@@ -19,8 +21,8 @@ public class audiolistUI {
 	final int MAX_SONGS = 3;
 	final String title = "Songs/Audio";
 	//protected String [] selectedSongList;
-	Vector <AudioItem> selectedSongList;
-	Vector <AudioItem> songList;
+	ArrayList <AudioItem> selectedSongList;
+	ArrayList <AudioItem> songList;
 	
 	//Constructors
 	public audiolistUI(ControlP5 audioList){
@@ -35,8 +37,8 @@ public class audiolistUI {
 		list.setGroup(group);
 		
 		//Vectors to store information about the Listbox
-		selectedSongList = new Vector<AudioItem>();
-		songList = new Vector<AudioItem>();
+		selectedSongList = new ArrayList<AudioItem>();
+		songList = new ArrayList<AudioItem>();
 		
 		//Need to find a way to display the list without initializing
 		for (int i=0;i<30;i++) {
@@ -46,22 +48,7 @@ public class audiolistUI {
 	}
 	
 	//Class method for audio list
-	
-	//add item to the audio list
-	public void addToList(AudioItem audio){
-		
-		//Removes place holder item
-		list.removeItem("empty");
-		
-		//Generate the Label for the listBoxItem
-		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
-		
-		//Adds the actual song
-		ListBoxItem songToAdd = list.addItem(audio.getTitle(), num_items+1);
-		songToAdd.setText(songDisplay);
-		songToAdd.setColorBackground(0xffff0000);
-		songList.add(audio);
-	}
+
 	
 	//Future feature to remove songs from the list
 	public void removeFromList(String itemToRemove){
@@ -89,8 +76,32 @@ public class audiolistUI {
 	}
 	
 	//Return the vector with the selected songs
-	public Vector<AudioItem> getSongList(){
+	public ArrayList<AudioItem> sendSongList(){
 		return selectedSongList;
+	}
+	
+	//Receive the list of songs
+	public void receiveSongs(ArrayList <AudioItem> fileList){
+		songList = fileList;
+	}
+	
+	/*
+	 * Helper functions
+	 */
+	//add item to the audio list
+	protected void addToList(AudioItem audio){
+		
+		//Removes place holder item
+		list.removeItem("empty");
+		
+		//Generate the Label for the listBoxItem
+		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
+		
+		//Adds the actual song
+		ListBoxItem songToAdd = list.addItem(audio.getTitle(), num_items+1);
+		songToAdd.setText(songDisplay);
+		songToAdd.setColorBackground(0xffff0000);
+		songList.add(audio);
 	}
 
 }

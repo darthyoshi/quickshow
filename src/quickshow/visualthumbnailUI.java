@@ -6,7 +6,10 @@
 
 package quickshow;
 
+import java.util.ArrayList;
+
 import processing.core.PShape;
+import quickshow.datatypes.VisualItem;
 
 import com.jogamp.opengl.util.packrect.Rect;
 
@@ -15,6 +18,7 @@ import controlP5.*;
 public class visualthumbnailUI {
 	int num_items;
 	PShape rect1;
+	ArrayList <VisualItem> items;
 	
 	final private int width = 620;
 	final private int height = 370;

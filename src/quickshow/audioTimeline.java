@@ -1,7 +1,7 @@
 package quickshow;
 
 import java.util.Arrays;
-import java.util.Vector;
+import java.util.ArrayList;
 import quickshow.datatypes.AudioItem;
 import ddf.minim.*;
 import ddf.minim.analysis.FFT;
@@ -16,7 +16,7 @@ public class audioTimeline {
 	AudioSample audioClip;
 	private final int timeLineWidth = 840;
 	private final int timeLineHeight = 65;
-	Vector <AudioItem> selectedSongs;
+	ArrayList <AudioItem> selectedSongs;
 	
 	
 	public audioTimeline(Quickshow q){
@@ -96,11 +96,12 @@ public class audioTimeline {
 	 * draw the waveforms
 	 */
 	public void drawWaveform(Quickshow q){
-		//float scaleMod = 0.08f; //((float)width / (float)leftSpectra.length);
-		float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
+		int numOfItems = 1;
+		if(selectedSongs != null) numOfItems = selectedSongs.size();
 		
-		  for(int s = 0; s < leftSpectra.length; s++) {
-		    //stroke(255);
+		float scaleMod = ((float) (timeLineWidth/numOfItems) / (float)leftSpectra.length);
+		
+		for(int s = 0; s < leftSpectra.length; s++) {
 		    int i = 0;
 		    float total = 0; 
 		    for(i = 0; i < leftSpectra[s].length-1; i++){
@@ -109,13 +110,13 @@ public class audioTimeline {
 		    total = total / 40;
 		    
 		    q.line((s*scaleMod) + 30,total+460,(s*scaleMod) + 30,-total+460);
-		  }
+		}
 	}
 	
 	/*
 	 * Retrieve the song list
 	 */
-	public void sendSelectedSongs(Vector <AudioItem> songList){
+	public void receiveSelectedSongs(ArrayList <AudioItem> songList){
 		selectedSongs = songList;
 	}
 	
