@@ -179,7 +179,8 @@ public class FileBrowser {
             .setLock(true)
             .setPosition(840, 225)
             .setSize(30, 150)
-            .setCaptionLabel("");
+            .setCaptionLabel("")
+            .setGroup(group);
         pageLabel.getCaptionLabel().align(control.CENTER, control.TOP);
 
         lockButtons[6] = parentDirButton = control.addButton("parentDirButton")

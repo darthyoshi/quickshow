@@ -11,7 +11,7 @@ public class slideShow {
 	ArrayList <AudioItem> audios;
 	ArrayList <VisualItem> visuals;
 	
-	boolean isPlaying = false;
+	boolean isPlaying = false, isActive = false;
 	
 	public slideShow(Quickshow parent) {
 		this.parent = parent;
@@ -31,7 +31,9 @@ public class slideShow {
     }
 	
 	public void draw() {
-	    
+	    if(isPlaying) {
+	        
+	    }
 	}
 	
 	//For playback functionality
@@ -40,13 +42,19 @@ public class slideShow {
 	}
 	
 	public void stop() {
+	    isPlaying = false;
+	    
+	    toggle(false);
 		
 	}
 	
 	public boolean isPlaying() {
 	    return isPlaying;
 	}
-	
+
+	public void toggle(boolean visible) {
+	    
+	}
 	/*
 	 * Add helper functions below here
 	 */
