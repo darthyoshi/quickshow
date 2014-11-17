@@ -36,6 +36,7 @@ public class Quickshow extends PApplet {
 	visualTimeline vT;
 	visualthumbnailUI vThumb;
 	
+	
 	public void setup() {
 		setSize(900, 600);
 		audioList = new ControlP5(this);
@@ -107,6 +108,14 @@ public class Quickshow extends PApplet {
                     //TODO pass results to media player
                 }
 	        }
+	        break;
+	        /*
+	         * TODO Need to implement a way to get this interfacing with the classes
+	         */
+	    case "buttonUI":
+	    	srcName = theEvent.getController().getName();
+	    	println(srcName);
+	    	
             
 	        break;
 	    }
