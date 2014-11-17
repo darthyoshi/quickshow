@@ -50,17 +50,22 @@ public class controlbuttonUI {
 		
 		lockButtons[1] = shareExportButton = buttonUI.addButton("Share/Export")
 	        .setPosition(120, 10)
-	        .setGroup(group);
+	        .setGroup(group)
+	        .setSize(120, 20);
+		shareExportButton.getCaptionLabel().alignX(buttonUI.CENTER);
+		
 		
 		lockButtons[2] = resetShowButton = buttonUI.addButton("Reset")
-	        .setPosition(210, 10)
+	        .setPosition(270, 10)
 	        .setGroup(group);
+	        resetShowButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		shuffleToggle = buttonUI.addToggle("Shuffle Slides")
 	        .setMode(ControlP5.SWITCH)
-	        .setPosition(300, 10)
+	        .setPosition(360, 10)
 	        .setCaptionLabel("Shuffle Slides")
 	        .setGroup(group);
+		shuffleToggle.getCaptionLabel().alignY(buttonUI.RIGHT_OUTSIDE);
 		
 		//For audioList
 		lockButtons[3] = clearSongsButton = buttonUI.addButton("Clear selected songs")

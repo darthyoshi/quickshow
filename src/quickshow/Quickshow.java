@@ -77,8 +77,6 @@ public class Quickshow extends PApplet {
 
     	    aT.drawWaveform();
 			thumbnails.drawThumbNails(this);
-
-    	    
 	    }
 
 	}

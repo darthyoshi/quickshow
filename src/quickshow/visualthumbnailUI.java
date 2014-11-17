@@ -26,14 +26,23 @@ public class visualthumbnailUI {
 	ArrayList <VisualItem> items;
 	ArrayList <VisualItem> selectedItems;
 	
+	private final int MAX_THUMBNAIL_HEIGHT = 124;
+	private final int MAX_THUMBNAIL_WIDTH = 123;
 	final private int width = 620;
 	final private int height = 370;
+	
+	private float my_new_height;
+	private float my_new_width;
+	private int xPlacementCounter;
+	private int yPlacementCounter;
+	private float scaleFactor = 1.0f;
 	
 
 	public visualthumbnailUI(Quickshow parent, ControlP5 control){
 	    this.parent = parent;
 	    this.control = control;
-
+	    items = new ArrayList<VisualItem>();
+	    selectedItems = new ArrayList<VisualItem>();
 	}
 	
 	/*
@@ -49,10 +58,22 @@ public class visualthumbnailUI {
 	public void drawThumbNails(Quickshow q){
 		if(items != null) {
 		//Iterate through the items to display them as thumbnail
+			scaleFactor = 1.0f;
 			for (VisualItem v: items){
 				if(v.checkType().equals("image")) {
 					p = ((ImageItem) v).getImage();
-					q.image(p, 50, 50);
+					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
+						if(p.height > p.width){
+							scaleFactor = (float) MAX_THUMBNAIL_HEIGHT/ (float) p.height;
+						}
+						else {
+							scaleFactor = (float) MAX_THUMBNAIL_WIDTH/ (float) p.width;
+						}
+						
+					}
+					my_new_height = (float) p.height * scaleFactor;
+					my_new_width = (float) p.width * scaleFactor;
+					q.image(p, 80, 80, my_new_height, my_new_width);
 				}
 			}
 		}
