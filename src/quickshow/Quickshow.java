@@ -83,24 +83,32 @@ public class Quickshow extends PApplet {
 	 * @param theEvent the initiating ControlEvent
 	 */
 	public void controlEvent(ControlEvent theEvent) {
-	    if(
-            browse.isEnabled() &&
-            (theEvent.isController() &&
-            theEvent.getController().getParent().getName()
-                .equals("fileBrowser")) || 
-            (theEvent.isGroup() &&
-            theEvent.getGroup().getParent().getName().equals("fileBrowser"))
-        ) {
+	    String srcName = "";
+	    
+	    if(theEvent.isController()) {
+	        srcName = theEvent.getController().getParent().getName();
+	    }
+	    
+	    else if (theEvent.isGroup()) {
+	        srcName = theEvent.getGroup().getParent().getName();
+	    }
+	    
+	    switch(srcName) {
+	    case "fileBrowser":
+	        if(browse.isEnabled()) {
             browse.controlEvent(theEvent);
                 
-            if(!browse.isEnabled() && browse.isReady()) {
-                ArrayList<MediaItem> results = browse.getResults();
-                
-                if(debug) {
-                    println(results.size());
+                if(!browse.isEnabled() && browse.isReady()) {
+                    ArrayList<MediaItem> results = browse.getResults();
+                    
+                    if(debug) {
+                        println(results.size());
+                    }
+                    //TODO pass results to media player
                 }
-                //TODO pass results to media player
-            }
+	        }
+            
+	        break;
 	    }
     }
 	 
