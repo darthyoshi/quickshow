@@ -24,6 +24,8 @@ public class audioTimeline {
 	    parent = q;
 
 	    audiotest = minim;
+	    
+	    selectedSongs = new ArrayList<AudioItem>();
 	}
 	
 	public void drawBackgroundCanvas(){
@@ -40,7 +42,7 @@ public class audioTimeline {
 	//public void generateWaveForm(Vector ){
 	public void generateWaveForm(){	
 		//For debugging purposes
-		audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
+		//audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
 		//audiotest.load
 		if(selectedSongs.size() == 0) return;
 		
@@ -105,6 +107,7 @@ public class audioTimeline {
 	 */
 	public void drawWaveform(){
 		int numOfItems = 1;
+		if(selectedSongs.size() == 0) return;
 		if(selectedSongs != null) numOfItems = selectedSongs.size();
 		
 		float scaleMod = ((float) (timeLineWidth/numOfItems) / (float)leftSpectra.length);

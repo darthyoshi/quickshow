@@ -75,7 +75,7 @@ public class Quickshow extends PApplet {
     	    thumbnails.drawBackgroundCanvas();
     	    
 	    	//This line is a place holder
-
+    	    aT.generateWaveForm();
     	    aT.drawWaveform();
 			thumbnails.drawThumbNails();
 	    }
@@ -128,6 +128,7 @@ public class Quickshow extends PApplet {
 	            break;
 	        
 	        case "Clear selected songs": 
+	        	audioListbox.clearSelectedSongs();
 	            break;
 	        
 	        case "Select All Pictures": 
