@@ -6,8 +6,9 @@
 
 package quickshow;
 
-import java.util.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.File;
 
 import processing.core.*;
 import processing.video.*;
@@ -458,7 +459,7 @@ public class FileBrowser {
 
         File file = new File(curDir);
         
-        ArrayList<File> files = new ArrayList(Arrays.asList(file.listFiles()));
+        ArrayList<File> files = new ArrayList(java.util.Arrays.asList(file.listFiles()));
         Iterator<File> fileIter = files.iterator();
         
         String fileName, filePath;
@@ -505,7 +506,7 @@ public class FileBrowser {
 
         //list image/video files
         else {
-             fileIter = files.iterator();
+            fileIter = files.iterator();
             while(fileIter.hasNext()) { 
                 fileName = fileIter.next().getName();
                 fileNameParts = fileName.split("\\.");
@@ -872,5 +873,13 @@ public class FileBrowser {
      */
     public boolean isReady() {
         return !results.isEmpty();
+    }
+    
+    /**
+     * Checks the file type being scanned for.
+     * @return true if the FIleBrowser is scanning for audio files 
+     */
+    public boolean isAudioMode() {
+        return isAudioMode;
     }
 }

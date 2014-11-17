@@ -30,6 +30,7 @@ public class Quickshow extends PApplet {
 	ControlP5 buttons;
 	controlbuttonUI cbU;
 	FileBrowser browse;
+	slideShow show;
 	
 	//Test variables for debug purposes
 	audioTimeline aT;
@@ -44,7 +45,6 @@ public class Quickshow extends PApplet {
 		
 		buttons = new ControlP5(this);
 		cbU = new controlbuttonUI(buttons);
-		
 		
 		//Test purposes delete/modify this after
 		aT = new audioTimeline(this);
@@ -104,7 +104,27 @@ public class Quickshow extends PApplet {
                     if(debug) {
                         println(results.size());
                     }
-                    //TODO pass results to media player
+                    
+                    if(browse.isAudioMode()) {
+                        ArrayList<AudioItem> audios = new ArrayList<AudioItem>();
+                        
+                        for(MediaItem item : results) {
+                            audios.add((AudioItem)item);
+                        }
+                        
+                        audioListbox.receiveSongs(results);
+                    }
+                    
+                    else {
+                        ArrayList<VisualItem> visuals = new ArrayList<VisualItem>();
+                        
+                        for(MediaItem item : results) {
+                            visuals.add((VisualItem)item);
+                        }
+                        
+                        thumbnails.receiveVisualItems(results);
+                    }
+                    
                 }
 	        }
 	        break;
@@ -112,8 +132,8 @@ public class Quickshow extends PApplet {
 	         * TODO Need to implement a way to get this interfacing with the classes
 	         */
 	    case "buttonUI":
-	    	srcName = theEvent.getController().getName();
-	    	println(srcName);
+	    	
+
 	        break;
 	    case "AudioList":
 	    	srcName = theEvent.getGroup().getParent().getName();
