@@ -157,7 +157,11 @@ public class Quickshow extends PApplet {
 	        
 	    case "AudioList":
 	    	int test = theEvent.getId();
-	    	println(srcName + test);
+	    	float value = theEvent.getGroup().getValue();
+	    	String testStr = theEvent.getGroup().getAddress();
+	    	println(srcName + test + testStr+value);
+	    	audioListbox.addToSelectedSongs((int) value);
+	    	aT.receiveSelectedSongs(audioListbox.sendSongList());
 	    }
     }
 	 

@@ -27,6 +27,8 @@ public class audiolistUI {
 	//protected String [] selectedSongList;
 	ArrayList <AudioItem> selectedSongList;
 	ArrayList <AudioItem> songList;
+
+	private int oldListSize;
 	
 	//Constructors
 	public audiolistUI(Quickshow parent, ControlP5 audioList){
@@ -52,6 +54,7 @@ public class audiolistUI {
 			lbi = list.addItem("empty", i);
 			lbi.setColorBackground(0xffff0000);
 			lbi.setId(i);
+			lbi.setText("Empty");
 		}
 		
 	}
@@ -75,8 +78,15 @@ public class audiolistUI {
 	}
 	
 	//Add the song to selected song list
-	public void addToSelectedSongs(AudioItem selectedSong){
-		if(MAX_SONGS > selectedSongList.size()) selectedSongList.add(selectedSong);
+	public void addToSelectedSongs(int index){
+		AudioItem selectedSong;
+		if(MAX_SONGS > selectedSongList.size() && num_items > 0 && index < num_items){
+			
+			selectedSong = songList.get(index);
+			
+			selectedSongList.add(selectedSong);
+			System.out.println("Added to selected song list: " + selectedSong.getAuthor() + " - " + selectedSong.getTitle());
+		}
 	}
 	
 	//Check if song is selected
@@ -91,13 +101,15 @@ public class audiolistUI {
 	
 	//Receive the list of songs
 	public void receiveSongs(ArrayList <AudioItem> fileList){
+		//songList.clear();
 		songList.addAll(fileList);
 		
 		System.out.println("Size of fileList: " + fileList.size());
 		//Display the songs on the list
-		for(int i = 0; i < songList.size(); i++){
+		for(int i = oldListSize; i < songList.size(); i++){
 			addToList(songList.get(i));
 		}
+		oldListSize = songList.size();
 	}
 	
 

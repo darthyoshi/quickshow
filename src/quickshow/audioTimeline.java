@@ -42,6 +42,10 @@ public class audioTimeline {
 		//For debugging purposes
 		audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
 		//audiotest.load
+		if(selectedSongs.size() == 0) return;
+		
+		//Will have to generate for all songs, but choose at index 0 for now
+		audioClip = selectedSongs.get(0).getAudioSample();
 		
 		float leftChannel[];
 		float leftSample[];
