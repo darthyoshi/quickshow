@@ -20,7 +20,6 @@ public class visualTimeline {
 	 * Drawing a simple background canvas
 	 */
 	public void drawBackgroundCanvas(Quickshow q){
-		q.rectMode(q.CORNER);
 		q.rect(30, 500, timeLineWidth, timeLineHeight);
 	}
 	

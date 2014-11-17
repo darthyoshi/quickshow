@@ -57,29 +57,29 @@ public class controlbuttonUI {
 		
 		//For audioList
 		lockButtons[3] = clearSongsButton = buttonUI.addButton("Clear selected songs")
-	        .setPosition(675, 400)
+	        .setPosition(675, 402)
 	        .setSize(193, 15)
 	        .setGroup(group);
 		
 		//For the Thumbnail selector
 		lockButtons[4] = selectAllImages = buttonUI.addButton("Select All Pictures")
-		    .setPosition(200, 400)
+		    .setPosition(200, 402)
 		    .setSize(150,15)
 		    .setGroup(group);
 		
 		lockButtons[5] = selectAllVideos = buttonUI.addButton("Select All Clips")
-		    .setPosition(370, 400)
+		    .setPosition(370, 402)
 		    .setSize(150, 15)
 		    .setGroup(group);
 		
 		lockButtons[6] = clearVisualTimeline = buttonUI.addButton("Clear slides")
-		    .setPosition(30, 400)
+		    .setPosition(30, 402)
 		    .setSize(150,15)
 		    .setGroup(group);
 		
 		//To control the visual timeline thumbnail
 		lockButtons[7] = nextSlides = buttonUI.addButton("Next")
-		    .setPosition(805, 570)
+		    .setPosition(802, 570)
 		    .setGroup(group);
 		
 		lockButtons[8] = prevSlides = buttonUI.addButton("Previous")

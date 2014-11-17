@@ -60,7 +60,7 @@ public class Quickshow extends PApplet {
 	}
 
 	public void draw() {
-	    background(0xaaaaaa);
+	    background(38, 38, 38);
 	    
 	    if(browse.isEnabled()) {
 	        browse.draw();
@@ -69,7 +69,8 @@ public class Quickshow extends PApplet {
 	    else {
 			//Background for the thumbnails
 	    	stroke(0,0,0);
-	    	fill(255,255,255);
+	    	fill(90,90,90);
+	    	rectMode(CORNER);
 	    	aT.drawBackgroundCanvas(this);
     	    vTimeline.drawBackgroundCanvas(this);
     	    thumbnails.drawBackgroundCanvas(this);
@@ -77,7 +78,6 @@ public class Quickshow extends PApplet {
 	    	//This line is a place holder
     	    aT.drawWaveform(this);
     	    
-
 	    }
 
 	}
@@ -111,7 +111,7 @@ public class Quickshow extends PApplet {
                     ArrayList<MediaItem> results = browse.getResults();
                     
                     if(debug) {
-                        println(results.size());
+                        println("RESULT SIZE " + results.size());
                     }
                     
                     if(browse.isAudioMode()) {
