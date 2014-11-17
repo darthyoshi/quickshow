@@ -1,11 +1,12 @@
 package quickshow;
 
 import java.util.ArrayList;
+
 import processing.video.*;
 import quickshow.datatypes.MediaItem;
 
 public class slideShow {
-	MovieMaker show;
+	//MovieMaker show;
 	ArrayList <MediaItem> items;
 	
 	public slideShow(ArrayList<MediaItem> listOfItems){

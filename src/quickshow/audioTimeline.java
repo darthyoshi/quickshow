@@ -24,6 +24,7 @@ public class audioTimeline {
 	}
 	
 	public void drawBackgroundCanvas(Quickshow q){
+		q.rectMode(q.CORNER);
 		q.rect(30, 425, timeLineWidth, timeLineHeight);
 	}
 	

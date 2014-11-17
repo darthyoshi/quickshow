@@ -1,6 +1,8 @@
 package quickshow;
 
 import controlP5.Button;
+import controlP5.ControlEvent;
+import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.Toggle;
 
@@ -17,13 +19,20 @@ public class controlbuttonUI {
 	Button prevSlides;
 	Button loadMedia;
 	
+	ControlEvent events;
+	ControlListener l;
+	
 	/*
 	 * TODO make sure to get interactivity
 	 */
 	public controlbuttonUI(ControlP5 buttonUI){
 		//For the entire slideshow
+		
+		buttonUI.addListener(l);
 		playButton = buttonUI.addButton("Play");
 		playButton.setPosition(30, 10);
+		playButton.getCaptionLabel().alignX(buttonUI.CENTER);
+		playButton.addListener(l);
 		
 		
 		shareExportButton = buttonUI.addButton("Share/Export");
@@ -71,7 +80,8 @@ public class controlbuttonUI {
 	}
 	
 	
-	public void didLoadMediaClick(){
-		
+	public void controlEvent(ControlEvent theEvent) {
+		  System.out.println(theEvent.getController().getName());
+		 // n = 0;
 	}
 }

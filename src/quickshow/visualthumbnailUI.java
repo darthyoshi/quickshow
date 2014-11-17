@@ -25,6 +25,7 @@ public class visualthumbnailUI {
 	}
 	
 	public void drawBackgroundCanvas(Quickshow q){
+		q.rectMode(q.CORNER);
 		q.rect(30, 30, width, height);
 	}
 }

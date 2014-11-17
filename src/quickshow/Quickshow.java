@@ -28,17 +28,17 @@ public class Quickshow extends PApplet {
 	ArrayList <AudioItem> audioFiles;
 
 	ControlP5 buttons;
-//	controlbuttonUI cbU;
+	controlbuttonUI cbU;
 	FileBrowser browse;
 	
 	//Test variables for debug purposes
-/*	audioTimeline aT;
+	audioTimeline aT;
 	visualTimeline vT;
 	visualthumbnailUI vThumb;
-	*/
+	
 	public void setup() {
 		setSize(900, 600);
-/*		audioList = new ControlP5(this);
+		audioList = new ControlP5(this);
 		audioListbox = new audiolistUI(audioList);
 		
 		buttons = new ControlP5(this);
@@ -53,7 +53,7 @@ public class Quickshow extends PApplet {
 		
 		vThumb = new visualthumbnailUI();
 		//Test purposes delete lines above
-*/	
+	
 		minim = new Minim(this);
 		
 		browse = new FileBrowser(this, minim, ".");
@@ -69,11 +69,11 @@ public class Quickshow extends PApplet {
 	    
 	    else {
 			//Background for the thumbnails
-/*    	    aT.drawBackgroundCanvas(this);
+	    	aT.drawBackgroundCanvas(this);
     	    aT.drawWaveform(this);
     	    vT.drawBackgroundCanvas(this);
     	    vThumb.drawBackgroundCanvas(this);
-*/
+
 	    }
 
 	}
