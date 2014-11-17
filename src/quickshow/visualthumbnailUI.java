@@ -32,4 +32,12 @@ public class visualthumbnailUI {
 		q.rectMode(q.CORNER);
 		q.rect(30, 30, width, height);
 	}
+	
+	public void drawThumbNails(){
+		
+	}
+	
+	public void receiveVisualItems(ArrayList <VisualItem> vItems){
+		items = vItems;
+	}
 }

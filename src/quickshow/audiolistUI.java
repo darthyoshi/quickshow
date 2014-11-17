@@ -16,10 +16,10 @@ public class audiolistUI {
 	//ControlP5 audioList;
 	ListBox list;
 	int num_items;
-	final int width = 200;
-	final int height = 350;
-	final int MAX_SONGS = 3;
-	final String title = "Songs/Audio";
+	private final int width = 200;
+	private final int height = 350;
+	private final int MAX_SONGS = 3;
+	private final String title = "Songs/Audio";
 	//protected String [] selectedSongList;
 	ArrayList <AudioItem> selectedSongList;
 	ArrayList <AudioItem> songList;
@@ -67,7 +67,7 @@ public class audiolistUI {
 	
 	//Add the song to selected song list
 	public void addToSelectedSongs(AudioItem selectedSong){
-		selectedSongList.add(selectedSong);
+		if(MAX_SONGS > selectedSongList.size()) selectedSongList.add(selectedSong);
 	}
 	
 	//Check if song is selected
@@ -83,6 +83,11 @@ public class audiolistUI {
 	//Receive the list of songs
 	public void receiveSongs(ArrayList <AudioItem> fileList){
 		songList = fileList;
+		
+		//Display the songs on the list
+		for(int i = 0; i < songList.size(); i++){
+			addToList(songList.get(i));
+		}
 	}
 	
 	/*

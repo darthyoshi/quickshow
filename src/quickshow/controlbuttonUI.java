@@ -30,7 +30,6 @@ public class controlbuttonUI {
 		Group group = buttonUI.addGroup("buttonUI").setLabel("");
 		
 		//For the entire slideshow
-		//buttonUI.addListener(l);
 		playButton = buttonUI.addButton("Play");
 		playButton.setPosition(30, 10);
 		playButton.getCaptionLabel().alignX(buttonUI.CENTER);
