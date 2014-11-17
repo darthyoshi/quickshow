@@ -115,9 +115,10 @@ public class Quickshow extends PApplet {
 	    case "buttonUI":
 	    	srcName = theEvent.getController().getName();
 	    	println(srcName);
-	    	
-            
 	        break;
+	    case "AudioList":
+	    	srcName = theEvent.getGroup().getParent().getName();
+	    	println(srcName);
 	    }
     }
 	 

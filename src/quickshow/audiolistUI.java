@@ -24,12 +24,15 @@ public class audiolistUI {
 	
 	//Constructors
 	public audiolistUI(ControlP5 audioList){
+		
+		Group group = audioList.addGroup("AudioList").setLabel("");
 		audioList.setFont(audioList.getFont().getFont(), 15);
 		list = audioList.addListBox(title);
 		list.setSize(width, height);
 		list.setPosition(675, 50);
 		list.disableCollapse();
 		list.setBarHeight(18);
+		list.setGroup(group);
 		
 		//Vectors to store information about the Listbox
 		selectedSongList = new Vector<AudioItem>();
