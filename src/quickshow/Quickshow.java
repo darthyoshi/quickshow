@@ -78,6 +78,10 @@ public class Quickshow extends PApplet {
 
 	}
 	
+	public void update(){
+		
+	}
+	
 	/**
 	 * Callback method for handling ControlP5 UI events.
 	 * @param theEvent the initiating ControlEvent
@@ -135,20 +139,33 @@ public class Quickshow extends PApplet {
 	    	srcName = theEvent.getLabel();
 	    	println(srcName);
 	    	switch(srcName){
-	    	case "Play": break;
-	    	case "Share/Export": break;
-	    	case "Reset": break;
-	    	case "Shuffle Slides": break;
-	    	case "Clear selected songs": break;
-	    	case "Select All Pictures": break;
-	    	case "Select All Clips": break;
-	    	case "Clear slides": break;
-	    	case "Next": break;
-	    	case "Previous": break;
-	    	case "Load Media": break;
+	    	case "Play": 
+	    		break;
+	    	case "Share/Export": 
+	    		break;
+	    	case "Reset":
+	    		break;
+	    	case "Shuffle Slides": 
+	    		break;
+	    	case "Clear selected songs": 
+	    		break;
+	    	case "Select All Pictures": 
+	    		break;
+	    	case "Select All Clips": 
+	    		break;
+	    	case "Clear slides": 
+	    		break;
+	    	case "Next": 
+	    		break;
+	    	case "Previous": 
+	    		break;
+	    	case "Load Media":
+	    		browse.toggle(true);
+	    		cbU.toggle(false);
+	    		break;
 	    	}
-
 	        break;
+	        
 	    case "AudioList":
 	    	int test = theEvent.getId();
 	    	println(srcName + test);
