@@ -58,7 +58,6 @@ public class Quickshow extends PApplet {
 		minim = new Minim(this);
 		
 		browse = new FileBrowser(this, minim, ".");
-		browse.toggle(true);
 	}
 
 	public void draw() {

@@ -36,7 +36,6 @@ public class controlbuttonUI {
 		playButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		playButton.setGroup(group);
 		
-		
 		shareExportButton = buttonUI.addButton("Share/Export");
 		shareExportButton.setPosition(120, 10);
 		shareExportButton.setGroup(group);

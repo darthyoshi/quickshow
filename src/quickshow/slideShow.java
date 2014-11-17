@@ -8,6 +8,7 @@ import quickshow.datatypes.MediaItem;
 public class slideShow {
 	//MovieMaker show;
 	ArrayList <MediaItem> items;
+	ArrayList <MediaItem> audio;
 	
 	public slideShow(ArrayList<MediaItem> listOfItems){
 		//Constructor
