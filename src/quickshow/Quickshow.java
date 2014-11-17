@@ -128,4 +128,12 @@ public class Quickshow extends PApplet {
             browse.mousePressed(mouseX, mouseY);
         }
     }
+    
+    /**
+     * Main method for executing Quickshow as a Java application. 
+     * @param args command line arguments
+     */
+    public static void main(String[] args) {
+        PApplet.main(new String[] { "--present", "Quickshow" });
+    }
 }
