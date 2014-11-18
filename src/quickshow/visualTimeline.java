@@ -40,10 +40,12 @@ public class visualTimeline {
 			//System.out.println("No items in  selected visual items");
 			return;
 		}
+		
+		//TODO needs to be modified to handle multiple images
 		for(VisualItem v: itemsForDisplay){
 			if( v.checkType().equals("image")){
 				image = ((ImageItem) v).getImage();
-				parent.image(image, 70, 500, 65 ,65);
+				parent.image(image, 50, 540, 65 , 65);
 			}
 			
 		}
