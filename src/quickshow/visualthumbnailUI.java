@@ -94,10 +94,19 @@ public class visualthumbnailUI {
 	public void selectImage(int x, int y){
 		System.out.println("X: " + x + " Y: " + y);
 		
-		//Only do it for one image
-		if(x < (lowXBound + 124) && y < (lowYBound + 124)){
-			selectedItems.add(items.get(0));
-			System.out.println("Added image: " + selectedItems.get(0).checkType());
+		int xValue = x - lowXBound;
+		int yValue = y - lowYBound;
+		
+		int xIndex = xValue/124;
+		int yIndex = yValue/123;
+		int mainIndex = yIndex * 5 + xIndex;
+		System.out.println("Grid coord x: " + xIndex + " y: " + yIndex);
+		System.out.println("Selecting image: " + mainIndex);
+		
+//		//Only do it for one image
+		if(mainIndex < selectedItems.size()){
+			selectedItems.add(items.get(mainIndex));
+			System.out.println("Added image: " + selectedItems.get(mainIndex).checkType());
 		}
 	}
 	
