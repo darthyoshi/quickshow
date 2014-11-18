@@ -126,9 +126,12 @@ public class Quickshow extends PApplet {
 	        
 	    case "buttonUI":
 	        switch(theEvent.getName()){
-	        case "Play": 
+	        case "Play":
+	            toggleMain(false);
+	            
+	            show.addAudio(audioListbox.sendSongList());
+	            show.addVisual(thumbnails.getVisualItems());
 	        	show.startPlaying();
-	        	
 	        	
 	            break;
 	        
@@ -162,9 +165,7 @@ public class Quickshow extends PApplet {
 	        
 	        case "Load Media":
 	            browse.toggle(true);
-	            cbU.toggle(false);
-	            aT.toggle(false);
-	            audioListbox.toggle(false);
+	            toggleMain(false);
 	            break;
 	        }
 	        break;
@@ -245,9 +246,18 @@ public class Quickshow extends PApplet {
                 thumbnails.receiveVisualItems(visuals);
             }
         }
-            
-        cbU.toggle(true);
-        audioListbox.toggle(true);
+
+        toggleMain(true);
+    }
+
+    /**
+     * 
+     * @param visible
+     */
+    public void toggleMain(boolean visible) {
+        cbU.toggle(visible);
+        aT.toggle(visible);
+        audioListbox.toggle(visible);
     }
     
     /**

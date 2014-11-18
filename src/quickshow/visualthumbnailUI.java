@@ -104,4 +104,12 @@ public class visualthumbnailUI {
 	public ArrayList<VisualItem> returnSelectedItems(){
 		return selectedItems;
 	}
+	
+	/**
+	 * TODO for demo - retrieves all visualItems
+	 * @return
+	 */
+	public ArrayList<VisualItem> getVisualItems() {
+	    return items;
+	}
 }
