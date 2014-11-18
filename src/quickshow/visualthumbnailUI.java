@@ -82,4 +82,18 @@ public class visualthumbnailUI {
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
 		items.addAll(vItems);
 	}
+	
+	public void selectImage(int x, int y){
+		System.out.println("X: " + x + " Y: " + y);
+		
+		//Only do it for one image
+		if(x < (34 + 124) && y < (37 + 124)){
+			selectedItems.add(items.get(0));
+			System.out.println("Added image: " + selectedItems.get(0).checkType());
+		}
+	}
+	
+	public ArrayList<VisualItem> returnSelectedItems(){
+		return selectedItems;
+	}
 }

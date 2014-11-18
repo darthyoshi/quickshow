@@ -181,6 +181,12 @@ public class Quickshow extends PApplet {
 	            closeFBActions();
 	        }
 	    }
+	    else {
+	    	if(mouseX > 34 && mouseX < 648 && mouseY > 37 && mouseY < 400){
+	    		thumbnails.selectImage(mouseX, mouseY);
+	    	}
+	    	
+	    }
         
     }
     
