@@ -9,12 +9,15 @@ public class visualTimeline {
 	private final int timeLineHeight = 65;
 	Vector <VisualItem> itemsForDisplay;
     private Quickshow parent;
+    private boolean debug;
 	
 	/*
 	 * Empty Constructor need to some how do something
 	 */
 	public visualTimeline(Quickshow parent){
 		this.parent = parent;
+		
+		debug = parent.getDebugFlag();
 	}
 	
 	/*
