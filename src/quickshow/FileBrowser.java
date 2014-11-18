@@ -30,7 +30,7 @@ public class FileBrowser {
     private int[] selectBox = {0, 0, 0, 0};
     private boolean isSelecting = false;
     
-    private long clickInterval;
+    private long clickTime;
     private boolean dblClick = false;
     
     private ControlP5 control;
@@ -433,8 +433,10 @@ public class FileBrowser {
                     fileName = fileName.substring(0, 14) + "..";
                 }
                 
+                parent.fill(0xffffffff);
                 parent.text(fileName, 111 + j*162, 165 + i*115);
                 
+                parent.noFill();
                 if(!selectedIndex.isEmpty() && 
                     selectedIndex.contains((int)imgIndex)) 
                 {
@@ -534,13 +536,32 @@ public class FileBrowser {
                 
                 //if item wasn't image, it is video
                 if(i == imgExt.length) {
+                    Movie movie;
+                    
                     //create thumbnail of 1st frame of video
                     for(i = 0; i < videoExt.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(videoExt[i]))
                         {
-                            thumb = (new Movie(parent, filePath)).get();
-                            thumb.resize(thumbWidth, thumbHeight);
+                            thumb = parent.createImage(thumbWidth, thumbHeight, parent.RGB);
+                            movie = new Movie(parent, filePath);
+                            movie.play();
+                            
+                            //while(!movie.available());
+                            if(movie.available()) {
+                                if(debug) {
+                                    parent.println("getting 1st movie frame");
+                                }
+                                movie.read();
+                                thumb.copy(movie, 0, 0, movie.width, movie.height, 0, 0, thumbWidth, thumbHeight);
+                                movie.stop();
+                            }
+                            
+                            else {
+                                if(debug) {
+                                    parent.println("could not get 1st movie frame!");
+                                }
+                            }
                             thumbs.add(thumb);
                
                             fileNames.add(fileName);
@@ -557,9 +578,19 @@ public class FileBrowser {
         
         selectedIndex.clear();
         
+        if(dblClick) {
+            if(System.currentTimeMillis() - clickTime > 500) {
+                dblClick = false;
+            }
+        }
+        
         if(debug) {
             parent.println("#items in directory: " + thumbs.size());
         }
+    }
+    
+    public void movieEvent(Movie m) {
+        parent.println(m.filename);
     }
     
     /**
@@ -567,8 +598,10 @@ public class FileBrowser {
      */
     private void loadAudio() {
         for(Integer index : selectedIndex) {
-            results.add(new AudioItem(minim,
-                curDir + '/' + fileNames.get(curDisplayIndex + index)));
+            if(curDisplayIndex + index < thumbs.size()) {
+                results.add(new AudioItem(minim,
+                    curDir + '/' + fileNames.get(curDisplayIndex + index)));
+            }
         }
     }
     
@@ -580,23 +613,25 @@ public class FileBrowser {
         String fileName;
         short i;
         for(Integer index : selectedIndex) {
-            fileName = fileNames.get(curDisplayIndex + index);
-            fileNameParts = fileName.split("\\.");
-            
-            //file is image
-            for(i = 0; i < imgExt.length; i++) {
-                if(fileNameParts[fileNameParts.length-1]
-                    .equalsIgnoreCase(imgExt[i]))
-                {
-                    results.add(new ImageItem(parent, curDir + '/' + fileName));
-
-                    break;
+            if(curDisplayIndex + index < thumbs.size()) {
+                fileName = fileNames.get(curDisplayIndex + index);
+                fileNameParts = fileName.split("\\.");
+                
+                //file is image
+                for(i = 0; i < imgExt.length; i++) {
+                    if(fileNameParts[fileNameParts.length-1]
+                        .equalsIgnoreCase(imgExt[i]))
+                    {
+                        results.add(new ImageItem(parent, curDir + '/' + fileName));
+    
+                        break;
+                    }
                 }
-            }
-            
-            //file is video
-            if(i == imgExt.length) {
-                results.add(new MovieItem(parent, curDir + '/' + fileName));
+                
+                //file is video
+                if(i == imgExt.length) {
+                    results.add(new MovieItem(parent, curDir + '/' + fileName));
+                }
             }
         }
     }
@@ -678,13 +713,15 @@ public class FileBrowser {
             if(!dblClick) {
                 dblClick = true;
                 
-                clickInterval = System.currentTimeMillis();
+                clickTime = System.currentTimeMillis();
             }
             
-            else if(System.currentTimeMillis() - clickInterval < 500) {
+            else {
                 dblClick = false;
                 
-                openButton();
+                if(System.currentTimeMillis() - clickTime < 500) {
+                    openButton();
+                }
             }
                     
             if(debug) {
@@ -762,58 +799,61 @@ public class FileBrowser {
      * @param mouseY the y-coordinate of the mouse
      */
     public void mouseReleased(int mouseX, int mouseY) {
-        isSelecting = false;
-        
-        int minSelX = (selectBox[0] > selectBox[2] ?
-            selectBox[2] : selectBox[0]);
-        int maxSelX = (selectBox[0] < selectBox[2] ? 
-            selectBox[2] : selectBox[0]);
-        int minSelY = (selectBox[1] > selectBox[3] ?
-            selectBox[3] : selectBox[1]);
-        int maxSelY = (selectBox[1] < selectBox[3] ?
-            selectBox[3] : selectBox[1]);
-        
-        short maxRow = (short)((maxSelY - 68)/115);
-        short minRow = (short)((minSelY - 68)/115);
-        short maxCol = (short)((maxSelX - 61)/162);
-        short minCol = (short)((minSelX - 61)/162);
-        
-        boolean rowSelect, colSelect;
-        short i, j;
-        for(i = minRow; i <= maxRow; i++) {
-            rowSelect = true;
+        if(isSelecting) {
+            int minSelX = (selectBox[0] > selectBox[2] ?
+                selectBox[2] : selectBox[0]);
+            int maxSelX = (selectBox[0] < selectBox[2] ? 
+                selectBox[2] : selectBox[0]);
+            int minSelY = (selectBox[1] > selectBox[3] ?
+                selectBox[3] : selectBox[1]);
+            int maxSelY = (selectBox[1] < selectBox[3] ?
+                selectBox[3] : selectBox[1]);
             
-            if(i == minRow) {
-                rowSelect = i*115 + 130 > minSelY;
-            }
+            short maxRow = (short)((maxSelY - 68)/115);
+            short minRow = (short)((minSelY - 68)/115);
+            short maxCol = (short)((maxSelX - 61)/162);
+            short minCol = (short)((minSelX - 61)/162);
             
-            else if(i == maxRow) {
-                rowSelect = i*115 + 130 < maxSelY;
-            }
-            
-            for(j = minCol; j <= maxCol; j++) {
-                colSelect = true;
+            boolean rowSelect, colSelect;
+            short i, j;
+            for(i = minRow; i <= maxRow; i++) {
+                rowSelect = true;
                 
-                if(j == minCol) {
-                    colSelect = j*162 + 111 > minSelX;
+                if(i == minRow) {
+                    rowSelect = i*115 + 130 > minSelY;
                 }
                 
-                else if(j == maxCol) {
-                    colSelect = j*162 + 111 < maxSelX;
+                else if(i == maxRow) {
+                    rowSelect = i*115 + 130 < maxSelY;
                 }
                 
-                if(rowSelect && colSelect) {
-                    selectedIndex.add(curDisplayIndex+i*5+j);
+                for(j = minCol; j <= maxCol; j++) {
+                    colSelect = true;
+                    
+                    if(j == minCol) {
+                        colSelect = j*162 + 111 > minSelX;
+                    }
+                    
+                    else if(j == maxCol) {
+                        colSelect = j*162 + 111 < maxSelX;
+                    }
+                    
+                    if(rowSelect && colSelect) {
+                        selectedIndex.add(curDisplayIndex+i*5+j);
+                    }
                 }
             }
-        }
-        
-        if(debug) {
-            parent.println(
-                "mouse released: " + mouseX + ' ' + mouseY + 
-                "\nminSel: " + minRow + ' ' + minCol + 
-                "\nmaxSel: " + maxRow + ' ' + maxCol
-            );
+            
+            if(debug) {
+                parent.println(
+                    "mouse released: " + mouseX + ' ' + mouseY + 
+                    "\nminSel: " + minRow + ' ' + minCol + 
+                    "\nmaxSel: " + maxRow + ' ' + maxCol +
+                    "\n#items selected: " + selectedIndex.size()
+                );
+            }
+            
+            isSelecting = false;
         }
     }
     
