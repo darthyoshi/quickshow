@@ -80,9 +80,13 @@ public class visualthumbnailUI {
 	 * Receive from the file browser
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
+		
 		items.addAll(vItems);
 	}
 	
+	/*
+	 * 
+	 */
 	public void selectImage(int x, int y){
 		System.out.println("X: " + x + " Y: " + y);
 		

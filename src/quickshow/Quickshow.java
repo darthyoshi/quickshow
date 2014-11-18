@@ -34,6 +34,12 @@ public class Quickshow extends PApplet {
 	audioTimeline aT;
 	visualTimeline vTimeline;
 	
+	//These variables are for the Visual Thumbnail UI to bound where the mouse responds
+	final int lowXBound = 30;
+	final int highXBound = 650;
+	final int lowYBound = 30;
+	final int highYBound = 400;
+	
 	public void setup() {
 		setSize(900, 600);
 		frameRate(25);
@@ -182,7 +188,7 @@ public class Quickshow extends PApplet {
 	        }
 	    }
 	    else {
-	    	if(mouseX > 34 && mouseX < 648 && mouseY > 37 && mouseY < 400){
+	    	if(mouseX > lowXBound && mouseX < highXBound && mouseY > lowYBound && mouseY < highYBound){
 	    		thumbnails.selectImage(mouseX, mouseY);
 	    	}
 	    	
