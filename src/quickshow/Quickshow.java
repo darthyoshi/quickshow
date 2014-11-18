@@ -81,6 +81,7 @@ public class Quickshow extends PApplet {
 	    	stroke(0,0,0);
 	    	fill(90,90,90);
 	    	rectMode(CORNER);
+	    	imageMode(CENTER);
 	    	aT.drawBackgroundCanvas();
     	    vTimeline.drawBackgroundCanvas();
     	    thumbnails.drawBackgroundCanvas();

@@ -40,12 +40,13 @@ public class visualTimeline {
 			//System.out.println("No items in  selected visual items");
 			return;
 		}
-		
+		int drawIndex = 55;
 		//TODO needs to be modified to handle multiple images
 		for(VisualItem v: itemsForDisplay){
 			if( v.checkType().equals("image")){
 				image = ((ImageItem) v).getImage();
-				parent.image(image, 50, 540, 65 , 65);
+				parent.image(image, drawIndex, 535, 65 , 65);
+				drawIndex+=90;
 			}
 			
 		}
@@ -55,6 +56,7 @@ public class visualTimeline {
 	 * Receiving the visual items
 	 */
 	public void receiveSelectedItems(ArrayList<VisualItem> selectedList){
+		itemsForDisplay.clear();
 		itemsForDisplay.addAll(selectedList);
 	}
 }

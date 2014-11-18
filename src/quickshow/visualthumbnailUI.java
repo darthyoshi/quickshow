@@ -35,7 +35,7 @@ public class visualthumbnailUI {
 	private float my_new_width;
 	private int xPlacementCounter;
 	private int yPlacementCounter;
-	private float scaleFactor = 1.0f;
+	//private float scaleFactor = 1.0f;
 	final int lowXBound = 30;
 	final int highXBound = 650;
 	final int lowYBound = 30;
@@ -61,24 +61,38 @@ public class visualthumbnailUI {
 	 * 
 	 */
 	public void drawThumbNails(){
+		int xStartIndex = 95;
+		int yStartIndex = 95;
+		float xScaleFactor;
+		float yScaleFactor;
 		if(items != null) {
 		//Iterate through the items to display them as thumbnail
-			scaleFactor = 1.0f;
+			xScaleFactor = 1.0f;
+			yScaleFactor = 1.0f;
 			for (VisualItem v: items){
 				if(v.checkType().equals("image")) {
 					p = ((ImageItem) v).getImage();
 					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
-						if(p.height > p.width){
-							scaleFactor = (float) MAX_THUMBNAIL_HEIGHT/ (float) p.height;
-						}
-						else {
-							scaleFactor = (float) MAX_THUMBNAIL_WIDTH/ (float) p.width;
-						}
-						
+						//if(p.height > p.width){
+							xScaleFactor = 1.0f/((float) p.height/ (float) MAX_THUMBNAIL_HEIGHT);
+						//}
+						//else {
+							yScaleFactor = 1.0f/((float) p.width/ (float) MAX_THUMBNAIL_WIDTH);
+					//	}
 					}
-					my_new_height = (float) p.height * scaleFactor;
-					my_new_width = (float) p.width * scaleFactor;
-					parent.image(p, 70, 70, my_new_height, my_new_width);
+					
+					System.out.println("x scaleFactor is: " + xScaleFactor);
+					my_new_height = (float) p.height * xScaleFactor;
+					my_new_width = (float) p.width * yScaleFactor;
+					
+					parent.image(p, xStartIndex, yStartIndex, my_new_height, my_new_width);
+					
+					//Move up the next index
+					xStartIndex += MAX_THUMBNAIL_WIDTH;
+					if(xStartIndex > width) {
+						xStartIndex = 90;
+						yStartIndex += MAX_THUMBNAIL_HEIGHT;
+					}
 				}
 			}
 		}
@@ -88,7 +102,7 @@ public class visualthumbnailUI {
 	 * Receive from the file browser
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
-		
+		items.clear();
 		items.addAll(vItems);
 	}
 	
@@ -113,7 +127,7 @@ public class visualthumbnailUI {
 			selectedItems.add(items.get(mainIndex));
 			
 			if(debug) {
-			    parent.println("Added image: " + selectedItems.get(mainIndex).checkType());
+			    //parent.println("Added image: " + selectedItems.get(mainIndex).checkType());
 			}
 		}
 	}
