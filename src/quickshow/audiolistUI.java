@@ -129,6 +129,13 @@ public class audiolistUI {
 		group.setVisible(visible);
 	}
 	
+	/**
+	 * TODO retrieves all audio items for demo
+	 * @return
+	 */
+	public ArrayList<AudioItem> getAudioItems() {
+	    return songList;
+	}
 	
 	/*
 	 * Helper functions

@@ -67,6 +67,11 @@ public class slideShow {
 	public void addAudio(ArrayList<AudioItem>  newAudio) {
 	    audios.clear();
 	    audios.addAll(newAudio);
+	    
+	    if(debug) {
+	        parent.println("#audio items: " + audios.size());
+	    }
+	    
 	    audioIter = audios.iterator();
 	    curAudioItem = (audioIter.hasNext() ? audioIter.next() : null);
 	}
@@ -78,6 +83,11 @@ public class slideShow {
 	public void addVisual(ArrayList<VisualItem>  newVisual) {
 	    visuals.clear();
         visuals.addAll(newVisual);
+        
+        if(debug) {
+            parent.println("#visual items: " + visuals.size());
+        }
+        
         visualIter = visuals.iterator();
         //curVisualItem = (visualIter.hasNext() ? visualIter.next() : null);
         nextVisualItem();
@@ -107,7 +117,7 @@ public class slideShow {
     	        if(curVisualItem.checkType().equals("image")) {
     	            imgDispTime += 0.04;
     	            
-    	            if(imgDispTime >= 1.) {
+    	            if(imgDispTime >= 2.) {
     	                imgDispTime = 0.;
     	                
     	                nextVisualItem();
@@ -238,6 +248,9 @@ public class slideShow {
 	    isPlaying = isEnabled = true;
 	    
 	    if(curAudioItem != null) {
+	        if(debug) {
+	            parent.println("starting audio file");
+	        }
 	        curAudioItem.getAudio().play();
 	    }
 	    
