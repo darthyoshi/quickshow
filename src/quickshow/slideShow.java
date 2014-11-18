@@ -101,7 +101,7 @@ public class slideShow {
     	        if(curVisualItem.checkType().equals("image")) {
     	            imgDispTime += 0.04;
     	            
-    	            if(imgDispTime >= 5.) {
+    	            if(imgDispTime >= 1.) {
     	                imgDispTime = 0.;
     	                
     	                nextVisualItem();
@@ -125,6 +125,7 @@ public class slideShow {
 	        }
 	    }
 	    
+	    parent.imageMode(parent.CORNER);
         parent.image(curFrame, 0, 0);
 	    
 	    //TODO display UI elements
@@ -183,7 +184,9 @@ public class slideShow {
 	public void stop() {
 	    isPlaying = isEnabled = false;
 	    
-	    curAudioItem.getAudio().pause();
+	    if(curAudioItem != null) {
+	        curAudioItem.getAudio().pause();
+	    }
 	    curAudioItem = null;
 
 	    curVisualItem = null;
@@ -194,6 +197,8 @@ public class slideShow {
         }
         
 	    toggle(false);
+	    
+	    parent.toggleMain(true);
 	}
 	
 	/**

@@ -285,14 +285,14 @@ public class FileBrowser {
             toggle(false);
         }
         
-        else if(selectedIndex.size() == 1) {
-            File file = new File(curDir + '/' + fileNames.get(curDisplayIndex + 
-                selectedIndex.get(0)));
+        else {
+            File file = new File(curDir + '/' + 
+                fileNames.get(curDisplayIndex + selectedIndex.get(0)));
             
             if(file.isDirectory()) {
                 changeDir(file.getAbsolutePath());
             }
-            
+      
             else {
                 if(isAudioMode) {
                     loadAudio();
