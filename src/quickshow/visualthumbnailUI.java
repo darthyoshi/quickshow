@@ -34,6 +34,10 @@ public class visualthumbnailUI {
 	private int xPlacementCounter;
 	private int yPlacementCounter;
 	private float scaleFactor = 1.0f;
+	final int lowXBound = 30;
+	final int highXBound = 650;
+	final int lowYBound = 30;
+	final int highYBound = 400;
 	
 
 	public visualthumbnailUI(Quickshow parent){
@@ -91,7 +95,7 @@ public class visualthumbnailUI {
 		System.out.println("X: " + x + " Y: " + y);
 		
 		//Only do it for one image
-		if(x < (34 + 124) && y < (37 + 124)){
+		if(x < (lowXBound + 124) && y < (lowYBound + 124)){
 			selectedItems.add(items.get(0));
 			System.out.println("Added image: " + selectedItems.get(0).checkType());
 		}
