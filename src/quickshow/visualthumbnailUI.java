@@ -18,7 +18,7 @@ import controlP5.*;
 public class visualthumbnailUI {
     private Quickshow parent;
 
-    private boolean debug;
+    private boolean debug = true;
     
 	int num_items;
 	PShape rect1;
@@ -106,10 +106,10 @@ public class visualthumbnailUI {
 		int mainIndex = yIndex * 5 + xIndex;
 		
 		System.out.println("Grid coord x: " + xIndex + " y: " + yIndex);
-		System.out.println("Selecting image: " + mainIndex);
+		System.out.println("main index: " + mainIndex);
 		
 //		//Make sure we are in legal range
-		if(mainIndex < selectedItems.size()){
+		if(mainIndex < items.size()){
 			selectedItems.add(items.get(mainIndex));
 			
 			if(debug) {
