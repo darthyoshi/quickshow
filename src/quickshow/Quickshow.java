@@ -16,7 +16,7 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 public class Quickshow extends PApplet {
-    boolean debug = true;
+    private boolean debug = true;
     
 	ControlP5 control;
 	audiolistUI audioListbox;
@@ -260,6 +260,10 @@ public class Quickshow extends PApplet {
         cbU.toggle(visible);
         aT.toggle(visible);
         audioListbox.toggle(visible);
+    }
+    
+    public boolean getDebugFlag() {
+        return debug;
     }
     
     /**

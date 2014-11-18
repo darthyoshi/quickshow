@@ -18,6 +18,9 @@ import ddf.minim.*;
 
 public class slideShow {
 	private Quickshow parent;
+	
+	private boolean debug;
+	
 	private Minim minim;
 	
 	private ControlP5 control;
@@ -45,6 +48,9 @@ public class slideShow {
      */
 	public slideShow(Quickshow parent, Minim minim, ControlP5 control) {
 		this.parent = parent;
+		
+		debug = parent.getDebugFlag();
+		
 		this.minim = minim;
 		this.control = control;
 		

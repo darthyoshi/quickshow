@@ -15,6 +15,8 @@ import quickshow.datatypes.AudioItem;
 public class audiolistUI {
     private Quickshow parent;
     
+    private boolean debug;
+    
     private ControlP5 audioList;
 	private Group group;
 	
@@ -33,6 +35,9 @@ public class audiolistUI {
 	//Constructors
 	public audiolistUI(Quickshow parent, ControlP5 audioList){
 		this.parent = parent;
+		
+		debug = parent.getDebugFlag();
+		
 		this.audioList = audioList;
 		
 		group = audioList.addGroup("AudioList").setLabel("");
@@ -85,7 +90,10 @@ public class audiolistUI {
 			selectedSong = songList.get(index);
 			
 			selectedSongList.add(selectedSong);
-			System.out.println("Added to selected song list: " + selectedSong.getAuthor() + " - " + selectedSong.getTitle());
+			
+			if(debug) {
+			    parent.println("Added to selected song list: " + selectedSong.getAuthor() + " - " + selectedSong.getTitle());
+			}
 		}
 	}
 	
@@ -114,7 +122,7 @@ public class audiolistUI {
 	
 
 	/**
-	 * 
+	 * TODO add method header
 	 * @param visible
 	 */
 	public void toggle(boolean visible){
@@ -130,7 +138,11 @@ public class audiolistUI {
 	protected void addToList(AudioItem audio){
 		
 		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
-		System.out.println("Song being added " + songDisplay);
+		
+		if(debug) {
+		    parent.println("Song being added " + songDisplay);
+		}
+		
 		ListBoxItem songToAdd;
 		
 		if(num_items > 25) {
@@ -145,7 +157,9 @@ public class audiolistUI {
 		//Adds the actual song
 		//list.addItem(songDisplay, 0);
 		
-		System.out.println("After adding song");
+		if(debug) {
+		    parent.println("After adding song");
+		}
 		num_items++;
 	}
 

@@ -16,7 +16,7 @@ import quickshow.datatypes.*;
 import controlP5.*;
 
 public class FileBrowser {
-    private boolean debug = true;
+    private boolean debug;
     
     private Quickshow parent;
     private String curDir;
@@ -73,6 +73,8 @@ public class FileBrowser {
      */
     FileBrowser(Quickshow parent, ddf.minim.Minim minim, ControlP5 control, String curDir) {
         this.parent = parent;
+        
+        debug = parent.getDebugFlag();
         
         String[] pathParts = (new File(curDir)).getAbsolutePath().split("\\/");
         StringBuilder path = new StringBuilder();

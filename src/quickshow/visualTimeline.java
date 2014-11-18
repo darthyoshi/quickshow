@@ -12,6 +12,7 @@ public class visualTimeline {
 	ArrayList <VisualItem> itemsForDisplay;
     private Quickshow parent;
     PImage image;
+    private boolean debug;
 	
 	/*
 	 * Empty Constructor need to some how do something
@@ -19,6 +20,8 @@ public class visualTimeline {
 	public visualTimeline(Quickshow parent){
 		this.parent = parent;
 		itemsForDisplay = new ArrayList<VisualItem>();
+		
+		debug = parent.getDebugFlag();
 	}
 	
 	/*

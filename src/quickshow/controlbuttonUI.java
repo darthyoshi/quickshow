@@ -10,6 +10,8 @@ import controlP5.Toggle;
 public class controlbuttonUI {
     private Quickshow parent;
     
+    private boolean debug;
+    
     private ControlP5 buttonUI;
     
     Group group;
@@ -34,6 +36,9 @@ public class controlbuttonUI {
 	 */
 	public controlbuttonUI(Quickshow parent, ControlP5 buttonUI){
 	    this.parent = parent;
+	    
+	    debug = parent.getDebugFlag();
+	    
 	    this.buttonUI = buttonUI;
 	    
 		group = buttonUI.addGroup("buttonUI").setLabel("");

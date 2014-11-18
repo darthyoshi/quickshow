@@ -10,6 +10,8 @@ import ddf.minim.analysis.FFT;
 public class audioTimeline {
 	private Quickshow parent;
 	
+	private boolean debug;
+	
 	//Generate the wave form image
 	float leftSpectra[][];
 	float rightSpectra[][];
@@ -22,6 +24,8 @@ public class audioTimeline {
 	
 	public audioTimeline(Quickshow q, Minim minim){
 	    parent = q;
+	    
+	    debug = parent.getDebugFlag();
 
 	    audiotest = minim;
 	    

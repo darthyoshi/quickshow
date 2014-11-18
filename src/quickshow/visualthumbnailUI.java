@@ -17,6 +17,8 @@ import controlP5.*;
 
 public class visualthumbnailUI {
     private Quickshow parent;
+
+    private boolean debug;
     
 	int num_items;
 	PShape rect1;
@@ -42,6 +44,8 @@ public class visualthumbnailUI {
 
 	public visualthumbnailUI(Quickshow parent){
 	    this.parent = parent;
+	    
+	    debug = parent.getDebugFlag();
 	    items = new ArrayList<VisualItem>();
 	    selectedItems = new ArrayList<VisualItem>();
 	}
@@ -107,7 +111,10 @@ public class visualthumbnailUI {
 //		//Make sure we are in legal range
 		if(mainIndex < selectedItems.size()){
 			selectedItems.add(items.get(mainIndex));
-			System.out.println("Added image: " + selectedItems.get(mainIndex).checkType());
+			
+			if(debug) {
+			    parent.println("Added image: " + selectedItems.get(mainIndex).checkType());
+			}
 		}
 	}
 	
