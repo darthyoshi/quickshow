@@ -74,7 +74,7 @@ public class visualthumbnailUI {
 					}
 					my_new_height = (float) p.height * scaleFactor;
 					my_new_width = (float) p.width * scaleFactor;
-					parent.image(p, 80, 80, my_new_height, my_new_width);
+					parent.image(p, 70, 70, my_new_height, my_new_width);
 				}
 			}
 		}
@@ -100,10 +100,11 @@ public class visualthumbnailUI {
 		int xIndex = xValue/124;
 		int yIndex = yValue/123;
 		int mainIndex = yIndex * 5 + xIndex;
+		
 		System.out.println("Grid coord x: " + xIndex + " y: " + yIndex);
 		System.out.println("Selecting image: " + mainIndex);
 		
-//		//Only do it for one image
+//		//Make sure we are in legal range
 		if(mainIndex < selectedItems.size()){
 			selectedItems.add(items.get(mainIndex));
 			System.out.println("Added image: " + selectedItems.get(mainIndex).checkType());

@@ -89,6 +89,7 @@ public class Quickshow extends PApplet {
     	    aT.generateWaveForm();
     	    aT.drawWaveform();
 			thumbnails.drawThumbNails();
+			vTimeline.generateThumbnails();
 	    }
 
 	}
@@ -191,6 +192,7 @@ public class Quickshow extends PApplet {
 	    else {
 	    	if(mouseX > lowXBound && mouseX < highXBound && mouseY > lowYBound && mouseY < highYBound){
 	    		thumbnails.selectImage(mouseX, mouseY);
+	    		vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	    	}
 	    	
 	    }
