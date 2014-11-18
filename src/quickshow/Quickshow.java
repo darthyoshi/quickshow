@@ -130,7 +130,7 @@ public class Quickshow extends PApplet {
 	        case "Play":
 	            toggleMain(false);
 	            
-	            show.addAudio(audioListbox.sendSongList());
+	            show.addAudio(audioListbox.getAudioItems());
 	            show.addVisual(thumbnails.getVisualItems());
 	        	show.startPlaying();
 	        	
