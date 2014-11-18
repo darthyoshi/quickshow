@@ -37,11 +37,13 @@ public class Quickshow extends PApplet {
 	public void setup() {
 		setSize(900, 600);
 		frameRate(25);
-		
+
 		control = new ControlP5(this);
         control.setFont(control.getFont().getFont(), 15);
         
 		minim = new Minim(this);
+		
+		show = new slideShow(this, minim, control);
 		
 		audioListbox = new audiolistUI(this, control);
 		
@@ -63,6 +65,9 @@ public class Quickshow extends PApplet {
 	    
 	    if(browse.isEnabled()) {
 	        browse.draw();
+	    }
+	    else if(show.isEnabled()){
+	    	show.updateAndDraw();
 	    }
 	    
 	    else {
@@ -116,6 +121,9 @@ public class Quickshow extends PApplet {
 	    case "buttonUI":
 	        switch(theEvent.getName()){
 	        case "Play": 
+	        	show.startPlaying();
+	        	
+	        	
 	            break;
 	        
 	        case "Share/Export": 

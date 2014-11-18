@@ -46,18 +46,20 @@ public class audioTimeline {
 		//audiotest.load
 		if(selectedSongs.size() == 0) return;
 		
-		//Will have to generate for all songs, but choose at index 0 for now
-		audioClip = selectedSongs.get(0).getAudioSample();
 		
 		float leftChannel[];
 		float leftSample[];
 		int fftSize = 1024;
-		FFT fft = new FFT( fftSize, audioClip.sampleRate() );
 		int leftChunk;
+		
+		//Will have to generate for all songs, but choose at index 0 for now
+		audioClip = selectedSongs.get(0).getAudioSample();
+	
+		FFT fft = new FFT( fftSize, audioClip.sampleRate() );
 		
 		//Get audio sample from both channels
 		//if(!(audioClip.getChannel(AudioSample.LEFT) == null))
-			leftChannel = audioClip.getChannel(AudioSample.LEFT);
+		leftChannel = audioClip.getChannel(AudioSample.LEFT);
 			
 		//Allocate array for both channel sample
 		leftSample = new float[fftSize];

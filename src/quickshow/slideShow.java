@@ -73,7 +73,8 @@ public class slideShow {
 	    visuals.clear();
         visuals.addAll(newVisual);
         visualIter = visuals.iterator();
-        curVisualItem = (visualIter.hasNext() ? visualIter.next() : null);
+        //curVisualItem = (visualIter.hasNext() ? visualIter.next() : null);
+        nextVisualItem();
     }
 	
 	/**
@@ -105,6 +106,7 @@ public class slideShow {
     	                
     	                nextVisualItem();
     	            }
+    	            
     	        }
     	        
     	        else {
