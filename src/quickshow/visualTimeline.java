@@ -40,7 +40,7 @@ public class visualTimeline {
 			//System.out.println("No items in  selected visual items");
 			return;
 		}
-		int drawIndex = 55;
+		int drawIndex = 60;
 		//TODO needs to be modified to handle multiple images
 		for(VisualItem v: itemsForDisplay){
 			if( v.checkType().equals("image")){
