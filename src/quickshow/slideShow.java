@@ -9,13 +9,19 @@ package quickshow;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import processing.core.PImage;
+import processing.video.Movie;
+import quickshow.datatypes.AudioItem;
+import quickshow.datatypes.ImageItem;
+import quickshow.datatypes.MovieItem;
+import quickshow.datatypes.VisualItem;
 import controlP5.Button;
+import controlP5.ControlEvent;
 import controlP5.ControlP5;
-import processing.core.*;
-import processing.video.*;
-import quickshow.datatypes.*;
-import ddf.minim.*;
+import controlP5.Group;
+import ddf.minim.Minim;
 
+@SuppressWarnings("static-access")
 public class slideShow {
 	private Quickshow parent;
 	
@@ -23,9 +29,8 @@ public class slideShow {
 	
 	private Minim minim;
 	
-	private ControlP5 control;
-	private Button playButton;
-	private Button stopButton;
+	private Group group;
+	private Button[] buttons;
     
 	private PImage curFrame;
 	private Movie movie;
@@ -52,12 +57,23 @@ public class slideShow {
 		debug = parent.getDebugFlag();
 		
 		this.minim = minim;
-		this.control = control;
 		
 		audios = new ArrayList<AudioItem>();
 		visuals = new ArrayList<VisualItem>();
 		
-		//TODO initialize UI components
+		group = control.addGroup("slideShow")
+			.setCaptionLabel("")
+			.setVisible(false);
+		
+		buttons = new Button[2];
+		
+		buttons[0] = control.addButton("playButton")
+			.setLock(true)
+			.setGroup(group);
+		
+		buttons[1] = control.addButton("stopButton")
+			.setLock(true)
+			.setGroup(group);
 	}
 	
 	/**
@@ -93,6 +109,24 @@ public class slideShow {
         nextVisualItem();
     }
 	
+    /**
+     * Callback method for handling ControlP5 UI events.
+     * @param e the ControlEvent to handle
+     */
+	public void controlEvent(ControlEvent e) {
+		switch(e.getName()) {
+		case "playButton":
+			togglePlayMode();
+			
+			break;
+			
+		case "stopButton":
+			stop();
+			
+			break;
+		}
+	}
+	
 	/**
 	 * TODO add method header
 	 */
@@ -127,10 +161,10 @@ public class slideShow {
     	        
     	        else {
     	            if(movie.available()) {
-    	                movie.read();
+    	            	movie.read();
     	            }
     	            
-    	            else if(movie.time() == movie.duration()) {
+    	            if(movie.time() == movie.duration()) {
     	                movie.stop();
     	                
     	                nextVisualItem();
@@ -175,10 +209,10 @@ public class slideShow {
 	 */
 	private void nextVisualItem() {
 	    movie = null;
-	    
+
 	    if(visualIter.hasNext()) {
 	        curVisualItem = visualIter.next();
-	        
+
 	        if(curVisualItem.checkType().equals("video")) {
 	            movie = ((MovieItem)curVisualItem).getMovie();
 	            movie.play();
@@ -230,7 +264,11 @@ public class slideShow {
 	 * @param visible
 	 */
 	public void toggle(boolean visible) {
+	    group.setVisible(visible);
 	    
+	    for(Button button : buttons) {
+	    	button.setLock(!visible);
+	    }
 	}
 	
 	/**

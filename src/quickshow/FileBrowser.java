@@ -6,15 +6,24 @@
 
 package quickshow;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.File;
 
-import processing.core.*;
-import processing.video.*;
-import quickshow.datatypes.*;
-import controlP5.*;
+import processing.core.PImage;
+import processing.video.Movie;
+import quickshow.datatypes.AudioItem;
+import quickshow.datatypes.ImageItem;
+import quickshow.datatypes.MediaItem;
+import quickshow.datatypes.MovieItem;
+import controlP5.Button;
+import controlP5.ControlEvent;
+import controlP5.ControlP5;
+import controlP5.DropdownList;
+import controlP5.Group;
+import controlP5.Textfield;
 
+@SuppressWarnings("static-access")
 public class FileBrowser {
     private boolean debug;
     
@@ -33,12 +42,7 @@ public class FileBrowser {
     private long clickTime;
     private boolean dblClick = false;
     
-    private ControlP5 control;
     private Group group;
-    private Button openButton, cancelButton;
-    private Button scrollUpButton, scrollDownButton;
-    private Button scrollBottomButton, scrollTopButton;
-    private Button parentDirButton;
     private Button[] lockButtons;
     private Textfield pathField;
     private Button pageLabel;
@@ -71,7 +75,7 @@ public class FileBrowser {
      * @param control the ControlP5 object handling UI elements
      * @param curDir the initial FileBrowser directory
      */
-    FileBrowser(Quickshow parent, ddf.minim.Minim minim, ControlP5 control, String curDir) {
+	FileBrowser(Quickshow parent, ddf.minim.Minim minim, ControlP5 control, String curDir) {
         this.parent = parent;
         
         debug = parent.getDebugFlag();
@@ -98,10 +102,8 @@ public class FileBrowser {
         thumbHeight = 102;
         thumbWidth = 136;
         
-        this.control = control;
-        
         fileNames = new ArrayList<String>();
-        thumbs = new ArrayList<PImage>();
+        thumbs = new ArrayList<PImage>(20);
         selectedIndex = new ArrayList<Integer>(20);
         
         results = new ArrayList<MediaItem>();
@@ -118,57 +120,61 @@ public class FileBrowser {
             .setFocus(false)
             .setGroup(group);
 
-        lockButtons[0] = openButton = control.addButton("openButton")
+        lockButtons[0] = control.addButton("openButton")
             .setCaptionLabel("Open")
             .setPosition(750, 540)
             .setSize(55, 30)
             .setLock(true)
             .setGroup(group);
-        openButton.getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[0].getCaptionLabel().align(control.CENTER, control.CENTER);
 
-        lockButtons[1] = cancelButton = control.addButton("cancelButton")
+        lockButtons[1] = control.addButton("cancelButton")
             .setCaptionLabel("Cancel")
             .setLock(true)
             .setSize(55, 30)
             .setPosition(815, 540)
             .setGroup(group);
-        cancelButton.getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[1].getCaptionLabel().align(control.CENTER, control.CENTER);
 
-        lockButtons[2] = scrollUpButton = control.addButton("scrollUpButton")
+        lockButtons[2] = control.addButton("scrollUpButton")
             .setSize(30, 75)
             .setLock(true)
             .setPosition(840, 145)
             .setCaptionLabel("^")
             .setGroup(group);
-        scrollUpButton.getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[2].getCaptionLabel().align(control.CENTER, control.CENTER);
 
-        lockButtons[3] = scrollTopButton = control.addButton("scrollTopButton")
+        lockButtons[3] = control.addButton("scrollTopButton")
             .setSize(30, 75)
             .setLock(true)
             .setPosition(840, 70)
             .setCaptionLabel("^\n^")
             .setGroup(group);
-        scrollTopButton.getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[3].getCaptionLabel().align(control.CENTER, control.CENTER);
         
-        lockButtons[4] = scrollDownButton = control
-            .addButton("scrollDownButton")
+        lockButtons[4] = control.addButton("scrollDownButton")
             .setSize(30, 75)
             .setLock(true)
             .setPosition(840, 380)
             .setCaptionLabel("v")
             .setGroup(group);
-        scrollDownButton.getCaptionLabel()
-            .align(control.CENTER, control.CENTER);
+        lockButtons[4].getCaptionLabel().align(control.CENTER, control.CENTER);
 
-        lockButtons[5] = scrollBottomButton = control
-            .addButton("scrollBottomButton")
+        lockButtons[5] = control.addButton("scrollBottomButton")
             .setSize(30, 75)
             .setLock(true)
             .setPosition(840, 455)
             .setCaptionLabel("v\nv")
             .setGroup(group);
-        scrollBottomButton.getCaptionLabel()
-            .align(control.CENTER, control.CENTER);
+        lockButtons[5].getCaptionLabel().align(control.CENTER, control.CENTER);
+
+        lockButtons[6] = control.addButton("parentDirButton")
+            .setCaptionLabel("..")
+            .setLock(true)
+            .setGroup(group)
+            .setPosition(815, 30)
+            .setSize(55, 30);
+        lockButtons[6].getCaptionLabel().align(control.CENTER, control.CENTER);
 
         String label = "Visual (bmp, jpg, png, gif, mov, avi, mpg, mp4)";
         mediaTypeList = control.addDropdownList("mediaTypeList")
@@ -188,14 +194,6 @@ public class FileBrowser {
             .setCaptionLabel("")
             .setGroup(group);
         pageLabel.getCaptionLabel().align(control.CENTER, control.TOP);
-
-        lockButtons[6] = parentDirButton = control.addButton("parentDirButton")
-            .setCaptionLabel("..")
-            .setLock(true)
-            .setGroup(group)
-            .setPosition(815, 30)
-            .setSize(55, 30);
-        parentDirButton.getCaptionLabel().align(control.CENTER, control.CENTER);
         
         changeDir(this.curDir);
     }
@@ -289,7 +287,7 @@ public class FileBrowser {
         
         else {
             File file = new File(curDir + '/' + 
-                fileNames.get(curDisplayIndex + selectedIndex.get(0)));
+                fileNames.get(/*curDisplayIndex +*/ selectedIndex.get(0)));
             
             if(file.isDirectory()) {
                 changeDir(file.getAbsolutePath());
@@ -310,6 +308,73 @@ public class FileBrowser {
     }
     
     /**
+     * TODO change thumbnails
+     */
+    private void updateThumbs() {
+    	String fullPath;
+    	String[] fileNameParts;
+    	Movie movie;
+    	PImage thumb;
+    	PImage thumb1 = parent.loadImage("data/img/folderThumbNail.png");
+    	PImage thumb2 = parent.loadImage("data/img/audioThumbNail.png");
+        thumb1.resize(thumbWidth, thumbHeight);
+        thumb2.resize(thumbWidth, thumbHeight);
+    	
+        short j;
+        
+    	for(int i = curDisplayIndex; i < curDisplayIndex + 20 && i < fileNames.size(); i++) {
+    		//
+    		if(thumbs.get(i) == null) {
+	    		fullPath = curDir + '/' + fileNames.get(i);
+	    		
+	    		thumb = thumb1;
+	    		
+	    		//non-directory thumbnail
+	    		if(!(new File(fullPath)).isDirectory()) {
+	    			if(isAudioMode) {		//audio thumbnail
+		    			thumb = thumb2;
+		    		}
+		    		
+		    		else {					//visual thumbnail
+		    			fileNameParts = fileNames.get(i).split("\\.");
+		    			
+		    			for(j = 0; j < imgExt.length; j++) {
+		    				if(fileNameParts[fileNameParts.length-1].equalsIgnoreCase(imgExt[j])) {
+		    					thumb = parent.loadImage(fullPath);
+		    					thumb.resize(thumbWidth, thumbHeight);
+		    					
+		    					break;
+		    				}
+		    			}
+	
+		    			if(j == imgExt.length) {
+		    				thumb = parent.createImage(thumbWidth, thumbHeight, parent.RGB);
+		                    movie = new Movie(parent, fullPath);
+		                    movie.play();
+		
+		                    if(debug) {
+		                    	parent.println("loading movie");
+		                    }
+		                    while(!movie.available());
+		                    if(debug) {
+		                        parent.println("getting 1st movie frame");
+		                    }
+		                    movie.read();
+		                    thumb.copy(movie, 0, 0, movie.width, movie.height, 0, 0, thumbWidth, thumbHeight);
+		                    movie.stop();
+		               
+		                    thumbs.set(i, thumb);
+		    			}
+		    		}
+	    		}
+	    		
+	    		//directory thumbnail
+	    		thumbs.set(i, thumb);
+    		}
+    	}
+    }
+    
+    /**
      * ControlP5 UI handler. Displays the previous page.
      */
     private void scrollUpButton() {
@@ -318,8 +383,10 @@ public class FileBrowser {
         if(curDisplayIndex > 0) {
             curDisplayIndex -= 20;
 
+            updateThumbs();
+            
             pageLabel.setCaptionLabel("\n\n\n" + ((curDisplayIndex/20) + 1) +
-                "\n\nof\n\n" + ((thumbs.size()/20) + 1));
+                "\n\nof\n\n" + ((fileNames.size()/20) + 1));
         }
         
         if(debug) {
@@ -335,9 +402,11 @@ public class FileBrowser {
         selectedIndex.clear();
         
         curDisplayIndex = 0;
+        
+        updateThumbs();
             
         pageLabel.setCaptionLabel("\n\n\n1\n\nof\n\n" +
-            ((thumbs.size()/20) + 1));
+            ((fileNames.size()/20) + 1));
         
         if(debug) {
             parent.println("scroll top button pressed"
@@ -351,11 +420,13 @@ public class FileBrowser {
     private void scrollDownButton() {
         selectedIndex.clear();
         
-        if(curDisplayIndex + 20 < thumbs.size()) {
+        if(curDisplayIndex + 20 < fileNames.size()) {
             curDisplayIndex += 20;
             
+            updateThumbs();
+            
             pageLabel.setCaptionLabel("\n\n\n" + ((curDisplayIndex/20) + 1) +
-                "\n\nof\n\n" + ((thumbs.size()/20) + 1));
+                "\n\nof\n\n" + ((fileNames.size()/20) + 1));
         }
         
         if(debug) {
@@ -370,10 +441,12 @@ public class FileBrowser {
     private void scrollBottomButton() {
         selectedIndex.clear();
         
-        curDisplayIndex = (thumbs.size()/20) * 20;
+        curDisplayIndex = (fileNames.size()/20) * 20;
         
-        pageLabel.setCaptionLabel("\n\n\n" + ((thumbs.size()/20) + 1) + 
-            "\n\nof\n\n" + (int)(Math.ceil(thumbs.size()/20.)));
+        updateThumbs();
+        
+        pageLabel.setCaptionLabel("\n\n\n" + ((fileNames.size()/20) + 1) + 
+            "\n\nof\n\n" + (int)(Math.ceil(fileNames.size()/20.)));
         
         if(debug) {
             parent.println("scroll bottom button pressed"
@@ -418,7 +491,7 @@ public class FileBrowser {
         String fileName;
         for(imgIndex = 0, i = 0; i < 4; i++) {
             //draw thumbnail rows
-            for(j = 0; j < 5 && curDisplayIndex+j+5*i < thumbs.size();
+            for(j = 0; j < 5 && curDisplayIndex+j+5*i < fileNames.size();
                 j++, imgIndex++)
             {
                 //draw thumbnail columns
@@ -438,7 +511,7 @@ public class FileBrowser {
                 
                 parent.noFill();
                 if(!selectedIndex.isEmpty() && 
-                    selectedIndex.contains((int)imgIndex)) 
+                    selectedIndex.contains((int)imgIndex+curDisplayIndex)) 
                 {
                     parent.rect(111 + j*162, 130 + i*115, 125, 100);
                 }
@@ -464,26 +537,37 @@ public class FileBrowser {
         
         curDir = newDir;
 
+        curDisplayIndex = 0;
+        
         File file = new File(curDir);
         
-        ArrayList<File> files = new ArrayList(java.util.Arrays.asList(file.listFiles()));
+        ArrayList<File> files = new ArrayList<File>(java.util.Arrays.asList(file.listFiles()));
         Iterator<File> fileIter = files.iterator();
         
         String fileName, filePath;
         String[] fileNameParts;
-        short i;
+        short i, j;
         PImage thumb = parent.loadImage("data/img/folderThumbNail.png");
         thumb.resize(thumbWidth, thumbHeight);
         
         pathField.setText(file.getAbsolutePath());
 
         //directories listed first
+        j = 0;
         while(fileIter.hasNext()) {
             file = fileIter.next();
             
             if(file.isDirectory()) {
                 fileNames.add(file.getName());
-                thumbs.add(thumb);
+                
+                if(j < 20) {
+                	thumbs.add(thumb);
+                	j++;
+                }
+                
+                else {
+                	thumbs.add(null);
+                }
                 
                 fileIter.remove();
             }
@@ -505,7 +589,15 @@ public class FileBrowser {
                     {
                         fileNames.add(fileName);
                       
-                        thumbs.add(thumb);
+                        if(j < 20) {
+	                        thumbs.add(thumb);
+	                        
+	                        j++;
+                        }
+                        
+                        else {
+                        	thumbs.add(null);
+                        }
                     }
                 }
             }
@@ -514,19 +606,27 @@ public class FileBrowser {
         //list image/video files
         else {
             fileIter = files.iterator();
-            while(fileIter.hasNext()) { 
+            while(fileIter.hasNext()) {
                 fileName = fileIter.next().getName();
                 fileNameParts = fileName.split("\\.");
                 filePath = curDir + '/' + fileName;
-                
+
                 //create image thumbnail
                 for(i = 0; i < imgExt.length; i++) {
                     if(fileNameParts[fileNameParts.length-1]
                         .equalsIgnoreCase(imgExt[i]))
                     {
-                        thumb = parent.loadImage(filePath);
-                        thumb.resize(thumbWidth, thumbHeight);
-                        thumbs.add(thumb);
+                    	if(j < 20) {
+	                        thumb = parent.loadImage(filePath);
+	                        thumb.resize(thumbWidth, thumbHeight);
+	                        thumbs.add(thumb);
+	                        
+	                        j++;
+                    	}
+                    	
+                    	else {
+                    		thumbs.add(null);
+                    	}
                
                         fileNames.add(fileName);
 
@@ -543,27 +643,31 @@ public class FileBrowser {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(videoExt[i]))
                         {
-                            thumb = parent.createImage(thumbWidth, thumbHeight, parent.RGB);
-                            movie = new Movie(parent, filePath);
-                            movie.play();
-                            
-                            //while(!movie.available());
-                            if(movie.available()) {
+                        	if(j < 20) {
+	                            thumb = parent.createImage(thumbWidth, thumbHeight, parent.RGB);
+	                            movie = new Movie(parent, filePath);
+	                            movie.play();
+
+	                            if(debug) {
+	                            	parent.println("loading movie");
+	                            }
+	                            while(!movie.available());
                                 if(debug) {
                                     parent.println("getting 1st movie frame");
                                 }
                                 movie.read();
                                 thumb.copy(movie, 0, 0, movie.width, movie.height, 0, 0, thumbWidth, thumbHeight);
                                 movie.stop();
-                            }
+	                       
+	                            thumbs.add(thumb);
+	                            
+	                            j++;
+	                        }
+                        	
+                        	else {
+                        		thumbs.add(null);
+                        	}
                             
-                            else {
-                                if(debug) {
-                                    parent.println("could not get 1st movie frame!");
-                                }
-                            }
-                            thumbs.add(thumb);
-               
                             fileNames.add(fileName);
 
                             break;
@@ -574,7 +678,7 @@ public class FileBrowser {
         }
         
         pageLabel.setCaptionLabel("\n\n\n1\n\nof\n\n" +
-            ((thumbs.size()/20) + 1));
+            ((fileNames.size()/20) + 1));
         
         selectedIndex.clear();
         
@@ -585,12 +689,8 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("#items in directory: " + thumbs.size());
+            parent.println("#items in directory: " + fileNames.size());
         }
-    }
-    
-    public void movieEvent(Movie m) {
-        parent.println(m.filename);
     }
     
     /**
@@ -598,7 +698,7 @@ public class FileBrowser {
      */
     private void loadAudio() {
         for(Integer index : selectedIndex) {
-            if(curDisplayIndex + index < thumbs.size()) {
+            if(curDisplayIndex + index < fileNames.size()) {
                 results.add(new AudioItem(minim,
                     curDir + '/' + fileNames.get(curDisplayIndex + index)));
             }
@@ -613,7 +713,7 @@ public class FileBrowser {
         String fileName;
         short i;
         for(Integer index : selectedIndex) {
-            if(curDisplayIndex + index < thumbs.size()) {
+            if(curDisplayIndex + index < fileNames.size()) {
                 fileName = fileNames.get(curDisplayIndex + index);
                 fileNameParts = fileName.split("\\.");
                 
@@ -698,6 +798,8 @@ public class FileBrowser {
      */
     public void mouseClicked(int mouseX, int mouseY) {
         if(mouseX >= 30 && mouseX <= 840  && mouseY >= 70 && mouseY <= 530) {
+        	selectedIndex.clear();
+        	
             short row = (short)((mouseY - 68)/115);
             short col = (short)((mouseX - 61)/162);
             

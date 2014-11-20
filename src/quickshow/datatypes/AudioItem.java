@@ -6,7 +6,10 @@
 
 package quickshow.datatypes;
 
-import ddf.minim.*;
+import ddf.minim.AudioMetaData;
+import ddf.minim.AudioPlayer;
+import ddf.minim.AudioSample;
+import ddf.minim.Minim;
 
 public class AudioItem extends MediaItem {
     private AudioPlayer audio;

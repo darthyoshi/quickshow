@@ -6,18 +6,19 @@
 
 package quickshow;
 
-import controlP5.*;
-
 import java.util.ArrayList;
 
 import quickshow.datatypes.AudioItem;
+import controlP5.ControlP5;
+import controlP5.Group;
+import controlP5.ListBox;
+import controlP5.ListBoxItem;
 
 public class audiolistUI {
     private Quickshow parent;
     
     private boolean debug;
     
-    private ControlP5 audioList;
 	private Group group;
 	
 	ListBox list;
@@ -37,8 +38,6 @@ public class audiolistUI {
 		this.parent = parent;
 		
 		debug = parent.getDebugFlag();
-		
-		this.audioList = audioList;
 		
 		group = audioList.addGroup("AudioList").setLabel("");
 		audioList.setFont(audioList.getFont().getFont(), 15);

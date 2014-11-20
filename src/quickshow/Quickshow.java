@@ -7,12 +7,15 @@
 
 package quickshow;
 
-import processing.core.*;
-import quickshow.datatypes.*;
-import controlP5.*;
-import ddf.minim.*;
+import java.util.ArrayList;
 
-import java.util.*;
+import processing.core.PApplet;
+import quickshow.datatypes.AudioItem;
+import quickshow.datatypes.MediaItem;
+import quickshow.datatypes.VisualItem;
+import controlP5.ControlEvent;
+import controlP5.ControlP5;
+import ddf.minim.Minim;
 
 @SuppressWarnings("serial")
 public class Quickshow extends PApplet {
@@ -39,9 +42,9 @@ public class Quickshow extends PApplet {
 	final int highXBound = 650;
 	final int lowYBound = 30;
 	final int highYBound = 400;
-	
+
 	public void setup() {
-		setSize(900, 600);
+		size(900, 600);
 		frameRate(25);
 
 		control = new ControlP5(this);
@@ -68,7 +71,7 @@ public class Quickshow extends PApplet {
 
 	public void draw() {
 	    background(38, 38, 38);
-	    
+	 
 	    if(browse.isEnabled()) {
 	        browse.draw();
 	    }
@@ -92,7 +95,6 @@ public class Quickshow extends PApplet {
 			thumbnails.drawThumbNails();
 			vTimeline.generateThumbnails();
 	    }
-
 	}
 	
 	public void update(){

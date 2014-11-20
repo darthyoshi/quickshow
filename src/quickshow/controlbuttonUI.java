@@ -7,12 +7,11 @@ import controlP5.ControlP5;
 import controlP5.Group;
 import controlP5.Toggle;
 
+@SuppressWarnings("static-access")
 public class controlbuttonUI {
     private Quickshow parent;
     
     private boolean debug;
-    
-    private ControlP5 buttonUI;
     
     Group group;
 	Button playButton;
@@ -41,8 +40,6 @@ public class controlbuttonUI {
 	    
 	    debug = parent.getDebugFlag();
 	    
-	    this.buttonUI = buttonUI;
-	    
 		group = buttonUI.addGroup("buttonUI").setLabel("");
 		
         lockButtons = new Button[12];
@@ -70,9 +67,9 @@ public class controlbuttonUI {
 		shuffleToggle = buttonUI.addToggle("Shuffle Slides")
 	        .setMode(ControlP5.SWITCH)
 	        .setPosition(360, 10)
-	        .setCaptionLabel("Shuffle Slides")
+	        .setCaptionLabel(" Shuffle Slides")
 	        .setGroup(group);
-		shuffleToggle.getCaptionLabel().alignY(buttonUI.RIGHT_OUTSIDE);
+		shuffleToggle.getCaptionLabel().align(buttonUI.RIGHT_OUTSIDE, buttonUI.CENTER);
 		
 		//For audioList
 		lockButtons[3] = clearSongsButton = buttonUI.addButton("Clear selected songs")
@@ -97,14 +94,14 @@ public class controlbuttonUI {
 		    .setGroup(group);
 		
 		lockButtons[7] = upButton = buttonUI.addButton("Up")
-			    .setPosition(540, 402)
-			    .setSize(50,15)
-			    .setGroup(group);
+		    .setPosition(540, 402)
+		    .setSize(50,15)
+		    .setGroup(group);
 		
 		lockButtons[8] = downButton = buttonUI.addButton("Down")
-			    .setPosition(600, 402)
-			    .setSize(50,15)
-			    .setGroup(group);
+		    .setPosition(600, 402)
+		    .setSize(50,15)
+		    .setGroup(group);
 		
 		//To control the visual timeline thumbnail
 		lockButtons[9] = nextSlides = buttonUI.addButton("Next")
