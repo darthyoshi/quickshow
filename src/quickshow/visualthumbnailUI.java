@@ -100,8 +100,10 @@ public class visualthumbnailUI {
 				//Move up the next index whether its video or image
 				xStartIndex += MAX_THUMBNAIL_WIDTH;
 				if(xStartIndex > width) {
-					xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 30;
-					yStartIndex += MAX_THUMBNAIL_HEIGHT;
+					if(yStartIndex < height){
+						yStartIndex += MAX_THUMBNAIL_HEIGHT;
+						xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 30;
+					}
 				}
 			}
 		}
@@ -165,9 +167,11 @@ public class visualthumbnailUI {
 	 * 
 	 */
 	public void showNextItems(){
-		start_index++;
+		//start_index++;
 		if(start_index > items.size()){
 			start_index = 0;
+		} else {
+			start_index += 15;
 		}
 	}
 	
