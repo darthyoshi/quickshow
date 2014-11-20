@@ -157,8 +157,12 @@ public class Quickshow extends PApplet {
 	            break;
 	        
 	        case "Clear slides": 
+	        	vTimeline.clearSelectedSlides();
 	            break;
-	        
+	        case "Up":
+	        	break;
+	        case "Down":
+	        	break;
 	        case "Next": 
 	            break;
 	        

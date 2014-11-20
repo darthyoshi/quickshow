@@ -22,6 +22,8 @@ public class controlbuttonUI {
 	Button clearVisualTimeline;
 	Button selectAllVideos;
 	Button selectAllImages;
+	Button upButton;
+	Button downButton;
 	Toggle shuffleToggle;
 	Button nextSlides;
 	Button prevSlides;
@@ -43,7 +45,7 @@ public class controlbuttonUI {
 	    
 		group = buttonUI.addGroup("buttonUI").setLabel("");
 		
-        lockButtons = new Button[10];
+        lockButtons = new Button[12];
 		
 		//For the entire slideshow
 
@@ -94,17 +96,27 @@ public class controlbuttonUI {
 		    .setSize(150,15)
 		    .setGroup(group);
 		
+		lockButtons[7] = upButton = buttonUI.addButton("Up")
+			    .setPosition(540, 402)
+			    .setSize(50,15)
+			    .setGroup(group);
+		
+		lockButtons[8] = downButton = buttonUI.addButton("Down")
+			    .setPosition(600, 402)
+			    .setSize(50,15)
+			    .setGroup(group);
+		
 		//To control the visual timeline thumbnail
-		lockButtons[7] = nextSlides = buttonUI.addButton("Next")
+		lockButtons[9] = nextSlides = buttonUI.addButton("Next")
 		    .setPosition(802, 570)
 		    .setGroup(group);
 		
-		lockButtons[8] = prevSlides = buttonUI.addButton("Previous")
+		lockButtons[10] = prevSlides = buttonUI.addButton("Previous")
 		    .setPosition(30, 570)
 		    .setGroup(group);
 		
 		//Load media
-		lockButtons[9] = loadMedia = buttonUI.addButton("Load Media")
+		lockButtons[11] = loadMedia = buttonUI.addButton("Load Media")
 		    .setPosition(675, 10)
 		    .setSize(193, 15)
 		    .setGroup(group);

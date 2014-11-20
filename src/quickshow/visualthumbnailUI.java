@@ -26,20 +26,26 @@ public class visualthumbnailUI {
 	ArrayList <VisualItem> items;
 	ArrayList <VisualItem> selectedItems;
 	
-	private final int MAX_THUMBNAIL_HEIGHT = 124;
-	private final int MAX_THUMBNAIL_WIDTH = 123;
+	final private int MAX_THUMBNAIL_HEIGHT = 124;
+	final private int MAX_THUMBNAIL_WIDTH = 123;
+	final private int MAX_NUM_DISPLAY = 15;
 	final private int width = 620;
 	final private int height = 370;
+	
+	private int start_index = 0;
+	private int currIndex = 0;
 	
 	private float my_new_height;
 	private float my_new_width;
 	private int xPlacementCounter;
 	private int yPlacementCounter;
-	//private float scaleFactor = 1.0f;
 	final int lowXBound = 30;
 	final int highXBound = 650;
 	final int lowYBound = 30;
 	final int highYBound = 400;
+
+	private int oldListSize = 0;
+	
 	
 
 	public visualthumbnailUI(Quickshow parent){
@@ -61,38 +67,41 @@ public class visualthumbnailUI {
 	 * 
 	 */
 	public void drawThumbNails(){
-		int xStartIndex = 95;
-		int yStartIndex = 95;
-		float xScaleFactor;
-		float yScaleFactor;
-		if(items != null) {
+		int xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 30;
+		int yStartIndex = MAX_THUMBNAIL_HEIGHT/2 + 30;
+		float scaleFactor;
+		
+		if(items.size() > 0) {
 		//Iterate through the items to display them as thumbnail
-			xScaleFactor = 1.0f;
-			yScaleFactor = 1.0f;
-			for (VisualItem v: items){
-				if(v.checkType().equals("image")) {
-					p = ((ImageItem) v).getImage();
+			scaleFactor = 1.0f;
+			for (int i = 0; i < MAX_NUM_DISPLAY && i < items.size(); i++){
+				
+				if(items.get(i).checkType().equals("image")) {
+					p = ((ImageItem) items.get(i)).getImage();
 					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
-						//if(p.height > p.width){
-							xScaleFactor = 1.0f/((float) p.height/ (float) MAX_THUMBNAIL_HEIGHT);
-						//}
-						//else {
-							yScaleFactor = 1.0f/((float) p.width/ (float) MAX_THUMBNAIL_WIDTH);
-					//	}
+						if(p.height >= p.width){
+							scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
+						}
+						else {
+							scaleFactor = 1.0f/((float) p.width/ (float) (MAX_THUMBNAIL_WIDTH-15));
+						}
 					}
 					
-					System.out.println("x scaleFactor is: " + xScaleFactor);
-					my_new_height = (float) p.height * xScaleFactor;
-					my_new_width = (float) p.width * yScaleFactor;
+					my_new_height = (float) p.height * scaleFactor;
+					my_new_width = (float) p.width * scaleFactor;
 					
-					parent.image(p, xStartIndex, yStartIndex, my_new_height, my_new_width);
+					parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
 					
-					//Move up the next index
-					xStartIndex += MAX_THUMBNAIL_WIDTH;
-					if(xStartIndex > width) {
-						xStartIndex = 90;
-						yStartIndex += MAX_THUMBNAIL_HEIGHT;
-					}
+				}
+				if(items.get(i).checkType().equals("video")){
+					//Generate thumbnail
+				}
+				
+				//Move up the next index whether its video or image
+				xStartIndex += MAX_THUMBNAIL_WIDTH;
+				if(xStartIndex > width) {
+					xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 30;
+					yStartIndex += MAX_THUMBNAIL_HEIGHT;
 				}
 			}
 		}
@@ -102,8 +111,10 @@ public class visualthumbnailUI {
 	 * Receive from the file browser
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
-		items.clear();
-		items.addAll(vItems);
+		for(int i = oldListSize; i < vItems.size(); i++){
+			items.add(vItems.get(i));
+		}
+		oldListSize = vItems.size();
 	}
 	
 	/*
@@ -132,6 +143,11 @@ public class visualthumbnailUI {
 		}
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @return
+	 */
 	public ArrayList<VisualItem> returnSelectedItems(){
 		return selectedItems;
 	}
@@ -142,5 +158,25 @@ public class visualthumbnailUI {
 	 */
 	public ArrayList<VisualItem> getVisualItems() {
 	    return items;
+	}
+	
+	/**
+	 * Goes down one page
+	 * 
+	 */
+	public void showNextItems(){
+		start_index++;
+		if(start_index > items.size()){
+			start_index = 0;
+		}
+	}
+	
+	/**
+	 * Goes up one page
+	 * 
+	 */
+	
+	public void showPrevItems(){
+		
 	}
 }
