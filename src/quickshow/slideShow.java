@@ -35,6 +35,8 @@ public class slideShow {
 	private PImage curFrame;
 	private Movie movie;
 	
+	private int frameWidth, frameHeight;
+	
 	private ArrayList <AudioItem> audios;
 	private ArrayList <VisualItem> visuals;
 	private Iterator<VisualItem> visualIter;
@@ -131,6 +133,8 @@ public class slideShow {
 	 * TODO add method header
 	 */
 	public void updateAndDraw() {
+	    parent.background(0);
+	    
 	    if(isPlaying) {
 	        if(curAudioItem != null) {
                 if(curAudioItem.getAudio().position() ==
@@ -171,12 +175,18 @@ public class slideShow {
     	            }
     	            
     	            curFrame = movie;
+    	            
+    	            if(frameWidth == 0) {
+    	                calcFrameDims();
+    	            }
+    	            
+    	            curFrame.resize(frameWidth, frameHeight);
     	        }
 	        }
 	    }
 	    
-	    parent.imageMode(parent.CORNER);
-        parent.image(curFrame, 0, 0);
+	    parent.imageMode(parent.CENTER);
+        parent.image(curFrame, parent.width/2, parent.height/2);
 	    
 	    //TODO display UI elements
 	}
@@ -205,11 +215,29 @@ public class slideShow {
 	}
 	
 	/**
+	 * Calculates the dimensions of the VisualItem frame.
+	 */
+	private void calcFrameDims() {
+        float aspect = 1f * curFrame.width / curFrame.height;
+        
+        frameWidth = (curFrame.width > parent.width ?
+            parent.width : curFrame.width);
+        frameHeight = (int)(frameWidth / aspect);
+        
+        if(frameHeight > parent.height) {
+            frameHeight = parent.height;
+            frameWidth = (int)(frameHeight * aspect);
+        }
+	}
+	
+	/**
 	 * TODO add method header
 	 */
 	private void nextVisualItem() {
 	    movie = null;
 
+	    frameWidth = frameHeight = 0;
+	    
 	    if(visualIter.hasNext()) {
 	        curVisualItem = visualIter.next();
 
@@ -220,6 +248,10 @@ public class slideShow {
 	        
 	        else {
 	            curFrame = ((ImageItem)curVisualItem).getImage();
+	            
+	            calcFrameDims();
+	            
+                curFrame.resize(frameWidth, frameHeight);
 	        }
 	    }
 	    
