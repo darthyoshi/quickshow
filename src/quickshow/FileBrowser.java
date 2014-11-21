@@ -729,7 +729,8 @@ public class FileBrowser {
                 }
                 
                 //file is video
-                if(i == imgExt.length) {
+                if(i == videoExt.length) {
+                	System.out.println("Adding video to results arraylist");
                     results.add(new MovieItem(parent, curDir + '/' + fileName));
                 }
             }

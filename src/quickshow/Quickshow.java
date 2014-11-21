@@ -115,8 +115,6 @@ public class Quickshow extends PApplet {
 	        srcName = theEvent.getGroup().getParent().getName();
 	    }
 	    
-	    println("in control Event == " + srcName);
-	    
 	    switch(srcName) {
 	    case "fileBrowser":
 	        if(browse.isEnabled()) {
@@ -183,10 +181,10 @@ public class Quickshow extends PApplet {
 	        break;
 	        
 	    case "AudioList":
-	    	int test = theEvent.getId();
+	    	//int test = theEvent.getId();
 	    	float value = theEvent.getGroup().getValue();
-	    	String testStr = theEvent.getGroup().getAddress();
-	    	println(srcName + test + testStr+value);
+	    	//String testStr = theEvent.getGroup().getAddress();
+	    	//println(srcName + test + testStr+value);
 	    	audioListbox.addToSelectedSongs((int) value);
 	    	aT.receiveSelectedSongs(audioListbox.sendSongList());
 	    }

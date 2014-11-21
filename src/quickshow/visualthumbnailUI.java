@@ -10,9 +10,8 @@ import java.util.ArrayList;
 
 import processing.core.PImage;
 import processing.core.PShape;
+import processing.video.Movie;
 import quickshow.datatypes.*;
-
-
 import controlP5.*;
 
 public class visualthumbnailUI {
@@ -21,8 +20,8 @@ public class visualthumbnailUI {
     private boolean debug = true;
     
 	int num_items;
-	PShape rect1;
 	PImage p;
+	Movie movie;
 	ArrayList <VisualItem> items;
 	ArrayList <VisualItem> selectedItems;
 	
@@ -37,8 +36,6 @@ public class visualthumbnailUI {
 	
 	private float my_new_height;
 	private float my_new_width;
-	private int xPlacementCounter;
-	private int yPlacementCounter;
 	final int lowXBound = 30;
 	final int highXBound = 650;
 	final int lowYBound = 30;
@@ -95,6 +92,12 @@ public class visualthumbnailUI {
 				}
 				if(items.get(j).checkType().equals("video")){
 					//Generate thumbnail
+					movie = ((MovieItem) items.get(j)).getMovie();
+					System.out.println("Generating movie thumbnail");
+                    p.copy(movie, 0, 0, movie.width, movie.height, 0, 0, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
+                    movie.stop();
+                    
+                    parent.image(p, xStartIndex, yStartIndex, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
 				}
 				
 				//Move up the next index whether its video or image
@@ -113,6 +116,9 @@ public class visualthumbnailUI {
 	 * Receive from the file browser
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
+		System.out.println("Receiving items size: " + vItems.size());
+		
+		
 		for(int i = oldListSize; i < vItems.size(); i++){
 			items.add(vItems.get(i));
 		}
@@ -132,7 +138,7 @@ public class visualthumbnailUI {
 		
 		int xIndex = xValue/124;
 		int yIndex = yValue/123;
-		int mainIndex = start_index + yIndex * 5 + xIndex;
+		int mainIndex = start_index + ((yIndex * 5) + xIndex);
 		
 		System.out.println("Grid coord x: " + xIndex + " y: " + yIndex);
 		System.out.println("main index: " + mainIndex);
