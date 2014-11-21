@@ -162,13 +162,17 @@ public class Quickshow extends PApplet {
 	        	vTimeline.clearSelectedSlides();
 	            break;
 	        case "Up":
+	        	thumbnails.showPrevItems();
 	        	break;
 	        case "Down":
+	        	thumbnails.showNextItems();
 	        	break;
-	        case "Next": 
+	        case "Next":
+	        	vTimeline.showNextOnTimeline();
 	            break;
 	        
 	        case "Previous": 
+	        	vTimeline.showPrevOnTimeline();
 	            break;
 	        
 	        case "Load Media":

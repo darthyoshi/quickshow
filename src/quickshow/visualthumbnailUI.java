@@ -33,7 +33,7 @@ public class visualthumbnailUI {
 	final private int height = 370;
 	
 	private int start_index = 0;
-	private int currIndex = 0;
+	private int num_pages;
 	
 	private float my_new_height;
 	private float my_new_width;
@@ -74,10 +74,10 @@ public class visualthumbnailUI {
 		if(items.size() > 0) {
 		//Iterate through the items to display them as thumbnail
 			scaleFactor = 1.0f;
-			for (int i = 0; i < MAX_NUM_DISPLAY && i < items.size(); i++){
+			for (int i = 0, j = start_index; i < MAX_NUM_DISPLAY && j < items.size(); i++, j++){
 				
-				if(items.get(i).checkType().equals("image")) {
-					p = ((ImageItem) items.get(i)).getImage();
+				if(items.get(j).checkType().equals("image")) {
+					p = ((ImageItem) items.get(j)).getImage();
 					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
 						if(p.height >= p.width){
 							scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
@@ -93,7 +93,7 @@ public class visualthumbnailUI {
 					parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
 					
 				}
-				if(items.get(i).checkType().equals("video")){
+				if(items.get(j).checkType().equals("video")){
 					//Generate thumbnail
 				}
 				
@@ -117,6 +117,8 @@ public class visualthumbnailUI {
 			items.add(vItems.get(i));
 		}
 		oldListSize = vItems.size();
+		
+		num_pages = items.size()/MAX_NUM_DISPLAY;
 	}
 	
 	/*
@@ -130,7 +132,7 @@ public class visualthumbnailUI {
 		
 		int xIndex = xValue/124;
 		int yIndex = yValue/123;
-		int mainIndex = yIndex * 5 + xIndex;
+		int mainIndex = start_index + yIndex * 5 + xIndex;
 		
 		System.out.println("Grid coord x: " + xIndex + " y: " + yIndex);
 		System.out.println("main index: " + mainIndex);
@@ -167,11 +169,9 @@ public class visualthumbnailUI {
 	 * 
 	 */
 	public void showNextItems(){
-		//start_index++;
+		start_index += 15;
 		if(start_index > items.size()){
 			start_index = 0;
-		} else {
-			start_index += 15;
 		}
 	}
 	
@@ -181,6 +181,9 @@ public class visualthumbnailUI {
 	 */
 	
 	public void showPrevItems(){
-		
+		start_index -= 15;
+		if(start_index < 0){
+			start_index = items.size() - (items.size()%15);
+		}
 	}
 }
