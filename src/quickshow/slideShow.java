@@ -31,6 +31,7 @@ public class slideShow {
 	
 	private Group group;
 	private Button[] buttons;
+	private PImage[] playPauseImages;
     
 	private PImage curFrame;
 	private Movie movie;
@@ -41,12 +42,12 @@ public class slideShow {
 	private ArrayList <VisualItem> visuals;
 	private Iterator<VisualItem> visualIter;
 	private Iterator<AudioItem> audioIter;
-	private AudioItem curAudioItem;
-	private VisualItem curVisualItem;
+	private AudioItem curAudioItem = null;
+	private VisualItem curVisualItem = null;
 	
 	private double imgDispTime;
 	
-	private boolean isPlaying = false, isEnabled = false;
+	private boolean isPlaying = false, isEnabled = false, shuffle = false;
 	
     /**
      * Class constructor.
@@ -69,12 +70,25 @@ public class slideShow {
 		
 		buttons = new Button[2];
 		
+		playPauseImages = new PImage[2];
+		
+		playPauseImages[0] = parent.loadImage("data/img/playbutton.png");
+		playPauseImages[1] = parent.loadImage("data/img/pausebutton.png");
+		
 		buttons[0] = control.addButton("playButton")
+            .setCaptionLabel("")
 			.setLock(true)
+			.setSize(30, 30)
+			.setPosition(820, 560)
+			.setImage(playPauseImages[0])
 			.setGroup(group);
 		
 		buttons[1] = control.addButton("stopButton")
+	        .setCaptionLabel("")
 			.setLock(true)
+			.setPosition(860, 560)
+			.setSize(30, 30)
+			.setImage(parent.loadImage("data/img/stopbutton.png"))
 			.setGroup(group);
 	}
 	
@@ -91,7 +105,10 @@ public class slideShow {
 	    }
 	    
 	    audioIter = audios.iterator();
-	    curAudioItem = (audioIter.hasNext() ? audioIter.next() : null);
+	    
+	    if(audioIter.hasNext()) {
+	        curAudioItem = audioIter.next();
+	    }
 	}
 	
 	/**
@@ -107,7 +124,7 @@ public class slideShow {
         }
         
         visualIter = visuals.iterator();
-        //curVisualItem = (visualIter.hasNext() ? visualIter.next() : null);
+
         nextVisualItem();
     }
 	
@@ -133,7 +150,7 @@ public class slideShow {
 	 * TODO add method header
 	 */
 	public void updateAndDraw() {
-	    parent.background(0);
+	    //parent.background(0);
 	    
 	    if(isPlaying) {
 	        if(curAudioItem != null) {
@@ -198,7 +215,11 @@ public class slideShow {
 		isPlaying = !isPlaying;
 		
 		if(!isPlaying) {
-		    curAudioItem.getAudio().pause();
+		    if(curAudioItem != null) {
+		        curAudioItem.getAudio().pause();
+		    }
+		    
+		    buttons[0].setImage(playPauseImages[0]);
 		    
 		    if(movie != null) {
 		        movie.pause();
@@ -206,7 +227,11 @@ public class slideShow {
 		}
 		
 		else {
-		    curAudioItem.getAudio().play();
+		    if(curAudioItem != null) {
+		        curAudioItem.getAudio().play();
+		    }
+		    
+		    buttons[0].setImage(playPauseImages[1]);
 		    
 		    if(movie != null) {
 		        movie.play();
@@ -266,6 +291,8 @@ public class slideShow {
 	public void stop() {
 	    isPlaying = isEnabled = false;
 	    
+	    buttons[0].setImage(playPauseImages[0]);
+	    
 	    if(curAudioItem != null) {
 	        curAudioItem.getAudio().pause();
 	    }
@@ -317,6 +344,8 @@ public class slideShow {
 	public void startPlaying() {
 	    isPlaying = isEnabled = true;
 	    
+	    buttons[0].setImage(playPauseImages[1]);
+	    
 	    if(curAudioItem != null) {
 	        if(debug) {
 	            parent.println("starting audio file");
@@ -324,7 +353,16 @@ public class slideShow {
 	        curAudioItem.getAudio().play();
 	    }
 	    
+	    toggle(true);
+	    
         imgDispTime = 0;
 	}
 	
+	/**
+	 * Toggles the slide show shuffle.
+	 * @param shuffle whether or not to shuffle the slide show
+	 */
+	public void toggleShuffle(boolean shuffle) {
+	    this.shuffle = shuffle;
+	}
 }
