@@ -93,7 +93,9 @@ public class visualthumbnailUI {
 				if(items.get(j).checkType().equals("video")){
 					//Generate thumbnail
 					movie = ((MovieItem) items.get(j)).getMovie();
+					movie.play();
 					System.out.println("Generating movie thumbnail");
+					//Read the movie
                     p.copy(movie, 0, 0, movie.width, movie.height, 0, 0, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
                     movie.stop();
                     
