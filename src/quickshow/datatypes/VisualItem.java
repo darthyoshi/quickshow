@@ -7,26 +7,39 @@
 package quickshow.datatypes;
 
 import java.util.ArrayList;
+
+import processing.core.PImage;
 import quickshow.Quickshow;
 
 public abstract class VisualItem extends MediaItem {
-    ArrayList<String> annotationTexts;
-    ArrayList<Integer[]> annotationTimes;
-    Quickshow parent;
+    private ArrayList<String> annotationTexts;
+    private ArrayList<Integer[]> annotationTimes;
+    private Quickshow parent;
+    private PImage thumb;
     
     /**
      * Class constructor.
      * @param parent the Quickshow object
-     * @param fileName the file name of the media item to load  
+     * @param fileName the file name of the media file to load 
+     * @param thumb the media item thumbnail 
      */
-    public VisualItem(Quickshow parent, String fileName) {
+    public VisualItem(Quickshow parent, String fileName, PImage thumb) {
         super(fileName);
         
+        this.thumb = thumb;
         this.parent = parent;
         
         annotationTexts = new ArrayList<String>();
         annotationTimes = new ArrayList<Integer[]>();
     }
+    
+    /**
+     * Retrieves the thumbnail associated with this MediaItem.
+     * @return the thumbnail
+     */
+    public PImage getThumbnail() {
+    	return thumb;
+    }    
     
     /**
      * Adds a text annotation to the VisualItem.

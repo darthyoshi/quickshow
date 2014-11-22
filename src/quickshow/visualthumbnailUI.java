@@ -74,7 +74,7 @@ public class visualthumbnailUI {
 			for (int i = 0, j = start_index; i < MAX_NUM_DISPLAY && j < items.size(); i++, j++){
 				
 				if(items.get(j).checkType().equals("image")) {
-					p = ((ImageItem) items.get(j)).getImage();
+					p = items.get(j).getThumbnail();
 					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
 						if(p.height >= p.width){
 							scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
@@ -92,10 +92,11 @@ public class visualthumbnailUI {
 				}
 				if(items.get(j).checkType().equals("video")){
 					//Generate thumbnail
-					movie = ((MovieItem) items.get(j)).getMovie();
+				//	movie = ((MovieItem) items.get(j)).getMovie();
 					System.out.println("Generating movie thumbnail");
-                    p.copy(movie, 0, 0, movie.width, movie.height, 0, 0, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
-                    movie.stop();
+                //    p.copy(movie, 0, 0, movie.width, movie.height, 0, 0, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
+					p = items.get(j).getThumbnail();
+                //    movie.stop();
                     
                     parent.image(p, xStartIndex, yStartIndex, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
 				}

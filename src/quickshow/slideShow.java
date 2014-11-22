@@ -79,17 +79,19 @@ public class slideShow {
             .setCaptionLabel("")
 			.setLock(true)
 			.setSize(30, 30)
-			.setPosition(820, 560)
+			.setPosition(10, 10)
 			.setImage(playPauseImages[0])
 			.setGroup(group);
 		
 		buttons[1] = control.addButton("stopButton")
 	        .setCaptionLabel("")
 			.setLock(true)
-			.setPosition(860, 560)
+			.setPosition(50, 10)
 			.setSize(30, 30)
 			.setImage(parent.loadImage("data/img/stopbutton.png"))
 			.setGroup(group);
+		
+		curFrame = parent.createImage(0, 0, parent.RGB);
 	}
 	
 	/**
@@ -150,7 +152,7 @@ public class slideShow {
 	 * TODO add method header
 	 */
 	public void updateAndDraw() {
-	    //parent.background(0);
+	    parent.background(0xff555555);
 	    
 	    if(isPlaying) {
 	        if(curAudioItem != null) {
@@ -185,20 +187,24 @@ public class slideShow {
     	            	movie.read();
     	            }
     	            
+    	            curFrame = movie;
+    	            
     	            if(movie.time() == movie.duration()) {
     	                movie.stop();
     	                
     	                nextVisualItem();
     	            }
     	            
-    	            curFrame = movie;
-    	            
-    	            if(frameWidth == 0) {
+    	            if(frameWidth == 0){
     	                calcFrameDims();
     	            }
     	            
     	            curFrame.resize(frameWidth, frameHeight);
     	        }
+	        }
+	        
+	        else {
+	        	stop();
 	        }
 	    }
 	    
@@ -345,6 +351,10 @@ public class slideShow {
 	    isPlaying = isEnabled = true;
 	    
 	    buttons[0].setImage(playPauseImages[1]);
+	    
+	    if(movie != null) {
+	    	movie.play();
+	    }
 	    
 	    if(curAudioItem != null) {
 	        if(debug) {

@@ -14,10 +14,11 @@ public class MovieItem extends VisualItem {
     /**
      * Class constructor.
      * @param parent the Quickshow object
-     * @param fileName the file name of the video to load
+     * @param fileName the file name of the video file to load
+     * @param thumb the MediaItem thumbnail
      */
-    public MovieItem(quickshow.Quickshow parent, String fileName) {
-        super(parent, fileName);
+    public MovieItem(quickshow.Quickshow parent, String fileName, processing.core.PImage thumb) {
+        super(parent, fileName, thumb);
         
         movie = new Movie(parent, fileName);
     }
