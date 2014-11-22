@@ -38,12 +38,15 @@ public class slideShow {
 	
 	private int frameWidth, frameHeight;
 	
-	private ArrayList <AudioItem> audios;
-	private ArrayList <VisualItem> visuals;
+	private ArrayList<AudioItem> audios;
+	private ArrayList<VisualItem> visuals;
 	private Iterator<VisualItem> visualIter;
 	private Iterator<AudioItem> audioIter;
 	private AudioItem curAudioItem = null;
 	private VisualItem curVisualItem = null;
+	
+	private ArrayList<String> curAnnotationTexts;
+	private ArrayList<Float[]> curAnnotationTimes;
 	
 	private double imgDispTime;
 	
@@ -63,6 +66,9 @@ public class slideShow {
 		
 		audios = new ArrayList<AudioItem>();
 		visuals = new ArrayList<VisualItem>();
+		
+		curAnnotationTexts = new ArrayList<String>();
+		curAnnotationTimes = new ArrayList<Float[]>();
 		
 		group = control.addGroup("slideShow")
 			.setCaptionLabel("")
@@ -271,7 +277,12 @@ public class slideShow {
 	    
 	    if(visualIter.hasNext()) {
 	        curVisualItem = visualIter.next();
+	        
+	        curAnnotationTexts.addAll(curVisualItem.getAnnotationTexts());
+	        curAnnotationTimes.addAll(curVisualItem.getAnnotationTimes());
 
+	        //TODO figure out which tags should display and when
+	        
 	        if(curVisualItem.checkType().equals("video")) {
 	            movie = ((MovieItem)curVisualItem).getMovie();
 	            movie.play();

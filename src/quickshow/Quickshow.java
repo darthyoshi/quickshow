@@ -145,7 +145,15 @@ public class Quickshow extends PApplet {
 	            
 	            break;
 	        
-	        case "Shuffle Slides": 
+	        case "Shuffle Slides":
+	            if(debug) {
+	                println("shuffle: " + 
+                        ((controlP5.Toggle)theEvent.
+                            getController()).getState());
+	            }
+
+	            show.toggleShuffle(
+                    ((controlP5.Toggle)theEvent.getController()).getState());
 	            
 	            break;
 	        

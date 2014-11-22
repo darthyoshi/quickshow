@@ -13,7 +13,7 @@ import quickshow.Quickshow;
 
 public abstract class VisualItem extends MediaItem {
     private ArrayList<String> annotationTexts;
-    private ArrayList<Integer[]> annotationTimes;
+    private ArrayList<Float[]> annotationTimes;
     private Quickshow parent;
     private PImage thumb;
     
@@ -30,7 +30,7 @@ public abstract class VisualItem extends MediaItem {
         this.parent = parent;
         
         annotationTexts = new ArrayList<String>();
-        annotationTimes = new ArrayList<Integer[]>();
+        annotationTimes = new ArrayList<Float[]>();
     }
     
     /**
@@ -47,13 +47,38 @@ public abstract class VisualItem extends MediaItem {
      * @param startTime the time when the annotation should appear
      * @param stopTime the time when the annotation should disappear
      */
-    public void addAnnotation(String text, int startTime, int stopTime) {
+    public void addAnnotation(String text, float startTime, float stopTime) {
         annotationTexts.add(text);
         
-        Integer[] times = new Integer[2];
+        Float[] times = new Float[2];
         times[0] = startTime;
         times[1] = stopTime;
         annotationTimes.add(times);
+    }
+    
+    public void setAnnotation(int index, String text, float startTime, float stopTime) {
+        annotationTexts.set(index, text);
+        
+        Float[] times = new Float[2];
+        times[0] = startTime;
+        times[1] = stopTime;
+        annotationTimes.set(index, times);
+    }
+    
+    /**
+     * TODO add method header
+     * @return
+     */
+    public ArrayList<String> getAnnotationTexts() {
+        return annotationTexts;
+    }
+    
+    /**
+     * TODO add method header
+     * @return
+     */
+    public ArrayList<Float[]> getAnnotationTimes() {
+        return annotationTimes;
     }
     
     /**
