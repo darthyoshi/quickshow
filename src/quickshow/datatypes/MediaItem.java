@@ -7,8 +7,8 @@
 package quickshow.datatypes;
 
 public abstract class MediaItem {
-    String fileName;
-
+    private String fileName;
+  
     private static final String[] imgExt = {
         "bmp", "jpg", "png", "gif" 
     };
@@ -17,8 +17,20 @@ public abstract class MediaItem {
         "mp3", "wav", "aiff", "au", "snd"
     };
     
+    /**
+     * Class constructor.
+     * @param fileName the file name of the media file to load
+     */
     public MediaItem(String fileName) {
         this.fileName = fileName;
+    }
+    
+    /**
+     * Retrieves the file name of the media item.
+     * @return the name of the media file
+     */
+    public String getFileName() {
+    	return fileName;
     }
     
     /**

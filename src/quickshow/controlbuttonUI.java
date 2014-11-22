@@ -29,9 +29,6 @@ public class controlbuttonUI {
 	Button loadMedia;
 	Button[] lockButtons;
 	
-	ControlEvent events;
-	ControlListener l;
-	
 	/*
 	 * TODO make sure to get interactivity
 	 */
@@ -65,8 +62,9 @@ public class controlbuttonUI {
 	        resetShowButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		shuffleToggle = buttonUI.addToggle("Shuffle Slides")
-	        .setMode(ControlP5.SWITCH)
+	        //.setMode(ControlP5.SWITCH)
 	        .setPosition(360, 10)
+	        .setSize(20, 20)
 	        .setCaptionLabel(" Shuffle Slides")
 	        .setGroup(group);
 		shuffleToggle.getCaptionLabel().align(buttonUI.RIGHT_OUTSIDE, buttonUI.CENTER);

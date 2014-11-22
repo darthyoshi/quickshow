@@ -138,46 +138,69 @@ public class Quickshow extends PApplet {
 	            break;
 	        
 	        case "Share/Export": 
+	            
 	            break;
 	        
 	        case "Reset":
+	            
 	            break;
 	        
-	        case "Shuffle Slides": 
+	        case "Shuffle Slides":
+	            if(debug) {
+	                println("shuffle: " + 
+                        ((controlP5.Toggle)theEvent.
+                            getController()).getState());
+	            }
+
+	            show.toggleShuffle(
+                    ((controlP5.Toggle)theEvent.getController()).getState());
+	            
 	            break;
 	        
 	        case "Clear selected songs": 
 	        	audioListbox.clearSelectedSongs();
-	            break;
+	            
+	        	break;
 	        
 	        case "Select All Pictures": 
+	            
 	            break;
 	        
 	        case "Select All Clips": 
+	            
 	            break;
 	        
 	        case "Clear slides": 
 	        	vTimeline.clearSelectedSlides();
-	            break;
+	            
+	        	break;
 	        case "Up":
 	        	thumbnails.showPrevItems();
+	        	
 	        	break;
+	        
 	        case "Down":
 	        	thumbnails.showNextItems();
+	        
 	        	break;
+	        
 	        case "Next":
 	        	vTimeline.showNextOnTimeline();
-	            break;
+	        
+	        	break;
 	        
 	        case "Previous": 
 	        	vTimeline.showPrevOnTimeline();
-	            break;
+	            
+	        	break;
 	        
 	        case "Load Media":
 	            browse.toggle(true);
 	            toggleMain(false);
+	            
 	            break;
 	        }
+	        
 	        break;
 	        
 	    case "AudioList":
@@ -187,6 +210,12 @@ public class Quickshow extends PApplet {
 	    	//println(srcName + test + testStr+value);
 	    	audioListbox.addToSelectedSongs((int) value);
 	    	aT.receiveSelectedSongs(audioListbox.sendSongList());
+	    	
+	    	break;
+	    	
+	    case "slideShow":
+	        show.controlEvent(theEvent);
+	        
 	    }
     }
 	 

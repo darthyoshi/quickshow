@@ -7,26 +7,39 @@
 package quickshow.datatypes;
 
 import java.util.ArrayList;
+
+import processing.core.PImage;
 import quickshow.Quickshow;
 
 public abstract class VisualItem extends MediaItem {
-    ArrayList<String> annotationTexts;
-    ArrayList<Integer[]> annotationTimes;
-    Quickshow parent;
+    private ArrayList<String> annotationTexts;
+    private ArrayList<Float[]> annotationTimes;
+    private Quickshow parent;
+    private PImage thumb;
     
     /**
      * Class constructor.
      * @param parent the Quickshow object
-     * @param fileName the file name of the media item to load  
+     * @param fileName the file name of the media file to load 
+     * @param thumb the media item thumbnail 
      */
-    public VisualItem(Quickshow parent, String fileName) {
+    public VisualItem(Quickshow parent, String fileName, PImage thumb) {
         super(fileName);
         
+        this.thumb = thumb;
         this.parent = parent;
         
         annotationTexts = new ArrayList<String>();
-        annotationTimes = new ArrayList<Integer[]>();
+        annotationTimes = new ArrayList<Float[]>();
     }
+    
+    /**
+     * Retrieves the thumbnail associated with this MediaItem.
+     * @return the thumbnail
+     */
+    public PImage getThumbnail() {
+    	return thumb;
+    }    
     
     /**
      * Adds a text annotation to the VisualItem.
@@ -34,13 +47,38 @@ public abstract class VisualItem extends MediaItem {
      * @param startTime the time when the annotation should appear
      * @param stopTime the time when the annotation should disappear
      */
-    public void addAnnotation(String text, int startTime, int stopTime) {
+    public void addAnnotation(String text, float startTime, float stopTime) {
         annotationTexts.add(text);
         
-        Integer[] times = new Integer[2];
+        Float[] times = new Float[2];
         times[0] = startTime;
         times[1] = stopTime;
         annotationTimes.add(times);
+    }
+    
+    public void setAnnotation(int index, String text, float startTime, float stopTime) {
+        annotationTexts.set(index, text);
+        
+        Float[] times = new Float[2];
+        times[0] = startTime;
+        times[1] = stopTime;
+        annotationTimes.set(index, times);
+    }
+    
+    /**
+     * TODO add method header
+     * @return
+     */
+    public ArrayList<String> getAnnotationTexts() {
+        return annotationTexts;
+    }
+    
+    /**
+     * TODO add method header
+     * @return
+     */
+    public ArrayList<Float[]> getAnnotationTimes() {
+        return annotationTimes;
     }
     
     /**
