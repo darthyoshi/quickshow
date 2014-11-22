@@ -9,7 +9,7 @@ package quickshow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.ListIterator;
 
 import processing.core.PImage;
 import processing.video.Movie;
@@ -33,6 +33,12 @@ public class FileBrowser {
     
     private ArrayList<String> fileNames;
     private ArrayList<PImage> thumbs;
+
+    private ArrayList<QItem> q;
+    private ListIterator<QItem> qIter;
+    private QItem curQItem = null;
+    private Movie movie = null;
+
     private ArrayList<Integer> selectedIndex;
     
     private ArrayList<MediaItem> results;
@@ -52,10 +58,11 @@ public class FileBrowser {
     private ddf.minim.Minim minim;
     
     private int curDisplayIndex = 0;
+    
     private boolean isAudioMode = false;
     
     int thumbWidth, thumbHeight;
-    int firstThumbX = 111, firstThumbY = 120;
+    final int firstThumbX = 111, firstThumbY = 120;
 
     private static final String[] imgExt = {
         "bmp", "jpg", "png", "gif" 
@@ -106,7 +113,10 @@ public class FileBrowser {
         thumbWidth = 136;
         
         fileNames = new ArrayList<String>();
-        thumbs = new ArrayList<PImage>(20);
+        thumbs = new ArrayList<PImage>();
+        q = new ArrayList<QItem>();
+        qIter = q.listIterator(); 
+        
         selectedIndex = new ArrayList<Integer>(20);
         
         results = new ArrayList<MediaItem>();
@@ -254,6 +264,26 @@ public class FileBrowser {
     }
     
     /**
+     * Retrieves the next video queue item for thumbnail generation.
+     */
+    private void getNextQItem() {
+        if(qIter.hasPrevious()) {
+            if(curQItem == null || curQItem.isHandled) {
+                curQItem = qIter.previous();
+                
+                qIter.remove();
+                
+                movie = new Movie(parent, curQItem.name);
+                movie.play();
+            }
+        }
+        
+        else {
+            curQItem = null;
+        }
+    }
+    
+    /**
      * ControlP5 UI handler. Changes to parent directory if applicable.
      */
     private void parentDirButton() {
@@ -322,12 +352,11 @@ public class FileBrowser {
     }
     
     /**
-     * TODO change thumbnails
+     * Generates thumbnails when paginating through a directory if necessary.
      */
     private void updateThumbs() {
     	String fullPath;
     	String[] fileNameParts;
-    	Movie movie;
     	PImage thumb;
     	PImage thumb1 = parent.loadImage("data/img/folderThumbNail.png");
     	PImage thumb2 = parent.loadImage("data/img/audioThumbNail.png");
@@ -339,7 +368,6 @@ public class FileBrowser {
         short j;
         
     	for(int i = curDisplayIndex; i < curDisplayIndex + 20 && i < fileNames.size(); i++) {
-    		//
     		if(thumbs.get(i) == null) {
 	    		fullPath = curDir + '/' + fileNames.get(i);
 	    		
@@ -367,26 +395,9 @@ public class FileBrowser {
 		    			}
 	
 		    			if(j == imgExt.length) {
-		    			    movie = new Movie(parent, fullPath);
-                            movie.play();
-
-                            if(debug) {
-                                parent.println("loading movie: " + fullPath);
-                                parent.println("" + movie.duration() + 's');
-                            }
-                            if(movie.available()) {
-                                if(debug) {
-                                    parent.println("getting 1st movie frame");
-                                }
-                                movie.read();
-                            }
-                            thumbDims = newImageDims(movie);
-                            thumb = movie.get();
-                            movie.stop();
-                       
-                            thumb.resize(thumbDims[0], thumbDims[1]);
-
-		                    thumbs.set(i, thumb);
+		    			    qIter.add(new QItem(i, fullPath));
+		                    
+		                    thumb = null;
 		    			}
 		    		}
 	    		}
@@ -395,6 +406,8 @@ public class FileBrowser {
 	    		thumbs.set(i, thumb);
     		}
     	}
+    	
+    	getNextQItem();
     }
     
     /**
@@ -499,10 +512,27 @@ public class FileBrowser {
      * Callback method for drawing the FileBrowser UI.
      */
     public void draw() {
-        /*if(pathField.getText().equals("")) {
-            pathField.setText(curDir);
-        }TODO
-        */
+        if(movie != null) {
+            if(movie.available()) {
+                movie.read();
+            
+                int[] thumbDims = newImageDims(movie);
+                
+                PImage thumb = movie.get();
+                
+                movie.stop();
+                movie = null;
+                
+                thumb.resize(thumbDims[0], thumbDims[1]);
+                
+                thumbs.set(curQItem.index, thumb);
+                
+                curQItem.isHandled = true;
+                
+                getNextQItem();
+            }
+        }
+
         //draw thumbnail window
         parent.fill(0xffffff);
         parent.stroke(0);
@@ -530,10 +560,12 @@ public class FileBrowser {
                 j++, imgIndex++)
             {
                 //draw thumbnail columns
-                parent.image(
-                    thumbs.get(curDisplayIndex+j+5*i),
-                    109 + j*162, 120 + i*115
-                );
+                if(thumbs.get(curDisplayIndex+j+5*i) != null) {
+                    parent.image(
+                        thumbs.get(curDisplayIndex+j+5*i),
+                        109 + j*162, 120 + i*115
+                    );
+                }
                 
                 fileName = fileNames.get(curDisplayIndex+j+5*i);
                 
@@ -608,7 +640,7 @@ public class FileBrowser {
             }
             
             ArrayList<File> files = new ArrayList<File>(java.util.Arrays.asList(file.listFiles()));
-            Iterator<File> fileIter = files.iterator();
+            ListIterator<File> fileIter = files.listIterator();
             
             String fileName, fullPath;
             String[] fileNameParts;
@@ -646,7 +678,7 @@ public class FileBrowser {
                 thumb = parent.loadImage("data/img/audioThumbNail.png");
                 thumb.resize(thumbWidth, thumbHeight);
                 
-                fileIter = files.iterator();
+                fileIter = files.listIterator();
                 while(fileIter.hasNext()) {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
@@ -677,7 +709,7 @@ public class FileBrowser {
     
             else {
                 //list images
-                fileIter = files.iterator();
+                fileIter = files.listIterator();
                 while(fileIter.hasNext()) {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
@@ -721,48 +753,26 @@ public class FileBrowser {
                 }
                 
                 //list videos
-                fileIter = files.iterator();
+                fileIter = files.listIterator();
                 while(fileIter.hasNext()) {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
                     fullPath = curDir + '/' + fileName;
         
-                    Movie movie;
-                    
                     //create thumbnail of 1st frame of video
                     for(i = 0; i < videoExt.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(videoExt[i]))
-                        {
+                        {    
+                            qIter.add(new QItem(thumbs.size(), fullPath));
+                            
+                            thumbs.add(null);
+                            
                         	if(j < 20) {
-                                movie = new Movie(parent, fullPath);
-                                movie.play();
-    
-                                if(debug) {
-                                	parent.println("loading movie: " + fullPath);
-                                	parent.println("" + movie.duration() + 's');
-                                }
-                                if(movie.available()) {
-                                    if(debug) {
-                                        parent.println("getting 1st movie frame");
-                                    }
-                                    movie.read();
-                                }
-                                thumbDims = newImageDims(movie);
-                                thumb = movie.get();
-                                movie.stop();
-                           
-                                thumb.resize(thumbDims[0], thumbDims[1]);
-                                thumbs.add(thumb);
-                                
                                 j++;
                             }
-                        	
-                        	else {
-                        		thumbs.add(null);
-                        	}
                             
-                            fileNames.add(fileName);
+                        	fileNames.add(fileName);
     
                             break;
                         }
@@ -785,6 +795,8 @@ public class FileBrowser {
                 parent.println("#valid items in directory: " + fileNames.size());
             }
         }
+        
+        getNextQItem();
     }
     
     /**
@@ -1129,6 +1141,8 @@ public class FileBrowser {
         
         results.clear();
         
+        tmp.trimToSize();
+        
         return tmp;
     }
     
@@ -1146,5 +1160,19 @@ public class FileBrowser {
      */
     public boolean isAudioMode() {
         return isAudioMode;
+    }
+    
+    /**
+     * Private class for queueing video files for thumbnail generation.
+     */
+    private class QItem {
+        protected int index;
+        protected String name;
+        protected boolean isHandled = false;
+        
+        QItem(int i, String name) {
+            this.index = i;
+            this.name = name;
+        }
     }
 }
