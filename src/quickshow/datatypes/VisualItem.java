@@ -56,6 +56,13 @@ public abstract class VisualItem extends MediaItem {
         annotationTimes.add(times);
     }
     
+    /**
+     * Modifies an existing annotation.
+     * @param index the annotation index
+     * @param text the annotation
+     * @param startTime the time when the annotation should appear
+     * @param stopTime the time when the annotation should disappear
+     */
     public void setAnnotation(int index, String text, float startTime, float stopTime) {
         annotationTexts.set(index, text);
         
@@ -66,16 +73,24 @@ public abstract class VisualItem extends MediaItem {
     }
     
     /**
-     * TODO add method header
-     * @return
+     * Retrieves all annotations associated with the VisualItem.
+     * @return an ArrayList of Strings 
      */
     public ArrayList<String> getAnnotationTexts() {
         return annotationTexts;
     }
     
     /**
-     * TODO add method header
-     * @return
+     * Removes all annotations from the VisualItem.
+     */
+    public void clearAnnotations() {
+        annotationTexts.clear();
+        annotationTimes.clear();
+    }
+    
+    /**
+     * Retrieves all timestamps associated with the VisualItem.
+     * @return an ArrayList of arrays of Floats
      */
     public ArrayList<Float[]> getAnnotationTimes() {
         return annotationTimes;

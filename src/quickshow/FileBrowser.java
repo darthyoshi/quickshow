@@ -7,7 +7,6 @@
 package quickshow;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
@@ -625,7 +624,7 @@ public class FileBrowser {
             try {
                 curDir = file.getCanonicalPath();
             }
-            catch (IOException e) {
+            catch (java.io.IOException e) {
                 return;
             }
     

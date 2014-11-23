@@ -43,7 +43,6 @@ public class controlbuttonUI {
 		
 		//For the entire slideshow
 
-		//buttonUI.addListener(l);
 		lockButtons[0] = playButton = buttonUI.addButton("Play")
 	        .setPosition(30, 10)
 	        .setGroup(group);

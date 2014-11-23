@@ -19,6 +19,7 @@ import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.Group;
+import controlP5.Toggle;
 import ddf.minim.Minim;
 
 @SuppressWarnings("static-access")
@@ -30,9 +31,9 @@ public class slideShow {
 	private Minim minim;
 	
 	private Group group;
-	private Button[] buttons;
-	private PImage[] playPauseImages;
-    
+	private Button stopButton;
+	private Toggle playToggle;
+
 	private PImage curFrame;
 	private Movie movie;
 	
@@ -40,8 +41,8 @@ public class slideShow {
 	
 	private ArrayList<AudioItem> audios;
 	private ArrayList<VisualItem> visuals;
-	private Iterator<VisualItem> visualIter;
-	private Iterator<AudioItem> audioIter;
+	private Iterator<VisualItem> visualIter = null;
+	private Iterator<AudioItem> audioIter = null;
 	private AudioItem curAudioItem = null;
 	private VisualItem curVisualItem = null;
 	
@@ -51,6 +52,8 @@ public class slideShow {
 	private double imgDispTime;
 	
 	private boolean isPlaying = false, isEnabled = false, shuffle = false;
+	
+	private int shuffleIndex;
 	
     /**
      * Class constructor.
@@ -74,22 +77,19 @@ public class slideShow {
 			.setCaptionLabel("")
 			.setVisible(false);
 		
-		buttons = new Button[2];
-		
-		playPauseImages = new PImage[2];
-		
-		playPauseImages[0] = parent.loadImage("data/img/playbutton.png");
-		playPauseImages[1] = parent.loadImage("data/img/pausebutton.png");
-		
-		buttons[0] = control.addButton("playButton")
-            .setCaptionLabel("")
-			.setLock(true)
-			.setSize(30, 30)
-			.setPosition(10, 10)
-			.setImage(playPauseImages[0])
-			.setGroup(group);
-		
-		buttons[1] = control.addButton("stopButton")
+		playToggle = control.addToggle("playToggle")
+	        .setCaptionLabel("")
+	        .setPosition(10, 10)
+	        .setSize(30, 30)
+	        .setGroup(group)
+	        .setImages(
+                parent.loadImage("data/img/playbutton.png"),
+                null,
+                parent.loadImage("data/img/pausebutton.png"),
+                null
+            ).setLock(true);
+
+		stopButton = control.addButton("stopButton")
 	        .setCaptionLabel("")
 			.setLock(true)
 			.setPosition(50, 10)
@@ -101,8 +101,8 @@ public class slideShow {
 	}
 	
 	/**
-	 * TODO add method header
-	 * @param newAudio
+	 * Populates the audio component of the slide show.
+	 * @param newAudio an ArrayList containing the new AudioItems
 	 */
 	public void addAudio(ArrayList<AudioItem>  newAudio) {
 	    audios.clear();
@@ -112,16 +112,16 @@ public class slideShow {
 	        parent.println("#audio items: " + audios.size());
 	    }
 	    
-	    audioIter = audios.iterator();
-	    
-	    if(audioIter.hasNext()) {
-	        curAudioItem = audioIter.next();
+	    if(!shuffle) {
+	        audioIter = audios.iterator();
 	    }
+	    
+	    nextAudioItem();
 	}
 	
 	/**
-	 * TODO add method header
-	 * @param newVisual
+	 * Populates the visual component of the slide show.
+	 * @param newVisual an ArrayList containing the new VisualItems
 	 */
 	public void addVisual(ArrayList<VisualItem>  newVisual) {
 	    visuals.clear();
@@ -131,7 +131,9 @@ public class slideShow {
             parent.println("#visual items: " + visuals.size());
         }
         
-        visualIter = visuals.iterator();
+        if(!shuffle) {
+            visualIter = visuals.iterator();
+        }
 
         nextVisualItem();
     }
@@ -142,22 +144,22 @@ public class slideShow {
      */
 	public void controlEvent(ControlEvent e) {
 		switch(e.getName()) {
-		case "playButton":
-			togglePlayMode();
+		case "playToggle":
+			playToggle(playToggle.getState());
 			
 			break;
 			
 		case "stopButton":
-			stop();
+			stopButton();
 			
 			break;
 		}
 	}
 	
 	/**
-	 * TODO add method header
+	 * Callback method for displaying the slide show.
 	 */
-	public void updateAndDraw() {
+	public void draw() {
 	    parent.background(0xff555555);
 	    
 	    if(isPlaying) {
@@ -165,14 +167,7 @@ public class slideShow {
                 if(curAudioItem.getAudio().position() ==
                     curAudioItem.getAudio().length())
                 {
-    	            if(audioIter.hasNext()) {
-    	                curAudioItem = audioIter.next();
-    	                curAudioItem.getAudio().play();
-    	            }
-    	            
-    	            else {
-    	                curAudioItem = null;
-    	            }
+    	            nextAudioItem();
     	        }
 	        }
 	        
@@ -210,28 +205,29 @@ public class slideShow {
 	        }
 	        
 	        else {
-	        	stop();
+	        	stopButton();
 	        }
 	    }
 	    
 	    parent.imageMode(parent.CENTER);
         parent.image(curFrame, parent.width/2, parent.height/2);
-	    
-	    //TODO display UI elements
 	}
 	
 	/**
-	 * TODO add method header
+	 * ControlP5 UI handler. Pauses and resumes slide show playback.
+	 * @param mode the new playback mode
 	 */
-	public void togglePlayMode(){
-		isPlaying = !isPlaying;
+	public void playToggle(boolean mode){
+		isPlaying = mode;
 		
+		if(debug) {
+		    parent.println("playing: " + mode);
+		}
+
 		if(!isPlaying) {
 		    if(curAudioItem != null) {
 		        curAudioItem.getAudio().pause();
 		    }
-		    
-		    buttons[0].setImage(playPauseImages[0]);
 		    
 		    if(movie != null) {
 		        movie.pause();
@@ -242,9 +238,7 @@ public class slideShow {
 		    if(curAudioItem != null) {
 		        curAudioItem.getAudio().play();
 		    }
-		    
-		    buttons[0].setImage(playPauseImages[1]);
-		    
+
 		    if(movie != null) {
 		        movie.play();
 		    }
@@ -268,53 +262,84 @@ public class slideShow {
 	}
 	
 	/**
-	 * TODO add method header
+	 * Prepares the next AudioItem in the playlist.
+	 */
+	private void nextAudioItem() {
+	    if(shuffle && !audios.isEmpty()) {
+	        int shuffleIndex = (int)(Math.random()*audios.size());
+	        
+	        curAudioItem = audios.get(shuffleIndex);
+	        
+	        audios.remove(shuffleIndex);
+	    }
+	    
+	    else if(audioIter != null && audioIter.hasNext()) {
+	        curAudioItem = audioIter.next();
+	    }
+	    
+	    else {
+	        curAudioItem = null;
+	    }
+	}
+	
+	/**
+	 * Prepares the next VisualItem in the playlist.
 	 */
 	private void nextVisualItem() {
 	    movie = null;
 
 	    frameWidth = frameHeight = 0;
 	    
-	    if(visualIter.hasNext()) {
+	    if(shuffle && !visuals.isEmpty()) {
+	        int shuffleIndex = (int)(Math.random()*visuals.size());
+	    
+	        curVisualItem = visuals.get(shuffleIndex);
+	        
+	        visuals.remove(shuffleIndex);
+	    }
+	    
+	    else if(visualIter != null && visualIter.hasNext()) {
 	        curVisualItem = visualIter.next();
-	        
-	        curAnnotationTexts.addAll(curVisualItem.getAnnotationTexts());
-	        curAnnotationTimes.addAll(curVisualItem.getAnnotationTimes());
-
-	        //TODO figure out which tags should display and when
-	        
-	        if(curVisualItem.checkType().equals("video")) {
-	            movie = ((MovieItem)curVisualItem).getMovie();
-	            movie.play();
-	        }
-	        
-	        else {
-	            curFrame = ((ImageItem)curVisualItem).getImage();
-	            
-	            calcFrameDims();
-	            
-                curFrame.resize(frameWidth, frameHeight);
-	        }
 	    }
 	    
 	    else {
-	        stop();
+	        stopButton();
 	    }
+        
+        curAnnotationTexts.addAll(curVisualItem.getAnnotationTexts());
+        curAnnotationTimes.addAll(curVisualItem.getAnnotationTimes());
+
+        //TODO figure out which tags should display and when
+        
+        if(curVisualItem.checkType().equals("video")) {
+            movie = ((MovieItem)curVisualItem).getMovie();
+            movie.play();
+        }
+        
+        else {
+            curFrame = ((ImageItem)curVisualItem).getImage();
+            
+            calcFrameDims();
+            
+            curFrame.resize(frameWidth, frameHeight);
+        }
 	}
 	
 	/**
-	 * TODO add method header
+	 * ControlP5 UI handler. Stops slide show playback.
 	 */
-	public void stop() {
-	    isPlaying = isEnabled = false;
+	public void stopButton() {
+	    isEnabled = false;
 	    
-	    buttons[0].setImage(playPauseImages[0]);
+	    playToggle.setState(isEnabled);
 	    
+	    audioIter = null;
 	    if(curAudioItem != null) {
 	        curAudioItem.getAudio().pause();
 	    }
 	    curAudioItem = null;
 
+	    visualIter = null;
 	    curVisualItem = null;
 	    
         if(movie != null) {
@@ -322,46 +347,46 @@ public class slideShow {
             movie = null;
         }
         
-	    toggle(false);
+	    toggleUI(false);
 	    
 	    parent.toggleMain(true);
 	}
 	
 	/**
-	 * TODO add method header
-	 * @return
+	 * Retrieves the current play mode of the slide show.
+	 * @return true if the slide show is playing
 	 */
 	public boolean isPlaying() {
 	    return isPlaying;
 	}
 
 	/**
-	 * TODO toggle UI components
-	 * @param visible
+	 * Sets the visibility of the slide show UI components.
+	 * @param visible the visibility state
 	 */
-	public void toggle(boolean visible) {
+	private void toggleUI(boolean visible) {
 	    group.setVisible(visible);
 	    
-	    for(Button button : buttons) {
-	    	button.setLock(!visible);
-	    }
+	    playToggle.setLock(!visible);
+	    
+	    stopButton.setLock(!visible);
 	}
 	
 	/**
-	 * TODO add method header
-	 * @return
+	 * Retrieves the current state of the slide show.
+	 * @return true if the slide show is active
 	 */
 	public boolean isEnabled() {
 	    return isEnabled;
 	}
 	
 	/**
-	 * TODO add method header
+	 * Enables the slide show and begins playback.
 	 */
 	public void startPlaying() {
-	    isPlaying = isEnabled = true;
+	    isEnabled = true;
 	    
-	    buttons[0].setImage(playPauseImages[1]);
+	    playToggle.setState(isEnabled);
 	    
 	    if(movie != null) {
 	    	movie.play();
@@ -374,7 +399,7 @@ public class slideShow {
 	        curAudioItem.getAudio().play();
 	    }
 	    
-	    toggle(true);
+	    toggleUI(true);
 	    
         imgDispTime = 0;
 	}

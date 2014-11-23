@@ -76,7 +76,7 @@ public class Quickshow extends PApplet {
 	        browse.draw();
 	    }
 	    else if(show.isEnabled()){
-	    	show.updateAndDraw();
+	    	show.draw();
 	    }
 	    
 	    else {
