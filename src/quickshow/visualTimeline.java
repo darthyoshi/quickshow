@@ -49,25 +49,29 @@ public class visualTimeline {
 		int drawIndex = thumbnailWidth/2 + 25;
 		
 		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
-			if( itemsForDisplay.get(j).checkType().equals("image")){
-				image = ((ImageItem) itemsForDisplay.get(j)).getImage();
-				if (image.height > timeLineHeight || image.width > thumbnailWidth){
-					if(image.height >= image.width){
-						scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
-					}
-					else {
-						scaleFactor = 1.0f/((float) image.width/ (float) (thumbnailWidth-35));
-					}
+			//This is the old way. Keeping it here just in case we need to revert
+//			if( itemsForDisplay.get(j).checkType().equals("image")){
+//				image = itemsForDisplay.get(j).getThumbnail();
+//				
+//			}
+			//Get the thumbnail from the list
+			image = itemsForDisplay.get(j).getThumbnail();
+			
+			//Adjust each image to fit on timeline maintaining Aspect Ratio
+			if (image.height > timeLineHeight || image.width > thumbnailWidth){
+				if(image.height >= image.width){
+					scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
 				}
-				float new_height = scaleFactor * image.height;
-				float new_width = scaleFactor * image.width;
-				parent.image(image, drawIndex, 533, new_width , new_height);
-				
-				if(drawIndex < timeLineWidth){
-					drawIndex+= thumbnailWidth;
+				else {
+					scaleFactor = 1.0f/((float) image.width/ (float) (thumbnailWidth-35));
 				}
 			}
+			float new_height = scaleFactor * image.height;
+			float new_width = scaleFactor * image.width;
+			parent.image(image, drawIndex, 533, new_width , new_height);
 			
+			//Increment the x index
+			if(drawIndex < timeLineWidth) drawIndex+= thumbnailWidth;
 		}
 	}
 	

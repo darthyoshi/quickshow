@@ -72,35 +72,51 @@ public class visualthumbnailUI {
 		//Iterate through the items to display them as thumbnail
 			scaleFactor = 1.0f;
 			for (int i = 0, j = start_index; i < MAX_NUM_DISPLAY && j < items.size(); i++, j++){
-				
-				if(items.get(j).checkType().equals("image")) {
-					p = items.get(j).getThumbnail();
-					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
-						if(p.height >= p.width){
-							scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
-						}
-						else {
-							scaleFactor = 1.0f/((float) p.width/ (float) (MAX_THUMBNAIL_WIDTH-15));
-						}
+				//This is the old way. keeping it here just in case
+//				if(items.get(j).checkType().equals("image")) {
+//					p = items.get(j).getThumbnail();
+//					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
+//						if(p.height >= p.width){
+//							scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
+//						}
+//						else {
+//							scaleFactor = 1.0f/((float) p.width/ (float) (MAX_THUMBNAIL_WIDTH-15));
+//						}
+//					}
+//					
+//					my_new_height = (float) p.height * scaleFactor;
+//					my_new_width = (float) p.width * scaleFactor;
+//					
+//					parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
+//					
+//				}
+//				if(items.get(j).checkType().equals("video")){
+//					//Generate thumbnail
+//
+//				//	movie = ((MovieItem) items.get(j)).getMovie();
+//					System.out.println("Generating movie thumbnail");
+//                //    p.copy(movie, 0, 0, movie.width, movie.height, 0, 0, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
+//					p = items.get(j).getThumbnail();
+//                //    movie.stop();
+//                    
+//                    parent.image(p, xStartIndex, yStartIndex, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
+//				}
+				//Because of the thumbnail function, we can just pull the images
+				p = items.get(j).getThumbnail();
+				if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
+					if(p.height >= p.width){
+						scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
 					}
-					
-					my_new_height = (float) p.height * scaleFactor;
-					my_new_width = (float) p.width * scaleFactor;
-					
-					parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
-					
+					else {
+						scaleFactor = 1.0f/((float) p.width/ (float) (MAX_THUMBNAIL_WIDTH-15));
+					}
 				}
-				if(items.get(j).checkType().equals("video")){
-					//Generate thumbnail
-
-				//	movie = ((MovieItem) items.get(j)).getMovie();
-					System.out.println("Generating movie thumbnail");
-                //    p.copy(movie, 0, 0, movie.width, movie.height, 0, 0, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
-					p = items.get(j).getThumbnail();
-                //    movie.stop();
-                    
-                    parent.image(p, xStartIndex, yStartIndex, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
-				}
+				
+				my_new_height = (float) p.height * scaleFactor;
+				my_new_width = (float) p.width * scaleFactor;
+				
+				parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
+				
 				
 				//Move up the next index whether its video or image
 				xStartIndex += MAX_THUMBNAIL_WIDTH;
@@ -147,7 +163,8 @@ public class visualthumbnailUI {
 		
 //		//Make sure we are in legal range
 		if(mainIndex < items.size()){
-			selectedItems.add(items.get(mainIndex));
+			if(!selectedItems.contains(items.get(mainIndex)))
+				selectedItems.add(items.get(mainIndex));
 			
 			if(debug) {
 			    //parent.println("Added image: " + selectedItems.get(mainIndex).checkType());
@@ -170,6 +187,34 @@ public class visualthumbnailUI {
 	 */
 	public ArrayList<VisualItem> getVisualItems() {
 	    return items;
+	}
+	
+	/**
+	 * 
+	 * Goes through the list and selects only images
+	 */
+	public void selectAllImages(){
+		if(items.size() == 0) return;
+		
+		for(VisualItem v: items){
+			if(v.checkType().equals("image") && !selectedItems.contains(v)){
+				selectedItems.add(v);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * Goes through the list and selects only vidoes
+	 */
+	public void selectAllClips(){
+		if(items.size() == 0) return;
+		
+		for(VisualItem v: items){
+			if(v.checkType().equals("video") && !selectedItems.contains(v)){
+				selectedItems.add(v);
+			}
+		}
 	}
 	
 	/**

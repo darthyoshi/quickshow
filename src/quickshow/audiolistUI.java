@@ -102,7 +102,7 @@ public class audiolistUI {
 	}
 	
 	//Return the vector with the selected songs
-	public ArrayList<AudioItem> sendSongList(){
+	public ArrayList<AudioItem> returnSelectedSongList(){
 		return selectedSongList;
 	}
 	

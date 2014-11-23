@@ -131,8 +131,8 @@ public class Quickshow extends PApplet {
 	        case "Play":
 	            toggleMain(false);
 	            
-	            show.addAudio(audioListbox.getAudioItems());
-	            show.addVisual(thumbnails.getVisualItems());
+	            show.addAudio(audioListbox.returnSelectedSongList());
+	            show.addVisual(thumbnails.returnSelectedItems());
 	        	show.startPlaying();
 	        	
 	            break;
@@ -163,11 +163,13 @@ public class Quickshow extends PApplet {
 	        	break;
 	        
 	        case "Select All Pictures": 
-	            
+	            thumbnails.selectAllImages();
+	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	            break;
 	        
 	        case "Select All Clips": 
-	            
+	            thumbnails.selectAllClips();
+	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	            break;
 	        
 	        case "Clear slides": 
@@ -176,46 +178,32 @@ public class Quickshow extends PApplet {
 	        	break;
 	        case "Up":
 	        	thumbnails.showPrevItems();
-	        	
 	        	break;
-	        
 	        case "Down":
 	        	thumbnails.showNextItems();
-	        
 	        	break;
-	        
 	        case "Next":
 	        	vTimeline.showNextOnTimeline();
-	        
 	        	break;
-	        
 	        case "Previous": 
 	        	vTimeline.showPrevOnTimeline();
-	            
 	        	break;
-	        
 	        case "Load Media":
 	            browse.toggle(true);
 	            toggleMain(false);
-	            
 	            break;
 	        }
-	        
 	        break;
 	        
 	    case "AudioList":
-	    	//int test = theEvent.getId();
 	    	float value = theEvent.getGroup().getValue();
-	    	//String testStr = theEvent.getGroup().getAddress();
-	    	//println(srcName + test + testStr+value);
 	    	audioListbox.addToSelectedSongs((int) value);
-	    	aT.receiveSelectedSongs(audioListbox.sendSongList());
-	    	
+	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
 	    	break;
 	    	
 	    case "slideShow":
 	        show.controlEvent(theEvent);
-	        
+	        break;
 	    }
     }
 	 
