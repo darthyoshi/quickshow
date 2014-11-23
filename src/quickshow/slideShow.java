@@ -188,18 +188,25 @@ public class slideShow {
     	            	movie.read();
     	            }
     	            
-    	            curFrame = movie;
+    	            curFrame = movie.get();
     	            
-    	            if(movie.time() == movie.duration()) {
+    	            if(debug) {
+    	                parent.println("movie time: " + movie.time() + " of "
+	                        + movie.duration());
+    	            }
+    	            
+    	            if(movie.time() >= movie.duration()) {
     	                movie.stop();
     	                
     	                nextVisualItem();
     	            }
-    	            
-    	            if(frameWidth == 0){
-    	                calcFrameDims();
-    	            }
-    	            
+    	        }
+    	        
+    	        if(frameWidth != curFrame.width ||
+	                frameHeight != curFrame.height)
+    	        {
+        	        calcFrameDims();
+    
     	            curFrame.resize(frameWidth, frameHeight);
     	        }
 	        }
@@ -250,7 +257,7 @@ public class slideShow {
 	 */
 	private void calcFrameDims() {
         float aspect = 1f * curFrame.width / curFrame.height;
-        
+    
         frameWidth = (curFrame.width > parent.width ?
             parent.width : curFrame.width);
         frameHeight = (int)(frameWidth / aspect);
@@ -259,7 +266,7 @@ public class slideShow {
             frameHeight = parent.height;
             frameWidth = (int)(frameHeight * aspect);
         }
-	}
+    }
 	
 	/**
 	 * Prepares the next AudioItem in the playlist.
@@ -287,8 +294,6 @@ public class slideShow {
 	 */
 	private void nextVisualItem() {
 	    movie = null;
-
-	    frameWidth = frameHeight = 0;
 	    
 	    if(shuffle && !visuals.isEmpty()) {
 	        int shuffleIndex = (int)(Math.random()*visuals.size());
@@ -306,23 +311,25 @@ public class slideShow {
 	        stopButton();
 	    }
         
-        curAnnotationTexts.addAll(curVisualItem.getAnnotationTexts());
-        curAnnotationTimes.addAll(curVisualItem.getAnnotationTimes());
-
-        //TODO figure out which tags should display and when
-        
-        if(curVisualItem.checkType().equals("video")) {
-            movie = ((MovieItem)curVisualItem).getMovie();
-            movie.play();
-        }
-        
-        else {
-            curFrame = ((ImageItem)curVisualItem).getImage();
+	    if(curVisualItem != null) {
+            curAnnotationTexts.addAll(curVisualItem.getAnnotationTexts());
+            curAnnotationTimes.addAll(curVisualItem.getAnnotationTimes());
+    
+            //TODO figure out which tags should display and when
             
-            calcFrameDims();
+            if(curVisualItem.checkType().equals("video")) {
+                movie = ((MovieItem)curVisualItem).getMovie();
+                movie.play();
+                
+                if(debug) {
+                    parent.println("playing movie: " + movie.duration());
+                }
+            }
             
-            curFrame.resize(frameWidth, frameHeight);
-        }
+            else {
+                curFrame = ((ImageItem)curVisualItem).getImage();
+            }
+	    }
 	}
 	
 	/**
