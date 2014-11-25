@@ -51,7 +51,8 @@ public class slideShow {
     private ArrayList<String> curAnnotationTexts;
     private ArrayList<Float[]> curAnnotationTimes;
     
-    private double imgDispTime;
+    private double curImgTime;
+    private static final int IMG_DISP_TIME = 5;
     
     private boolean isPlaying = false, isEnabled = false, shuffle = false;
     
@@ -66,7 +67,7 @@ public class slideShow {
         this.parent = parent;
         
         debug = parent.getDebugFlag();
-        
+
         this.minim = minim;
         
         audios = new ArrayList<AudioItem>();
@@ -174,14 +175,14 @@ public class slideShow {
                 
                 if(curVisualItem != null) {
                     if(curVisualItem.checkType().equals("image")) {
-                        imgDispTime += 0.04;
+                        curImgTime += 0.04;
                         
-                        if(imgDispTime >= 2.) {
+                        if(curImgTime >= IMG_DISP_TIME) {
                             if(debug) {
                                 parent.println("slide show transition begin");
                             }
                             
-                            imgDispTime = 0.;
+                            curImgTime = 0.;
                             
                             transit = true;
                             
@@ -405,6 +406,13 @@ public class slideShow {
     }
     
     /**
+     * TODO implement getting annotations
+     */
+    private void nextAnnotation() {
+        
+    }
+    
+    /**
      * Prepares the next VisualItem in the playlist.
      */
     private void nextVisualItem() {
@@ -526,7 +534,7 @@ public class slideShow {
         
         toggleUI(true);
         
-        imgDispTime = 0;
+        curImgTime = 0;
     }
     
     /**
