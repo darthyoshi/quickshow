@@ -9,14 +9,6 @@ package quickshow.datatypes;
 public abstract class MediaItem {
     private String fileName;
   
-    private static final String[] imgExt = {
-        "bmp", "jpg", "png", "gif" 
-    };
-    
-    private static final String[] audioExt = {
-        "mp3", "wav", "aiff", "au", "snd"
-    };
-    
     /**
      * Class constructor.
      * @param fileName the file name of the media file to load
@@ -44,26 +36,26 @@ public abstract class MediaItem {
         
         String[] fileNameParts = fileName.split("\\.");
         
-        for(i = 0; i < audioExt.length; i++) {
+        for(i = 0; i < FileExtensions.AUDIO_EXT.length; i++) {
             if(fileNameParts[fileNameParts.length-1]
-                .equalsIgnoreCase(audioExt[i]))
+                .equalsIgnoreCase(FileExtensions.AUDIO_EXT[i]))
             {
                 result = "audio";
                 break;
             }
         }
         
-        if(i == audioExt.length) {
-            for(i = 0; i < imgExt.length; i++) {
+        if(i == FileExtensions.AUDIO_EXT.length) {
+            for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
                 if(fileNameParts[fileNameParts.length-1]
-                    .equalsIgnoreCase(imgExt[i]))
+                    .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
                 {
                     result = "image";
                     break;
                 }
             }
             
-            if(i == imgExt.length) {
+            if(i == FileExtensions.IMG_EXT.length) {
                 result = "video";
             }
         }

@@ -13,6 +13,7 @@ import java.util.ListIterator;
 import processing.core.PImage;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
+import quickshow.datatypes.FileExtensions;
 import quickshow.datatypes.ImageItem;
 import quickshow.datatypes.MediaItem;
 import quickshow.datatypes.MovieItem;
@@ -62,18 +63,6 @@ public class FileBrowser {
     
     int thumbWidth, thumbHeight;
     final int firstThumbX = 111, firstThumbY = 120;
-
-    private static final String[] imgExt = {
-        "bmp", "jpg", "png", "gif" 
-    };
-    
-    private static final String[] videoExt = {
-        "mov", "avi", "mpg", "mp4"
-    };
-    
-    private static final String[] audioExt = {
-        "mp3", "wav", "aiff", "au", "snd"
-    };
     
     /**
      * Class constructor.
@@ -293,20 +282,12 @@ public class FileBrowser {
             parentName = file.getAbsolutePath();
             changeDir(parentName);
         }
-        
-        if(debug) {
-            parent.println("parent button pressed");
-        }
     }
     
     /**
      * ControlP5 UI handler. Closes the FileBrowser without loading any items.
      */
     private void cancelButton() {
-        if(debug) {
-            parent.println("cancel button pressed");
-        }
-        
         selectedIndex.clear();
         results.clear();
         
@@ -317,11 +298,6 @@ public class FileBrowser {
      * ControlP5 UI handler. Enters selected directory or loads selected files.
      */
     private void openButton() {
-        if(debug) {
-            parent.println("open button pressed" + 
-                "\n#selected items: " + selectedIndex.size());
-        }
-        
         if(selectedIndex.isEmpty()) {
             loadAll();
             
@@ -366,7 +342,11 @@ public class FileBrowser {
     	
         short j;
         
-    	for(int i = curDisplayIndex; i < curDisplayIndex + 20 && i < fileNames.size(); i++) {
+    	for(
+	        int i = curDisplayIndex;
+	        i < curDisplayIndex + 20 && i < fileNames.size();
+	        i++
+        ) {
     		if(thumbs.get(i) == null) {
 	    		fullPath = curDir + '/' + fileNames.get(i);
 	    		
@@ -381,8 +361,10 @@ public class FileBrowser {
 		    		else {					//visual thumbnail
 		    			fileNameParts = fileNames.get(i).split("\\.");
 		    			
-		    			for(j = 0; j < imgExt.length; j++) {
-		    				if(fileNameParts[fileNameParts.length-1].equalsIgnoreCase(imgExt[j])) {
+		    			for(j = 0; j < FileExtensions.IMG_EXT.length; j++) {
+		    				if(fileNameParts[fileNameParts.length-1].
+	    				        equalsIgnoreCase(FileExtensions.IMG_EXT[j]))
+		    				{
 		    					thumb = parent.loadImage(fullPath);
 
 	                            thumbDims = newImageDims(thumb);
@@ -393,7 +375,7 @@ public class FileBrowser {
 		    				}
 		    			}
 	
-		    			if(j == imgExt.length) {
+		    			if(j == FileExtensions.IMG_EXT.length) {
 		    			    qIter.add(new QItem(i, fullPath));
 		                    
 		                    thumb = null;
@@ -427,8 +409,7 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("scroll up button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -448,8 +429,7 @@ public class FileBrowser {
             lastPage);
         
         if(debug) {
-            parent.println("scroll top button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -471,8 +451,7 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("scroll down button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -492,8 +471,7 @@ public class FileBrowser {
             "\n\nof\n\n" + lastPage);
         
         if(debug) {
-            parent.println("scroll bottom button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -638,7 +616,8 @@ public class FileBrowser {
                 parent.println("cd " + curDir + "\nls");
             }
             
-            ArrayList<File> files = new ArrayList<File>(java.util.Arrays.asList(file.listFiles()));
+            ArrayList<File> files =
+                new ArrayList<File>(java.util.Arrays.asList(file.listFiles()));
             ListIterator<File> fileIter = files.listIterator();
             
             String fileName, fullPath;
@@ -686,9 +665,9 @@ public class FileBrowser {
                         parent.println(curDir + '/' + fileName);
                     }
                     
-                    for(i = 0; i < audioExt.length; i++) {
+                    for(i = 0; i < FileExtensions.AUDIO_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
-                            .equalsIgnoreCase(audioExt[i]))
+                            .equalsIgnoreCase(FileExtensions.AUDIO_EXT[i]))
                         {
                             fileNames.add(fileName);
                           
@@ -719,9 +698,9 @@ public class FileBrowser {
                     }
     
                     //create image thumbnail
-                    for(i = 0; i < imgExt.length; i++) {
+                    for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
-                            .equalsIgnoreCase(imgExt[i]))
+                            .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
                         {
                         	if(j < 20) {
     	                        thumb = parent.loadImage(fullPath);
@@ -759,9 +738,9 @@ public class FileBrowser {
                     fullPath = curDir + '/' + fileName;
         
                     //create thumbnail of 1st frame of video
-                    for(i = 0; i < videoExt.length; i++) {
+                    for(i = 0; i < FileExtensions.VIDEO_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
-                            .equalsIgnoreCase(videoExt[i]))
+                            .equalsIgnoreCase(FileExtensions.VIDEO_EXT[i]))
                         {    
                             qIter.add(new QItem(thumbs.size(), fullPath));
                             
@@ -791,7 +770,8 @@ public class FileBrowser {
             }
             
             if(debug) {
-                parent.println("#valid items in directory: " + fileNames.size());
+                parent.println("#valid items in directory: " + 
+                    fileNames.size());
             }
         }
         
@@ -823,9 +803,9 @@ public class FileBrowser {
                 fileNameParts = fileName.split("\\.");
                 
                 //file is image
-                for(i = 0; i < imgExt.length; i++) {
+                for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
                     if(fileNameParts[fileNameParts.length-1]
-                        .equalsIgnoreCase(imgExt[i]))
+                        .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
                     {
                         results.add(
                             new ImageItem(
@@ -840,7 +820,7 @@ public class FileBrowser {
                 }
                 
                 //file is video
-                if(i == imgExt.length) {
+                if(i == FileExtensions.IMG_EXT.length) {
                 	System.out.println("Adding video to results arraylist");
                     results.add(
                         new MovieItem(
@@ -882,9 +862,9 @@ public class FileBrowser {
                     fileNameParts = fileName.split("\\.");
                     
                     //file is image
-                    for(i = 0; i < imgExt.length; i++) {
+                    for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
-                            .equalsIgnoreCase(imgExt[i]))
+                            .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
                         {
                             results.add(
                                 new ImageItem(
@@ -899,7 +879,7 @@ public class FileBrowser {
                     }
                     
                     //file is video
-                    if(i == imgExt.length) {
+                    if(i == FileExtensions.IMG_EXT.length) {
                         results.add(
                             new MovieItem(
                                 parent, 
