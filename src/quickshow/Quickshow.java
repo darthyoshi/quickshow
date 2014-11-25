@@ -176,34 +176,34 @@ public class Quickshow extends PApplet {
 	        case "Select All Clips": 
 	            thumbnails.selectAllClips();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-	            
+	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	            break;
 	        
 	        case "Clear slides": 
 	        	vTimeline.clearSelectedSlides();
 	            thumbnails.clearSelectedItems();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-
+	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	        	break;
 	        
 	        case "Up":
 	        	thumbnails.showPrevItems();
-	        	
+	        	cbU.setPageIndex(thumbnails.getNumPages(), thumbnails.getCurrIndex());
 	        	break;
 	        
 	        case "Down":
 	        	thumbnails.showNextItems();
-	        	
+	        	cbU.setPageIndex(thumbnails.getNumPages(), thumbnails.getCurrIndex());
 	        	break;
 	        
 	        case "Next":
 	        	vTimeline.showNextOnTimeline();
-	        	
+	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	        	break;
 	        
 	        case "Previous": 
 	        	vTimeline.showPrevOnTimeline();
-	        	
+	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	        	break;
 	        
 	        case "Load Media":
@@ -240,6 +240,7 @@ public class Quickshow extends PApplet {
 	        
 	        if(!browse.isEnabled()) {
 	            closeFBActions();
+	    
 	        }
 	    }
 	    else {
@@ -247,8 +248,8 @@ public class Quickshow extends PApplet {
     	        mouseY > lowYBound && mouseY < highYBound)
 	    	{
 	    		thumbnails.selectImage(mouseX, mouseY);
-	    		vTimeline
-	    		    .receiveSelectedItems(thumbnails.returnSelectedItems());
+	    		vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
+	    		cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	    	}
 	    	
 	    }
@@ -304,7 +305,7 @@ public class Quickshow extends PApplet {
                 thumbnails.receiveVisualItems(visuals);
             }
         }
-
+        cbU.setPageIndex(thumbnails.getNumPages(), thumbnails.getCurrIndex());
         toggleMain(true);
     }
 

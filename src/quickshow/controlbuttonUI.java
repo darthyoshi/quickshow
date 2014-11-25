@@ -34,7 +34,9 @@ public class controlbuttonUI {
 	Button addNote, removeNote;
 	Button[] lockButtons;
 	Textfield pageIndex;
+	Textfield timeLineIndex;
 	private String indexString = "0 of 0";
+	private String timeLineIndexString = "0 of 0";
 	
 	/*
 	 * TODO make sure to get interactivity
@@ -135,13 +137,13 @@ public class controlbuttonUI {
 		lockButtons[11].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[12] = addNote = buttonUI.addButton("Add Annotation")
-	        .setPosition(295, 570)
+	        .setPosition(200, 570)
 	        .setSize(150, 15)
 	        .setGroup(group);
 		lockButtons[12].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[13] = removeNote = buttonUI.addButton("Remove Annotation")
-	        .setPosition(455, 570)
+	        .setPosition(555, 570)
 	        .setSize(150, 15)
 	        .setGroup(group);
 		lockButtons[13].getCaptionLabel().alignX(buttonUI.CENTER);
@@ -150,6 +152,14 @@ public class controlbuttonUI {
 				.setPosition(440, 402)
 				.setSize(75, 15)
 				.setText(indexString)
+				.lock()
+				.setGroup(group);
+		
+		timeLineIndex = buttonUI.addTextfield(" ")
+				.setPosition(425, 570)
+				.setSize(75, 15)
+				.setText(timeLineIndexString)
+				.lock()
 				.setGroup(group);
 	}
 	
@@ -174,5 +184,14 @@ public class controlbuttonUI {
 	public void setPageIndex(int pages, int index){
 		indexString = index + " of " + pages;
 		pageIndex.setText(indexString);
+	}
+	
+	/**
+	 * 
+	 * Sets the page indexing string for the label for timeline
+	 */
+	public void setTimeLinePageIndex(int pages, int index){
+		timeLineIndexString = index + " of " + pages;
+		timeLineIndex.setText(timeLineIndexString);
 	}
 }

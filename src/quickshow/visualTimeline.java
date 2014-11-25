@@ -16,6 +16,8 @@ public class visualTimeline {
 	private Quickshow parent;
     private int oldListSize;
     private boolean debug;
+    private int num_pages = 0;
+    private int curr_index = 0;
     PImage image;
     
 	ArrayList <VisualItem> itemsForDisplay;
@@ -78,6 +80,9 @@ public class visualTimeline {
 			itemsForDisplay.add(selectedList.get(i));
 		}
 		oldListSize = selectedList.size();
+		
+		num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
+		curr_index = 1;
 	}
 	
 	/*
@@ -89,6 +94,8 @@ public class visualTimeline {
 		
 		//Reset the display index
 		start_index = 0;
+		curr_index = 0;
+		num_pages = 0;
 	}
 	
 	/**
@@ -98,6 +105,8 @@ public class visualTimeline {
 	public void showNextOnTimeline(){
 		start_index += 8;
 		if(start_index > itemsForDisplay.size()) start_index = 0;
+		
+		curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
 	}
 	
 	/**
@@ -109,5 +118,18 @@ public class visualTimeline {
 		start_index -= 8;
 		if(start_index < 0) 
 			start_index = itemsForDisplay.size() - (itemsForDisplay.size()%MAX_THUMBNAIL_DISPLAY);
+		curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
+	}
+	
+	/**
+	 * 
+	 * Getters for num_pages and curr_index
+	 * 
+	 */
+	public int getNumPages(){
+		return num_pages;
+	}
+	public int getCurrIndexPages(){
+		return curr_index;
 	}
 }

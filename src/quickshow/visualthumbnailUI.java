@@ -114,7 +114,8 @@ public class visualthumbnailUI {
 		}
 		oldListSize = vItems.size();
 		
-		num_pages = items.size()/MAX_NUM_DISPLAY;
+		num_pages = items.size()/MAX_NUM_DISPLAY + 1;
+		curr_index = 1;
 	}
 	
 	/*
@@ -207,6 +208,8 @@ public class visualthumbnailUI {
 		if(start_index > items.size()){
 			start_index = 0;
 		}
+		
+		curr_index = start_index/MAX_NUM_DISPLAY + 1;
 	}
 	
 	/**
@@ -219,6 +222,8 @@ public class visualthumbnailUI {
 		if(start_index < 0){
 			start_index = items.size() - (items.size()%15);
 		}
+		
+		curr_index = start_index/MAX_NUM_DISPLAY + 1;
 	}
 	
 	/**
