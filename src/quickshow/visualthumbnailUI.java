@@ -32,7 +32,8 @@ public class visualthumbnailUI {
 	final private int height = 370;
 	
 	private int start_index = 0;
-	private int num_pages;
+	private int num_pages = 0;
+	private int curr_index = 0;
 	
 	private float my_new_height;
 	private float my_new_width;
@@ -72,35 +73,6 @@ public class visualthumbnailUI {
 		//Iterate through the items to display them as thumbnail
 			scaleFactor = 1.0f;
 			for (int i = 0, j = start_index; i < MAX_NUM_DISPLAY && j < items.size(); i++, j++){
-				//This is the old way. keeping it here just in case
-//				if(items.get(j).checkType().equals("image")) {
-//					p = items.get(j).getThumbnail();
-//					if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
-//						if(p.height >= p.width){
-//							scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
-//						}
-//						else {
-//							scaleFactor = 1.0f/((float) p.width/ (float) (MAX_THUMBNAIL_WIDTH-15));
-//						}
-//					}
-//					
-//					my_new_height = (float) p.height * scaleFactor;
-//					my_new_width = (float) p.width * scaleFactor;
-//					
-//					parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
-//					
-//				}
-//				if(items.get(j).checkType().equals("video")){
-//					//Generate thumbnail
-//
-//				//	movie = ((MovieItem) items.get(j)).getMovie();
-//					System.out.println("Generating movie thumbnail");
-//                //    p.copy(movie, 0, 0, movie.width, movie.height, 0, 0, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
-//					p = items.get(j).getThumbnail();
-//                //    movie.stop();
-//                    
-//                    parent.image(p, xStartIndex, yStartIndex, MAX_THUMBNAIL_WIDTH, MAX_THUMBNAIL_HEIGHT);
-//				}
 				//Because of the thumbnail function, we can just pull the images
 				p = items.get(j).getThumbnail();
 				if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
@@ -218,6 +190,15 @@ public class visualthumbnailUI {
 	}
 	
 	/**
+	 * 
+	 * Clears the selected visual items from the selectedList
+	 * 
+	 */
+	public void clearSelectedItems(){
+		selectedItems.clear();
+	}
+	
+	/**
 	 * Goes down one page
 	 * 
 	 */
@@ -238,5 +219,20 @@ public class visualthumbnailUI {
 		if(start_index < 0){
 			start_index = items.size() - (items.size()%15);
 		}
+	}
+	
+	/**
+	 * 
+	 * Returns number of pages
+	 */
+	public int getNumPages(){
+		return num_pages;
+	}
+	
+	/**
+	 * 
+	 */
+	public int getCurrIndex(){
+		return curr_index;
 	}
 }

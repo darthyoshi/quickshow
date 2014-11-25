@@ -174,7 +174,8 @@ public class Quickshow extends PApplet {
 	        
 	        case "Clear slides": 
 	        	vTimeline.clearSelectedSlides();
-	            
+	            thumbnails.clearSelectedItems();
+	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	        	break;
 	        case "Up":
 	        	thumbnails.showPrevItems();

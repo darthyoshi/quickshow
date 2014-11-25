@@ -49,12 +49,6 @@ public class visualTimeline {
 		int drawIndex = thumbnailWidth/2 + 25;
 		
 		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
-			//This is the old way. Keeping it here just in case we need to revert
-//			if( itemsForDisplay.get(j).checkType().equals("image")){
-//				image = itemsForDisplay.get(j).getThumbnail();
-//				
-//			}
-			//Get the thumbnail from the list
 			image = itemsForDisplay.get(j).getThumbnail();
 			
 			//Adjust each image to fit on timeline maintaining Aspect Ratio
@@ -92,6 +86,9 @@ public class visualTimeline {
 	 */
 	public void clearSelectedSlides(){
 		itemsForDisplay.clear();
+		
+		//Reset the display index
+		start_index = 0;
 	}
 	
 	/**

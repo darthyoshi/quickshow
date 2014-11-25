@@ -5,6 +5,10 @@ import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.Group;
+import controlP5.Label;
+import controlP5.Textarea;
+import controlP5.Textfield;
+import controlP5.Textlabel;
 import controlP5.Toggle;
 
 @SuppressWarnings("static-access")
@@ -28,6 +32,8 @@ public class controlbuttonUI {
 	Button prevSlides;
 	Button loadMedia;
 	Button[] lockButtons;
+	Textfield pageIndex;
+	private String indexString = "0 of 0";
 	
 	/*
 	 * TODO make sure to get interactivity
@@ -76,18 +82,18 @@ public class controlbuttonUI {
 		
 		//For the Thumbnail selector
 		lockButtons[4] = selectAllImages = buttonUI.addButton("Select All Pictures")
-		    .setPosition(200, 402)
-		    .setSize(150,15)
+		    .setPosition(140, 402)
+		    .setSize(140,15)
 		    .setGroup(group);
 		
 		lockButtons[5] = selectAllVideos = buttonUI.addButton("Select All Clips")
-		    .setPosition(370, 402)
-		    .setSize(150, 15)
+		    .setPosition(290, 402)
+		    .setSize(115, 15)
 		    .setGroup(group);
 		
 		lockButtons[6] = clearVisualTimeline = buttonUI.addButton("Clear slides")
 		    .setPosition(30, 402)
-		    .setSize(150,15)
+		    .setSize(100,15)
 		    .setGroup(group);
 		
 		lockButtons[7] = upButton = buttonUI.addButton("Up")
@@ -114,6 +120,13 @@ public class controlbuttonUI {
 		    .setPosition(675, 10)
 		    .setSize(193, 15)
 		    .setGroup(group);
+		
+		pageIndex = buttonUI.addTextfield("")
+				.setPosition(440, 402)
+				.setSize(75, 15)
+				.setText(indexString)
+				.setGroup(group);
+
 	}
 	
 	/**
@@ -128,5 +141,14 @@ public class controlbuttonUI {
         }
         
         shuffleToggle.setLock(!visible);
+	}
+	
+	/**
+	 * 
+	 * Sets the page indexing string for the label
+	 */
+	public void setPageIndex(int pages, int index){
+		indexString = index + " of " + pages;
+		pageIndex.setText(indexString);
 	}
 }
