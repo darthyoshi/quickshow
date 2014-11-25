@@ -293,20 +293,12 @@ public class FileBrowser {
             parentName = file.getAbsolutePath();
             changeDir(parentName);
         }
-        
-        if(debug) {
-            parent.println("parent button pressed");
-        }
     }
     
     /**
      * ControlP5 UI handler. Closes the FileBrowser without loading any items.
      */
     private void cancelButton() {
-        if(debug) {
-            parent.println("cancel button pressed");
-        }
-        
         selectedIndex.clear();
         results.clear();
         
@@ -317,11 +309,6 @@ public class FileBrowser {
      * ControlP5 UI handler. Enters selected directory or loads selected files.
      */
     private void openButton() {
-        if(debug) {
-            parent.println("open button pressed" + 
-                "\n#selected items: " + selectedIndex.size());
-        }
-        
         if(selectedIndex.isEmpty()) {
             loadAll();
             
@@ -366,7 +353,11 @@ public class FileBrowser {
     	
         short j;
         
-    	for(int i = curDisplayIndex; i < curDisplayIndex + 20 && i < fileNames.size(); i++) {
+    	for(
+	        int i = curDisplayIndex;
+	        i < curDisplayIndex + 20 && i < fileNames.size();
+	        i++
+        ) {
     		if(thumbs.get(i) == null) {
 	    		fullPath = curDir + '/' + fileNames.get(i);
 	    		
@@ -382,7 +373,9 @@ public class FileBrowser {
 		    			fileNameParts = fileNames.get(i).split("\\.");
 		    			
 		    			for(j = 0; j < imgExt.length; j++) {
-		    				if(fileNameParts[fileNameParts.length-1].equalsIgnoreCase(imgExt[j])) {
+		    				if(fileNameParts[fileNameParts.length-1].
+	    				        equalsIgnoreCase(imgExt[j]))
+		    				{
 		    					thumb = parent.loadImage(fullPath);
 
 	                            thumbDims = newImageDims(thumb);
@@ -427,8 +420,7 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("scroll up button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -448,8 +440,7 @@ public class FileBrowser {
             lastPage);
         
         if(debug) {
-            parent.println("scroll top button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -471,8 +462,7 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("scroll down button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -492,8 +482,7 @@ public class FileBrowser {
             "\n\nof\n\n" + lastPage);
         
         if(debug) {
-            parent.println("scroll bottom button pressed"
-                + "\ncurDisplayIndex: " + curDisplayIndex);
+            parent.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -638,7 +627,8 @@ public class FileBrowser {
                 parent.println("cd " + curDir + "\nls");
             }
             
-            ArrayList<File> files = new ArrayList<File>(java.util.Arrays.asList(file.listFiles()));
+            ArrayList<File> files =
+                new ArrayList<File>(java.util.Arrays.asList(file.listFiles()));
             ListIterator<File> fileIter = files.listIterator();
             
             String fileName, fullPath;
@@ -791,7 +781,8 @@ public class FileBrowser {
             }
             
             if(debug) {
-                parent.println("#valid items in directory: " + fileNames.size());
+                parent.println("#valid items in directory: " + 
+                    fileNames.size());
             }
         }
         

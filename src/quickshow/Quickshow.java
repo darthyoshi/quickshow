@@ -114,6 +114,11 @@ public class Quickshow extends PApplet {
 	    else if (theEvent.isGroup()) {
 	        srcName = theEvent.getGroup().getParent().getName();
 	    }
+       
+	    if(debug) {
+            println("Event source: " + srcName + "\nEvent name: " +
+                theEvent.getName());
+        }
 	    
 	    switch(srcName) {
 	    case "fileBrowser":
@@ -165,32 +170,52 @@ public class Quickshow extends PApplet {
 	        case "Select All Pictures": 
 	            thumbnails.selectAllImages();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
+	    
 	            break;
 	        
 	        case "Select All Clips": 
 	            thumbnails.selectAllClips();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
+	            
 	            break;
 	        
 	        case "Clear slides": 
 	        	vTimeline.clearSelectedSlides();
-	            
+	        	
 	        	break;
+	        
 	        case "Up":
 	        	thumbnails.showPrevItems();
+	        	
 	        	break;
+	        
 	        case "Down":
 	        	thumbnails.showNextItems();
+	        	
 	        	break;
+	        
 	        case "Next":
 	        	vTimeline.showNextOnTimeline();
+	        	
 	        	break;
+	        
 	        case "Previous": 
 	        	vTimeline.showPrevOnTimeline();
+	        	
 	        	break;
+	        
 	        case "Load Media":
 	            browse.toggle(true);
 	            toggleMain(false);
+	            
+	            break;
+	            
+	        case "Add Annotation":
+	            
+	            break;
+	           
+	        case "Remove Annotation":
+	            
 	            break;
 	        }
 	        break;
@@ -216,9 +241,12 @@ public class Quickshow extends PApplet {
 	        }
 	    }
 	    else {
-	    	if(mouseX > lowXBound && mouseX < highXBound && mouseY > lowYBound && mouseY < highYBound){
+	    	if(mouseX > lowXBound && mouseX < highXBound && 
+    	        mouseY > lowYBound && mouseY < highYBound)
+	    	{
 	    		thumbnails.selectImage(mouseX, mouseY);
-	    		vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
+	    		vTimeline
+	    		    .receiveSelectedItems(thumbnails.returnSelectedItems());
 	    	}
 	    	
 	    }
@@ -244,7 +272,7 @@ public class Quickshow extends PApplet {
     }
     
     /**
-     * TODO method header
+     * Additional actions to be taken when the FileBrowser is closed.
      */
     private void closeFBActions() {
         if(browse.isReady()) {
