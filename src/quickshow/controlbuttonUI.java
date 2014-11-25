@@ -132,14 +132,8 @@ public class controlbuttonUI {
 		    .setPosition(675, 10)
 		    .setSize(193, 15)
 		    .setGroup(group);
-
 		lockButtons[11].getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		pageIndex = buttonUI.addTextfield("")
-			.setPosition(440, 402)
-			.setSize(75, 15)
-			.setText(indexString)
-			.setGroup(group);
 		lockButtons[12] = addNote = buttonUI.addButton("Add Annotation")
 	        .setPosition(295, 570)
 	        .setSize(150, 15)
@@ -151,6 +145,12 @@ public class controlbuttonUI {
 	        .setSize(150, 15)
 	        .setGroup(group);
 		lockButtons[13].getCaptionLabel().alignX(buttonUI.CENTER);
+		
+		pageIndex = buttonUI.addTextfield("")
+				.setPosition(440, 402)
+				.setSize(75, 15)
+				.setText(indexString)
+				.setGroup(group);
 	}
 	
 	/**
