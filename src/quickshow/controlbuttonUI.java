@@ -35,6 +35,12 @@ public class controlbuttonUI {
 	private Button[] lockButtons;
 	private Button pageIndex;
 	private Button timeLineIndex;
+	private Button songTitle;
+	private Button songIndex;
+	private Button nextSong;
+	private Button prevSong;
+	private String songIndexString = "0 of 3";
+	private String songTitleString = "Song: ";
 	private String indexString = "0 of 0";
 	private String timeLineIndexString = "0 of 0";
 	
@@ -124,13 +130,13 @@ public class controlbuttonUI {
 		
 		//To control the visual timeline thumbnail
 		lockButtons[9] = nextSlides = buttonUI.addButton("Next")
-		    .setPosition(802, 570)
+		    .setPosition(802, 580)
 		    .setSize(69, 15)
 		    .setGroup(group);
 		lockButtons[9].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[10] = prevSlides = buttonUI.addButton("Previous")
-		    .setPosition(648, 570)
+		    .setPosition(648, 580)
 		    .setSize(69, 15)
 		    .setGroup(group);
 		lockButtons[10].getCaptionLabel().alignX(buttonUI.CENTER);
@@ -143,13 +149,13 @@ public class controlbuttonUI {
 		lockButtons[11].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[12] = addNote = buttonUI.addButton("Add Annotation")
-	        .setPosition(30, 570)
+	        .setPosition(30, 580)
 	        .setSize(150, 15)
 	        .setGroup(group);
 		lockButtons[12].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[13] = removeNote = buttonUI.addButton("Remove Annotation")
-	        .setPosition(185, 570)
+	        .setPosition(185, 580)
 	        .setSize(150, 15)
 	        .setGroup(group);
 		lockButtons[13].getCaptionLabel().alignX(buttonUI.CENTER);
@@ -163,12 +169,43 @@ public class controlbuttonUI {
 		pageIndex.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		timeLineIndex = buttonUI.addButton("timeLineIndex")
-				.setPosition(722, 570)
+				.setPosition(722, 580)
 				.setSize(75, 15)
 				.setCaptionLabel(timeLineIndexString)
 				.lock()
 				.setGroup(group);
 		timeLineIndex.getCaptionLabel().alignX(buttonUI.CENTER);
+		
+		//For audio timeline control
+		songTitle = buttonUI.addButton("songTitle")
+				.setPosition(30, 490)
+				.setSize(350, 15)
+				.setCaptionLabel(songTitleString)
+				.lock()
+				.setGroup(group);
+		timeLineIndex.getCaptionLabel().alignX(buttonUI.CENTER);
+		
+		songIndex = buttonUI.addButton("songIndex")
+				.setPosition(722, 490)
+				.setSize(75, 15)
+				.setCaptionLabel(songIndexString)
+				.lock()
+				.setGroup(group);
+		songIndex.getCaptionLabel().alignX(buttonUI.CENTER);
+		
+		nextSong = buttonUI.addButton("nextSong")
+				.setPosition(802, 490)
+				.setSize(69, 15)
+				.setCaptionLabel("Next Song")
+				.setGroup(group);
+		nextSong.getCaptionLabel().alignX(buttonUI.CENTER);
+		
+		prevSong = buttonUI.addButton("prevSong")
+				.setPosition(645, 490)
+				.setSize(69, 15)
+				.setCaptionLabel("Prev Song")
+				.setGroup(group);
+		prevSong.getCaptionLabel().alignX(buttonUI.CENTER);
 	}
 	
 	/**

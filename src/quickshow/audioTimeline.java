@@ -14,8 +14,6 @@ public class audioTimeline {
 	
 	//Generate the wave form image
 	private float leftSpectra[][];
-	private float rightSpectra[][];
-	private Minim audiotest;
 	private AudioSample audioClip;
 	private static final int timeLineWidth = 840;
 	private static final int timeLineHeight = 65;
@@ -31,8 +29,6 @@ public class audioTimeline {
 	    
 	    debug = parent.getDebugFlag();
 
-	    audiotest = minim;
-	    
 	    selectedSongs = new ArrayList<AudioItem>();
 	}
 	
@@ -41,7 +37,7 @@ public class audioTimeline {
 	 */
 	public void drawBackgroundCanvas(){
 		parent.rectMode(parent.CORNER);
-		parent.rect(30, 425, timeLineWidth, timeLineHeight);
+		parent.rect(30, 420, timeLineWidth, timeLineHeight);
 		
 	}
 	
@@ -51,67 +47,59 @@ public class audioTimeline {
 	 * 
 	 */
     public void generateWaveForm(){	
-		//For debugging purposes
-		//audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
-		//audiotest.load
 		if(selectedSongs.size() == 0) return;
-		
 		
 		float leftChannel[];
 		float leftSample[];
 		int fftSize = 1024;
-		int leftChunk;
-		
+		int leftChunk = 0;
+		int chunkStartIndex = 0;
 		//Will have to generate for all songs, but choose at index 0 for now
 		audioClip = selectedSongs.get(0).getAudioSample();
-	
-		FFT fft = new FFT( fftSize, audioClip.sampleRate() );
 		
+		FFT fft = new FFT( fftSize, audioClip.sampleRate());
+
 		//Get audio sample from both channels
 		//if(!(audioClip.getChannel(AudioSample.LEFT) == null))
 		leftChannel = audioClip.getChannel(AudioSample.LEFT);
-			
+
 		//Allocate array for both channel sample
 		leftSample = new float[fftSize];
-		
+
 		//Calculate chunks for both channel
-		leftChunk = leftChannel.length/fftSize + 1;
-		
+		leftChunk = (leftChannel.length/fftSize + 1);
 		//Allocate the spectra for both channels
+		
 		leftSpectra = new float[leftChunk][fftSize/2];
-		
+
 		//generate waveform data for both channels
-		  for(int i = 0; i < leftChunk; ++i) {
-		    int chunkStartIndex = i * fftSize;
-		   
-		    // the chunk size will always be fftSize, except for the 
-		    // last chunk, which will be however many samples are left in source
-		    int leftchunkSize = min( leftChannel.length - chunkStartIndex, fftSize );
-		    //int rightchunkSize = min( rightChannel.length - chunkStartIndex, fftSize );
-		   
-		    // copy first chunk into our analysis array
-		    System.arraycopy( leftChannel, // source of the copy
-		               chunkStartIndex, // index to start in the source
-		               leftSample, // destination of the copy
-		               0, // index to copy to
-		               leftchunkSize // how many samples to copy
-		              );
-		    
-		    // if the chunk was smaller than the fftSize, we need to pad the analysis buffer with zeroes        
-		    if ( leftchunkSize < fftSize ){
-		      // we use a system call for this
-		      Arrays.fill( leftSample, leftchunkSize, leftSample.length - 1, 0.0f );
-		    }
-		    
-		    // now analyze this buffer
-		    fft.forward(leftSample);
-		   
-		    // and copy the resulting spectrum into our spectra array
-		    for(int j = 0; j < 512; ++j) {
-		      leftSpectra[i][j] = fft.getBand(j);
-		    }
-		  }
-		
+		for(int i = 0; i < leftChunk; ++i) {
+			chunkStartIndex = i * fftSize;
+			
+			// the chunk size will always be fftSize, except for the 
+			// last chunk, which will be however many samples are left in source
+			int leftchunkSize = min( leftChannel.length - chunkStartIndex, fftSize );
+			// copy first chunk into our analysis array
+			System.arraycopy( leftChannel, // source of the copy
+					chunkStartIndex, // index to start in the source
+					leftSample, // destination of the copy
+					0, // index to copy to
+					leftchunkSize // how many samples to copy
+					);
+			
+			// if the chunk was smaller than the fftSize, we need to pad the analysis buffer with zeroes        
+			if ( leftchunkSize < fftSize ){
+				// we use a system call for this
+				Arrays.fill( leftSample, leftchunkSize, leftSample.length - 1, 0.0f );
+			}
+			
+			// now analyze this buffer
+			fft.forward(leftSample);
+			// and copy the resulting spectrum into our spectra array
+			for(int j = 0; j < 512; ++j) {
+				leftSpectra[i][j] = fft.getBand(j);
+			}
+		}
 	}
 	
 	/**

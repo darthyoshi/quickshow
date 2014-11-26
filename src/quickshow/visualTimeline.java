@@ -36,7 +36,7 @@ public class visualTimeline {
 	 * Drawing a simple background canvas
 	 */
 	public void drawBackgroundCanvas(){
-		parent.rect(30, 500, timeLineWidth, timeLineHeight);
+		parent.rect(30, 512, timeLineWidth, timeLineHeight);
 	}
 	
 	/**

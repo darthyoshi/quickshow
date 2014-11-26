@@ -90,7 +90,6 @@ public class Quickshow extends PApplet {
     	    thumbnails.drawBackgroundCanvas();
     	    
 	    	//This line is a place holder
-    	    aT.generateWaveForm();
     	    aT.drawWaveform();
 			thumbnails.drawThumbNails();
 			vTimeline.generateThumbnails();
@@ -232,6 +231,7 @@ public class Quickshow extends PApplet {
 	    	float value = theEvent.getGroup().getValue();
 	    	audioListbox.addToSelectedSongs((int) value);
 	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
+    	    aT.generateWaveForm();
 	    	break;
 	    	
 	    case "slideShow":
