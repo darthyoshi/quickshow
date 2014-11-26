@@ -21,27 +21,27 @@ import ddf.minim.Minim;
 public class Quickshow extends PApplet {
     private boolean debug = true;
     
-	ControlP5 control;
-	audiolistUI audioListbox;
+	private ControlP5 control;
+	private audiolistUI audioListbox;
 	
-	Minim minim;
+	private Minim minim;
 	
-	visualthumbnailUI thumbnails;
-	ArrayList <AudioItem> audioFiles;
+	private visualthumbnailUI thumbnails;
+	private ArrayList <AudioItem> audioFiles;
 
-	controlbuttonUI cbU;
-	FileBrowser browse;
-	slideShow show;
+	private controlbuttonUI cbU;
+	private FileBrowser browse;
+	private slideShow show;
 	
 	//Test variables for debug purposes
-	audioTimeline aT;
-	visualTimeline vTimeline;
+	private audioTimeline aT;
+	private visualTimeline vTimeline;
 	
 	//These variables are for the Visual Thumbnail UI to bound where the mouse responds
-	final int lowXBound = 30;
-	final int highXBound = 650;
-	final int lowYBound = 30;
-	final int highYBound = 400;
+	private static final int lowXBound = 30;
+	private static final int highXBound = 650;
+	private static final int lowYBound = 30;
+	private static final int highYBound = 400;
 
 	public void setup() {
 		size(900, 600);
@@ -95,10 +95,6 @@ public class Quickshow extends PApplet {
 			thumbnails.drawThumbNails();
 			vTimeline.generateThumbnails();
 	    }
-	}
-	
-	public void update(){
-		
 	}
 	
 	/**
@@ -177,6 +173,7 @@ public class Quickshow extends PApplet {
 	            thumbnails.selectAllClips();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	        
 	            break;
 	        
 	        case "Clear slides": 
@@ -184,26 +181,31 @@ public class Quickshow extends PApplet {
 	            thumbnails.clearSelectedItems();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
-	        	break;
+	        	
+	            break;
 	        
 	        case "Up":
 	        	thumbnails.showPrevItems();
 	        	cbU.setPageIndex(thumbnails.getNumPages(), thumbnails.getCurrIndex());
+	        	
 	        	break;
 	        
 	        case "Down":
 	        	thumbnails.showNextItems();
 	        	cbU.setPageIndex(thumbnails.getNumPages(), thumbnails.getCurrIndex());
+	        	
 	        	break;
 	        
 	        case "Next":
 	        	vTimeline.showNextOnTimeline();
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	        	
 	        	break;
 	        
 	        case "Previous": 
 	        	vTimeline.showPrevOnTimeline();
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	        	
 	        	break;
 	        
 	        case "Load Media":

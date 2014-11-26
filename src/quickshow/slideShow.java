@@ -60,8 +60,9 @@ public class slideShow {
     
     /**
      * Class constructor.
-     * @param parent
-     * @param minim
+     * @param parent the instantiating Quickshow object 
+     * @param minim the Minim object handling the audio files
+     * @param control the ControlP5 object handling UI elements
      */
     public slideShow(Quickshow parent, Minim minim, ControlP5 control) {
         this.parent = parent;
@@ -206,8 +207,6 @@ public class slideShow {
                                 curFrame
                             );
                             
-                            //transitFrame = curFrame;
-                            
                             double rand = Math.random();
                             transDir[0] = (rand < 0.33 ? 1 : 
                                 (rand < 0.66 ? 0 : -1));
@@ -223,6 +222,12 @@ public class slideShow {
                             }
                             
                             nextVisualItem();
+                            
+                            if(movie != null && movie.available()) {
+                                movie.read();
+                                
+                                curFrame = movie.get();
+                            }
                         }
                         
                     }
@@ -240,8 +245,6 @@ public class slideShow {
                             }
                             
                             movie.stop();
-                            
-                            nextVisualItem();
                             
                             transit = true;
                             
@@ -265,7 +268,13 @@ public class slideShow {
                                 curFrame
                             );
                             
-                            //transitFrame = curFrame;
+                            nextVisualItem();
+                            
+                            if(movie != null && movie.available()) {
+                                movie.read();
+                                
+                                curFrame = movie.get();
+                            }
                             
                             double rand = Math.random();
                             transDir[0] = (rand < 0.33 ? 1 : 
@@ -279,12 +288,6 @@ public class slideShow {
                             
                             else {
                                 transDir[1] = (rand < 0.5 ? 1 : -1);
-                            }
-                            
-                            if(movie.available()) {
-                                movie.read();
-                                
-                                curFrame = movie.get();
                             }
                         }
                     }

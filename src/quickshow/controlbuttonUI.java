@@ -17,29 +17,31 @@ public class controlbuttonUI {
     
     private boolean debug;
     
-    Group group;
-	Button playButton;
-	Button shareExportButton;
-	Button resetShowButton;
-	Button clearSongsButton;
-	Button clearVisualTimeline;
-	Button selectAllVideos;
-	Button selectAllImages;
-	Button upButton;
-	Button downButton;
-	Toggle shuffleToggle;
-	Button nextSlides;
-	Button prevSlides;
-	Button loadMedia;
-	Button addNote, removeNote;
-	Button[] lockButtons;
-	Textfield pageIndex;
-	Textfield timeLineIndex;
+    private Group group;
+    private Button playButton;
+    private Button shareExportButton;
+    private Button resetShowButton;
+    private Button clearSongsButton;
+    private Button clearVisualTimeline;
+    private Button selectAllVideos;
+    private Button selectAllImages;
+    private Button upButton;
+    private Button downButton;
+    private Toggle shuffleToggle;
+    private Button nextSlides;
+	private Button prevSlides;
+	private Button loadMedia;
+	private Button addNote, removeNote;
+	private Button[] lockButtons;
+	private Button pageIndex;
+	private Button timeLineIndex;
 	private String indexString = "0 of 0";
 	private String timeLineIndexString = "0 of 0";
 	
-	/*
-	 * TODO make sure to get interactivity
+	/**
+	 * Class constructor.
+     * @param parent the instantiating Quickshow object 
+     * @param control the ControlP5 object handling UI elements
 	 */
 	public controlbuttonUI(Quickshow parent, ControlP5 buttonUI){
 	    this.parent = parent;
@@ -54,25 +56,27 @@ public class controlbuttonUI {
 
 		lockButtons[0] = playButton = buttonUI.addButton("Play")
 	        .setPosition(30, 10)
+	        .setSize(69, 15)
 	        .setGroup(group);
 		playButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[1] = shareExportButton = buttonUI.addButton("Share/Export")
 	        .setPosition(120, 10)
 	        .setGroup(group)
-	        .setSize(120, 20);
+	        .setSize(120, 15);
 		shareExportButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		
 		lockButtons[2] = resetShowButton = buttonUI.addButton("Reset")
 	        .setPosition(270, 10)
+	        .setSize(69, 15)
 	        .setGroup(group);
 	        resetShowButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		shuffleToggle = buttonUI.addToggle("Shuffle Slides")
 	        //.setMode(ControlP5.SWITCH)
 	        .setPosition(360, 10)
-	        .setSize(20, 20)
+	        .setSize(15, 15)
 	        .setCaptionLabel(" Shuffle Slides")
 	        .setGroup(group);
 		shuffleToggle.getCaptionLabel()
@@ -82,7 +86,7 @@ public class controlbuttonUI {
 		lockButtons[3] = clearSongsButton = buttonUI
 	        .addButton("Clear selected songs")
 	        .setPosition(675, 402)
-	        .setSize(193, 15)
+	        .setSize(200, 15)
 	        .setGroup(group);
 		lockButtons[3].getCaptionLabel().alignX(buttonUI.CENTER);
 		
@@ -107,7 +111,7 @@ public class controlbuttonUI {
 		lockButtons[6].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[7] = upButton = buttonUI.addButton("Up")
-		    .setPosition(540, 402)
+		    .setPosition(465, 402)
 		    .setSize(50,15)
 		    .setGroup(group);
 		lockButtons[7].getCaptionLabel().alignX(buttonUI.CENTER);
@@ -121,46 +125,50 @@ public class controlbuttonUI {
 		//To control the visual timeline thumbnail
 		lockButtons[9] = nextSlides = buttonUI.addButton("Next")
 		    .setPosition(802, 570)
+		    .setSize(69, 15)
 		    .setGroup(group);
 		lockButtons[9].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[10] = prevSlides = buttonUI.addButton("Previous")
-		    .setPosition(30, 570)
+		    .setPosition(648, 570)
+		    .setSize(69, 15)
 		    .setGroup(group);
 		lockButtons[10].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		//Load media
 		lockButtons[11] = loadMedia = buttonUI.addButton("Load Media")
 		    .setPosition(675, 10)
-		    .setSize(193, 15)
+		    .setSize(200, 15)
 		    .setGroup(group);
 		lockButtons[11].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[12] = addNote = buttonUI.addButton("Add Annotation")
-	        .setPosition(200, 570)
+	        .setPosition(30, 570)
 	        .setSize(150, 15)
 	        .setGroup(group);
 		lockButtons[12].getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		lockButtons[13] = removeNote = buttonUI.addButton("Remove Annotation")
-	        .setPosition(555, 570)
+	        .setPosition(185, 570)
 	        .setSize(150, 15)
 	        .setGroup(group);
 		lockButtons[13].getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		pageIndex = buttonUI.addTextfield("")
-				.setPosition(440, 402)
+		pageIndex = buttonUI.addButton("pageIndex")
+				.setPosition(520, 402)
 				.setSize(75, 15)
-				.setText(indexString)
+				.setCaptionLabel(indexString)
 				.lock()
 				.setGroup(group);
+		pageIndex.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		timeLineIndex = buttonUI.addTextfield(" ")
-				.setPosition(425, 570)
+		timeLineIndex = buttonUI.addButton("timeLineIndex")
+				.setPosition(722, 570)
 				.setSize(75, 15)
-				.setText(timeLineIndexString)
+				.setCaptionLabel(timeLineIndexString)
 				.lock()
 				.setGroup(group);
+		timeLineIndex.getCaptionLabel().alignX(buttonUI.CENTER);
 	}
 	
 	/**
@@ -178,20 +186,22 @@ public class controlbuttonUI {
 	}
 	
 	/**
-	 * 
-	 * Sets the page indexing string for the label
+	 * Sets the page indexing string for the label.
+	 * @param pages the toal number of pages
+	 * @param index the current page number
 	 */
 	public void setPageIndex(int pages, int index){
 		indexString = index + " of " + pages;
-		pageIndex.setText(indexString);
+		pageIndex.setCaptionLabel(indexString);
 	}
 	
 	/**
-	 * 
-	 * Sets the page indexing string for the label for timeline
+	 * Sets the page indexing string for the label for timeline.
+	 * @param pages the total number of pages
+	 * @param index the current page number
 	 */
 	public void setTimeLinePageIndex(int pages, int index){
 		timeLineIndexString = index + " of " + pages;
-		timeLineIndex.setText(timeLineIndexString);
+		timeLineIndex.setCaptionLabel(timeLineIndexString);
 	}
 }

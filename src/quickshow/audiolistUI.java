@@ -21,15 +21,14 @@ public class audiolistUI {
     
 	private Group group;
 	
-	ListBox list;
-	int num_items = 0;
-	private final int width = 200;
-	private final int height = 350;
-	private final int MAX_SONGS = 3;
-	private final String title = "Songs/Audio";
-	//protected String [] selectedSongList;
-	ArrayList <AudioItem> selectedSongList;
-	ArrayList <AudioItem> songList;
+	private ListBox list;
+	private int num_items = 0;
+	private final static int width = 200;
+	private final static int height = 350;
+	private final static int MAX_SONGS = 3;
+	private final static String title = "Songs/Audio";
+	private ArrayList <AudioItem> selectedSongList;
+	private ArrayList <AudioItem> songList;
 
 	private int oldListSize;
 	
@@ -127,15 +126,7 @@ public class audiolistUI {
 	public void toggle(boolean visible){
 		group.setVisible(visible);
 	}
-	
-	/**
-	 * TODO retrieves all audio items for demo
-	 * @return
-	 */
-	public ArrayList<AudioItem> getAudioItems() {
-	    return songList;
-	}
-	
+
 	/*
 	 * Helper functions
 	 */

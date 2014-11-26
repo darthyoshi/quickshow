@@ -13,15 +13,19 @@ public class audioTimeline {
 	private boolean debug;
 	
 	//Generate the wave form image
-	float leftSpectra[][];
-	float rightSpectra[][];
-	Minim audiotest;
-	AudioSample audioClip;
-	private final int timeLineWidth = 840;
-	private final int timeLineHeight = 65;
-	ArrayList <AudioItem> selectedSongs;
+	private float leftSpectra[][];
+	private float rightSpectra[][];
+	private Minim audiotest;
+	private AudioSample audioClip;
+	private static final int timeLineWidth = 840;
+	private static final int timeLineHeight = 65;
+	private ArrayList <AudioItem> selectedSongs;
 	
-	
+	/**
+	 * Class constructor.
+	 * @param q the instantiating Quickshow object
+     * @param minim the Minim object handling the audio files
+	 */
 	public audioTimeline(Quickshow q, Minim minim){
 	    parent = q;
 	    
@@ -32,6 +36,9 @@ public class audioTimeline {
 	    selectedSongs = new ArrayList<AudioItem>();
 	}
 	
+	/**
+	 * TODO add method header
+	 */
 	public void drawBackgroundCanvas(){
 		parent.rectMode(parent.CORNER);
 		parent.rect(30, 425, timeLineWidth, timeLineHeight);
@@ -43,8 +50,7 @@ public class audioTimeline {
 	 * the needs of the application
 	 * 
 	 */
-	//public void generateWaveForm(Vector ){
-	public void generateWaveForm(){	
+    public void generateWaveForm(){	
 		//For debugging purposes
 		//audioClip = audiotest.loadSample("data/audio/guitar_reverse_phase_sloweddown.mp3", 2048);
 		//audiotest.load
@@ -108,8 +114,8 @@ public class audioTimeline {
 		
 	}
 	
-	/*
-	 * draw the waveforms
+	/**
+	 * Draw the waveforms.
 	 */
 	public void drawWaveform(){
 		int numOfItems = 1;
@@ -129,8 +135,9 @@ public class audioTimeline {
 		}
 	}
 	
-	/*
-	 * Retrieve the song list
+	/**
+	 * Retrieve the song list.
+	 * @param songList the list of AudioItems
 	 */
 	public void receiveSelectedSongs(ArrayList <AudioItem> songList){
 		selectedSongs = songList;
@@ -144,9 +151,8 @@ public class audioTimeline {
 		
 	}
 	
-	//private Helper Functions for generation of waveform data
+	//private Helper Functions for generation of waveform data.
 	private int min(int i, int j){
-		if (i < j) return i;
-		else return j;
+		return (i < j ? i : j);
 	}
 }

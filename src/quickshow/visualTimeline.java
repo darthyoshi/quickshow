@@ -7,10 +7,10 @@ import quickshow.datatypes.ImageItem;
 import quickshow.datatypes.VisualItem;
 
 public class visualTimeline {
-	private final int timeLineWidth = 840;
-	private final int timeLineHeight = 65;
-	private final int thumbnailWidth = 104;
-	private final int MAX_THUMBNAIL_DISPLAY = 8;
+	private final static int timeLineWidth = 840;
+	private final static int timeLineHeight = 65;
+	private final static int thumbnailWidth = 104;
+	private final static int MAX_THUMBNAIL_DISPLAY = 8;
 	private int start_index = 0;
 	private float scaleFactor;
 	private Quickshow parent;
@@ -18,13 +18,11 @@ public class visualTimeline {
     private boolean debug;
     private int num_pages = 0;
     private int curr_index = 0;
-    PImage image;
+    private PImage image;
     
-	ArrayList <VisualItem> itemsForDisplay;
+    private ArrayList <VisualItem> itemsForDisplay;
    
-   
-	
-	/*
+	/**
 	 * Empty Constructor need to some how do something
 	 */
 	public visualTimeline(Quickshow parent){
@@ -34,44 +32,44 @@ public class visualTimeline {
 		debug = parent.getDebugFlag();
 	}
 	
-	/*
+	/**
 	 * Drawing a simple background canvas
 	 */
 	public void drawBackgroundCanvas(){
 		parent.rect(30, 500, timeLineWidth, timeLineHeight);
 	}
 	
-	/*
+	/**
 	 * Function to generate the thumb nails for the selected items vector
 	 */
 	public void generateThumbnails(){
 		//If empty exit function
-		if(itemsForDisplay.size() == 0) return;
-		
-		int drawIndex = thumbnailWidth/2 + 25;
-		
-		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
-			image = itemsForDisplay.get(j).getThumbnail();
-			
-			//Adjust each image to fit on timeline maintaining Aspect Ratio
-			if (image.height > timeLineHeight || image.width > thumbnailWidth){
-				if(image.height >= image.width){
-					scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
-				}
-				else {
-					scaleFactor = 1.0f/((float) image.width/ (float) (thumbnailWidth-35));
-				}
-			}
-			float new_height = scaleFactor * image.height;
-			float new_width = scaleFactor * image.width;
-			parent.image(image, drawIndex, 533, new_width , new_height);
-			
-			//Increment the x index
-			if(drawIndex < timeLineWidth) drawIndex+= thumbnailWidth;
+		if(!itemsForDisplay.isEmpty()) {
+    		int drawIndex = thumbnailWidth/2 + 25;
+    		
+    		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
+    			image = itemsForDisplay.get(j).getThumbnail();
+    			
+    			//Adjust each image to fit on timeline maintaining Aspect Ratio
+    			if (image.height > timeLineHeight || image.width > thumbnailWidth){
+    				if(image.height >= image.width){
+    					scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
+    				}
+    				else {
+    					scaleFactor = 1.0f/((float) image.width/ (float) (thumbnailWidth-35));
+    				}
+    			}
+    			float new_height = scaleFactor * image.height;
+    			float new_width = scaleFactor * image.width;
+    			parent.image(image, drawIndex, 533, new_width , new_height);
+    			
+    			//Increment the x index
+    			if(drawIndex < timeLineWidth) drawIndex+= thumbnailWidth;
+    		}
 		}
 	}
 	
-	/*
+	/**
 	 * Receiving the visual items
 	 */
 	public void receiveSelectedItems(ArrayList<VisualItem> selectedList){
@@ -85,7 +83,7 @@ public class visualTimeline {
 		curr_index = 1;
 	}
 	
-	/*
+	/**
 	 * 
 	 * Clear the selected slides
 	 */
@@ -99,7 +97,6 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * 
 	 * to show next items
 	 */
 	public void showNextOnTimeline(){
@@ -110,10 +107,8 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * 
-	 * 
+	 * TODO add method header
 	 */
-	
 	public void showPrevOnTimeline(){
 		start_index -= 8;
 		if(start_index < 0) 
@@ -122,9 +117,7 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * 
 	 * Getters for num_pages and curr_index
-	 * 
 	 */
 	public int getNumPages(){
 		return num_pages;

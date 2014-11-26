@@ -61,17 +61,19 @@ public class FileBrowser {
     
     private boolean isAudioMode = false;
     
-    int thumbWidth, thumbHeight;
-    final int firstThumbX = 111, firstThumbY = 120;
+    private int thumbWidth, thumbHeight;
+    private static final int firstThumbX = 111, firstThumbY = 120;
     
     /**
      * Class constructor.
-     * @param parent the Quickshow object creating this instance 
-     * @param minim the Minim object handling the audio file
+     * @param parent the instantiating Quickshow object 
+     * @param minim the Minim object handling the audio files
      * @param control the ControlP5 object handling UI elements
      * @param curDir the initial FileBrowser directory
      */
-	FileBrowser(Quickshow parent, ddf.minim.Minim minim, ControlP5 control, String curDir) {
+	public FileBrowser(Quickshow parent, ddf.minim.Minim minim,
+        ControlP5 control, String curDir)
+    {
         this.parent = parent;
         
         debug = parent.getDebugFlag();
@@ -298,31 +300,34 @@ public class FileBrowser {
      * ControlP5 UI handler. Enters selected directory or loads selected files.
      */
     private void openButton() {
-        if(selectedIndex.isEmpty()) {
+        switch(selectedIndex.size()) {
+        case 0:
             loadAll();
             
-            toggle(false);
-        }
-        
-        else {
+            break;
+            
+        case 1:
             File file = new File(curDir + '/' + 
-                fileNames.get(/*curDisplayIndex +*/ selectedIndex.get(0)));
+                fileNames.get(selectedIndex.get(0)));
             
             if(file.isDirectory()) {
                 changeDir(file.getAbsolutePath());
+                
+                return;
             }
-      
+            
+        default:
+            if(isAudioMode) {
+                loadAudio();
+            }
+            
             else {
-                if(isAudioMode) {
-                    loadAudio();
-                }
-                
-                else {
-                    loadVisual();
-                }
-                
-                toggle(false);
+                loadVisual();
             }
+            
+            toggle(false);
+        
+            selectedIndex.clear();
         }
     }
     
@@ -350,6 +355,7 @@ public class FileBrowser {
     		if(thumbs.get(i) == null) {
 	    		fullPath = curDir + '/' + fileNames.get(i);
 	    		
+	    		//directory thumbnail
 	    		thumb = thumb1;
 	    		
 	    		//non-directory thumbnail
@@ -358,9 +364,10 @@ public class FileBrowser {
 		    			thumb = thumb2;
 		    		}
 		    		
-		    		else {					//visual thumbnail
+		    		else {
 		    			fileNameParts = fileNames.get(i).split("\\.");
 		    			
+		    			//image thumbnail
 		    			for(j = 0; j < FileExtensions.IMG_EXT.length; j++) {
 		    				if(fileNameParts[fileNameParts.length-1].
 	    				        equalsIgnoreCase(FileExtensions.IMG_EXT[j]))
@@ -369,12 +376,13 @@ public class FileBrowser {
 
 	                            thumbDims = newImageDims(thumb);
 	                            thumb.resize(thumbDims[0], thumbDims[1]);
-	                            thumbs.add(thumb);
+	                            //thumbs.add(thumb);
 		    					
 		    					break;
 		    				}
 		    			}
 	
+		    			//queue video for thumbnail generation
 		    			if(j == FileExtensions.IMG_EXT.length) {
 		    			    qIter.add(new QItem(i, fullPath));
 		                    
@@ -383,7 +391,7 @@ public class FileBrowser {
 		    		}
 	    		}
 	    		
-	    		//directory thumbnail
+	    		//set new thumbnail
 	    		thumbs.set(i, thumb);
     		}
     	}
@@ -515,6 +523,7 @@ public class FileBrowser {
         parent.stroke(0);
         parent.rectMode(parent.CORNERS);
         parent.rect(30, 70, 840, 530);
+        parent.line(869, 70, 869, 530);
         
         //thumbnail pic
         parent.imageMode(parent.CENTER);
@@ -529,35 +538,35 @@ public class FileBrowser {
         parent.rectMode(parent.CENTER);
         parent.stroke(0xff5522ff);
         
-        short i, j, imgIndex;
+        short row, col, imgIndex;
         String fileName;
-        for(imgIndex = 0, i = 0; i < 4; i++) {
+        for(imgIndex = 0, row = 0; row < 4; row++) {
             //draw thumbnail rows
-            for(j = 0; j < 5 && curDisplayIndex+j+5*i < fileNames.size();
-                j++, imgIndex++)
+            for(col = 0; col < 5 && curDisplayIndex+col+5*row < fileNames.size();
+                col++, imgIndex++)
             {
                 //draw thumbnail columns
-                if(thumbs.get(curDisplayIndex+j+5*i) != null) {
+                if(thumbs.get(curDisplayIndex+col+5*row) != null) {
                     parent.image(
-                        thumbs.get(curDisplayIndex+j+5*i),
-                        109 + j*162, 120 + i*115
+                        thumbs.get(curDisplayIndex+col+5*row),
+                        109 + col*162, 120 + row*115
                     );
                 }
                 
-                fileName = fileNames.get(curDisplayIndex+j+5*i);
+                fileName = fileNames.get(curDisplayIndex+col+5*row);
                 
                 if(fileName.length() >= 15) {
                     fileName = fileName.substring(0, 14) + "..";
                 }
                 
                 parent.fill(0xffffffff);
-                parent.text(fileName, 111 + j*162, 165 + i*115);
+                parent.text(fileName, 111 + col*162, 165 + row*115);
                 
                 parent.noFill();
                 if(!selectedIndex.isEmpty() && 
                     selectedIndex.contains((int)imgIndex+curDisplayIndex)) 
                 {
-                    parent.rect(111 + j*162, 130 + i*115, 125, 100);
+                    parent.rect(111 + col*162, 130 + row*115, 125, 100);
                 }
             }
         }
@@ -737,7 +746,7 @@ public class FileBrowser {
                     fileNameParts = fileName.split("\\.");
                     fullPath = curDir + '/' + fileName;
         
-                    //create thumbnail of 1st frame of video
+                    //queue video for thumbnail generation
                     for(i = 0; i < FileExtensions.VIDEO_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(FileExtensions.VIDEO_EXT[i]))
@@ -782,10 +791,18 @@ public class FileBrowser {
      * Loads the selected audio files.
      */
     private void loadAudio() {
+        File file;
+        String fileName;
+        
         for(Integer index : selectedIndex) {
-            if(curDisplayIndex + index < fileNames.size()) {
-                results.add(new AudioItem(minim,
-                    curDir + '/' + fileNames.get(curDisplayIndex + index)));
+            if(index < fileNames.size()) {
+                fileName = fileNames.get(index);
+                file = new File(curDir + '/' + fileName);
+                
+                if(file.isFile()) {
+                    results.add(new AudioItem(minim,
+                        curDir + '/' + fileNames.get(index)));
+                }
             }
         }
     }
@@ -797,41 +814,52 @@ public class FileBrowser {
         String[] fileNameParts;
         String fileName;
         short i;
+        File file;
+        
         for(Integer index : selectedIndex) {
-            if(curDisplayIndex + index < fileNames.size()) {
-                fileName = fileNames.get(curDisplayIndex + index);
-                fileNameParts = fileName.split("\\.");
-                
-                //file is image
-                for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
-                    if(fileNameParts[fileNameParts.length-1]
-                        .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
-                    {
+            if(index < fileNames.size()) {
+                fileName = fileNames.get(index);
+                file = new File(curDir + '/' + fileName);
+
+                if(file.isFile()) {
+                    fileNameParts = fileName.split("\\.");
+                    
+                    //file is image
+                    for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
+                        if(fileNameParts[fileNameParts.length-1]
+                            .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
+                        {
+                            results.add(
+                                new ImageItem(
+                                    parent,
+                                    curDir + '/' + fileName,
+                                    thumbs.get(index)
+                                )
+                            );
+        
+                            break;
+                        }
+                    }
+                    
+                    //file is video
+                    if(i == FileExtensions.IMG_EXT.length) {
+                        if(debug) {
+                            parent.println("Adding video to results arraylist");
+                        }
+
                         results.add(
-                            new ImageItem(
-                                parent,
-                                curDir + '/' + fileName
-                                , thumbs.get(index)
+                            new MovieItem(
+                                parent, 
+                                curDir + '/' + fileName, 
+                                thumbs.get(index)
                             )
                         );
-    
-                        break;
                     }
-                }
-                
-                //file is video
-                if(i == FileExtensions.IMG_EXT.length) {
-                	System.out.println("Adding video to results arraylist");
-                    results.add(
-                        new MovieItem(
-                            parent, 
-                            curDir + '/' + fileName, 
-                            thumbs.get(index)
-                        )
-                    );
                 }
             }
         }
+        
+        toggle(false);
     }
     
     /**
@@ -890,6 +918,8 @@ public class FileBrowser {
                 }
             }
         }
+        
+        toggle(false);
     }
     
     /**
