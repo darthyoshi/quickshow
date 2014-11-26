@@ -130,7 +130,7 @@ public class audioTimeline {
 		    for(i = 0; i < leftSpectra[s].length-1; i++){
 		        total += leftSpectra[s][i];
 		    }
-		    total = total / 40;
+		    total = total / 80;
 		    parent.line((s*scaleMod) + 30,total+460,(s*scaleMod) + 30,-total+460);
 		}
 	}

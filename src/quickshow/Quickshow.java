@@ -143,7 +143,11 @@ public class Quickshow extends PApplet {
 	            break;
 	        
 	        case "Reset":
-	            
+	        	thumbnails.clearSelectedItems();
+	        	vTimeline.clearSelectedSlides();
+	        	audioListbox.clearSelectedSongs();
+	        	vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
+	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	            break;
 	        
 	        case "Shuffle Slides":
@@ -166,7 +170,7 @@ public class Quickshow extends PApplet {
 	        case "Select All Pictures": 
 	            thumbnails.selectAllImages();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-	    
+	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	            break;
 	        
 	        case "Select All Clips": 

@@ -18,7 +18,6 @@ public class visualthumbnailUI {
 
     private boolean debug = true;
     
-	private int num_items;
 	private PImage p;
 	private ArrayList <VisualItem> items;
 	private ArrayList <VisualItem> selectedItems;
@@ -36,9 +35,7 @@ public class visualthumbnailUI {
 	private float my_new_height;
 	private float my_new_width;
 	private static final int lowXBound = 30;
-	private static final int highXBound = 650;
 	private static final int lowYBound = 30;
-	private static final int highYBound = 400;
 
 	private int oldListSize = 0;
 	
@@ -107,8 +104,10 @@ public class visualthumbnailUI {
 	 * @param vItems an ArrayList of VisualItems
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
+		if (vItems.size() == 0) return;
+		
 		if(debug) {
-		    parent.println("Receiving items size: " + vItems.size());
+		    parent.println("Receiving items size: " + vItems.size() + " What is oldListSize: " + oldListSize);
 		}
 		
 		for(int i = oldListSize; i < vItems.size(); i++){
@@ -145,11 +144,10 @@ public class visualthumbnailUI {
 		if(mainIndex < items.size()){
 			if(!selectedItems.contains(items.get(mainIndex)))
 				selectedItems.add(items.get(mainIndex));
-			
-			if(debug) {
-			    parent.println("Added image: " + selectedItems.get(mainIndex).checkType());
-			}
-		}
+		}	
+//			if(debug) {
+//			    parent.println("Added image: " + selectedItems.get(mainIndex).checkType());
+//			}
 	}
 	
 	/**

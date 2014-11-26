@@ -73,10 +73,15 @@ public class visualTimeline {
 	 * Receiving the visual items
 	 */
 	public void receiveSelectedItems(ArrayList<VisualItem> selectedList){
-
+		if(selectedList.size() == 0) {
+			oldListSize = 0;
+			return;
+		}
+		
 		for(int i = oldListSize; i < selectedList.size(); i++){
 			itemsForDisplay.add(selectedList.get(i));
 		}
+		
 		oldListSize = selectedList.size();
 		
 		num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
