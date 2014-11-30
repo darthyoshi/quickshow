@@ -31,6 +31,19 @@ public abstract class VisualItem extends MediaItem {
         
         annotationTexts = new ArrayList<String>();
         annotationTimes = new ArrayList<Float[]>();
+        
+        //debug tag
+        Float[] f = new Float[2];
+        f[0] = 0f;
+        f[1] = 2f;
+        annotationTimes.add(f);
+        annotationTexts.add("test: " + fileName);
+        
+        f = new Float[2];
+        f[0] = 3f;
+        f[1] = 4f;
+        annotationTimes.add(f);
+        annotationTexts.add("test2");
     }
     
     /**
@@ -57,19 +70,28 @@ public abstract class VisualItem extends MediaItem {
     }
     
     /**
-     * Modifies an existing annotation.
+     * Modifies an existing annotation, or adds a new annotation of the target
+     * annotation does not already exist.
      * @param index the annotation index
      * @param text the annotation
      * @param startTime the time when the annotation should appear
      * @param stopTime the time when the annotation should disappear
      */
-    public void setAnnotation(int index, String text, float startTime, float stopTime) {
-        annotationTexts.set(index, text);
+    public void setAnnotation(int index, String text,
+        float startTime, float stopTime)
+    {
+        if(index < annotationTexts.size()) {
+            annotationTexts.set(index, text);
+            
+            Float[] times = new Float[2];
+            times[0] = startTime;
+            times[1] = stopTime;
+            annotationTimes.set(index, times);
+        }
         
-        Float[] times = new Float[2];
-        times[0] = startTime;
-        times[1] = stopTime;
-        annotationTimes.set(index, times);
+        else {
+            addAnnotation(text, startTime, stopTime);
+        }
     }
     
     /**

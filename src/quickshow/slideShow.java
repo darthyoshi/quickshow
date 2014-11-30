@@ -48,8 +48,10 @@ public class slideShow {
     private AudioItem curAudioItem = null;
     private VisualItem curVisualItem = null;
     
-    private ArrayList<String> curAnnotationTexts;
-    private ArrayList<Float[]> curAnnotationTimes;
+    private ArrayList<String> curTagTexts;
+    private ArrayList<Float[]> curTagTimes;
+    private String tagText = null;
+    private Float[] tagTime = null;
     
     private double curImgTime;
     private static final int IMG_DISP_TIME = 5;
@@ -74,8 +76,8 @@ public class slideShow {
         audios = new ArrayList<AudioItem>();
         visuals = new ArrayList<VisualItem>();
         
-        curAnnotationTexts = new ArrayList<String>();
-        curAnnotationTimes = new ArrayList<Float[]>();
+        curTagTexts = new ArrayList<String>();
+        curTagTimes = new ArrayList<Float[]>();
         
         group = control.addGroup("slideShow")
             .setCaptionLabel("")
@@ -176,7 +178,7 @@ public class slideShow {
                 
                 if(curVisualItem != null) {
                     if(curVisualItem.checkType().equals("image")) {
-                        curImgTime += 0.04;
+                        curImgTime += 1f/parent.frameRate;
                         
                         if(curImgTime >= IMG_DISP_TIME) {
                             if(debug) {
@@ -228,8 +230,7 @@ public class slideShow {
                                 
                                 curFrame = movie.get();
                             }
-                        }
-                        
+                        }                        
                     }
                     
                     else {
@@ -310,11 +311,29 @@ public class slideShow {
         parent.imageMode(parent.CENTER);
         parent.image(curFrame, parent.width/2, parent.height/2);
         
-        if(transit) {
+        if(!transit) {
+            if(tagTime != null) {
+                if(
+                    (movie != null && movie.time() > tagTime[0] && 
+                    movie.time() < tagTime[1]) ||
+                    (curImgTime > tagTime[0] && curImgTime < tagTime[1])
+                ) {
+                    parent.fill(0xffffffff);
+                    parent.textAlign(parent.CENTER, parent.CENTER);
+                    parent.text(tagText, parent.width/2, parent.height * 11/12);
+                }
+                    
+                else if((movie != null && movie.time() > tagTime[1]) || curImgTime > tagTime[1]) {
+                    nextAnnotation();
+                }
+            }
+        }
+        
+        else {
             parent.image(
                 transitFrame,
-                parent.width/2+transDelta[0],
-                parent.height/2+transDelta[1]
+                parent.width/2 + transDelta[0],
+                parent.height/2 + transDelta[1]
             );
             
             if(isPlaying) {
@@ -409,10 +428,38 @@ public class slideShow {
     }
     
     /**
-     * TODO implement getting annotations
+     * Retrieves the next annotation
      */
     private void nextAnnotation() {
+        if(!curTagTimes.isEmpty()) {
+            int i = 0;
+            float min = Float.MAX_VALUE;
+            Float[] times;
+            
+            for(int j = 0; j < curTagTimes.size(); j++) {
+                if((times = curTagTimes.get(j))[0] < min) {
+                    min = times[0];
+                    i = j;
+                }
+            }
+            
+            tagTime = curTagTimes.remove(i);
+            tagText = curTagTexts.remove(i);
+            
+            if(debug) {
+                parent.println("next tag: \"" + tagText + "\", from " +
+                    tagTime[0] + "s to " + tagTime[1] + 's');
+            }
+        }
         
+        else {
+            tagText = null;
+            tagTime = null;
+            
+            if(debug) {
+                parent.println("No tags to show");
+            }
+        }
     }
     
     /**
@@ -438,10 +485,10 @@ public class slideShow {
         }
         
         if(curVisualItem != null) {
-            curAnnotationTexts.addAll(curVisualItem.getAnnotationTexts());
-            curAnnotationTimes.addAll(curVisualItem.getAnnotationTimes());
-    
-            //TODO figure out which tags should display and when
+            curTagTexts.addAll(curVisualItem.getAnnotationTexts());
+            curTagTimes.addAll(curVisualItem.getAnnotationTimes());
+            
+            nextAnnotation();
             
             if(curVisualItem.checkType().equals("video")) {
                 movie = ((MovieItem)curVisualItem).getMovie();
