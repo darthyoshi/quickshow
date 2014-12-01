@@ -169,8 +169,7 @@ public class slideShow {
         if(isPlaying) {
             if(!transit) {
                 if(curAudioItem != null) {
-                    if(curAudioItem.getAudio().position() ==
-                        curAudioItem.getAudio().length())
+                    if(!curAudioItem.getAudio().isPlaying())
                     {
                         nextAudioItem();
                     }
@@ -420,6 +419,7 @@ public class slideShow {
         
         else if(audioIter != null && audioIter.hasNext()) {
             curAudioItem = audioIter.next();
+            curAudioItem.getAudio().play();
         }
         
         else {
