@@ -61,7 +61,7 @@ public class visualTimeline {
     			}
     			float new_height = scaleFactor * image.height;
     			float new_width = scaleFactor * image.width;
-    			parent.image(image, drawIndex, 533, new_width , new_height);
+    			parent.image(image, drawIndex, 547, new_width , new_height);
     			
     			//Increment the x index
     			if(drawIndex < timeLineWidth) drawIndex+= thumbnailWidth;

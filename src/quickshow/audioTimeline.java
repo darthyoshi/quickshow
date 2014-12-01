@@ -18,6 +18,7 @@ public class audioTimeline {
 	private static final int timeLineWidth = 840;
 	private static final int timeLineHeight = 65;
 	private ArrayList <AudioItem> selectedSongs;
+	private int index;
 	
 	/**
 	 * Class constructor.
@@ -138,6 +139,35 @@ public class audioTimeline {
 	public void toggle(boolean visible){
 		
 	}
+	
+	/**
+	 * 
+	 */
+	public void nextSong(){
+		index = ((index+1) % 3) + 1;
+	}
+	
+	/**
+	 * 
+	 */
+	public void prevSong(){
+		index--;
+		if (index < 0) index = 3;
+	}
+	
+	
+	/**
+	 * 
+	 */
+	public int getIndex(){
+		return index;
+	}
+	
+	/**
+	 * @param i
+	 * @param j
+	 * @return
+	 */
 	
 	//private Helper Functions for generation of waveform data.
 	private int min(int i, int j){
