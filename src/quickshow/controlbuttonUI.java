@@ -248,7 +248,7 @@ public class controlbuttonUI {
 	 * 
 	 */
 	public void setSongTitle(AudioItem a){
-		songTitleString = a.getTitle() + " - "+ a.getAuthor() + " - "+a.getLength();
+		songTitleString = "Song: " + a.getTitle() + " - "+ a.getAuthor() + " - "+a.getLength();
 		songTitle.setCaptionLabel(songTitleString);
 	}
 	

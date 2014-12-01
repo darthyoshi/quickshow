@@ -57,7 +57,7 @@ public class audioTimeline {
 		int leftChunk = 0;
 		int chunkStartIndex = 0;
 		//Will have to generate for all songs, but choose at index 0 for now
-		audioClip = selectedSongs.get(index-1).getAudioSample();
+		audioClip = selectedSongs.get(index).getAudioSample();
 		
 		FFT fft = new FFT( fftSize, audioClip.sampleRate());
 
@@ -130,7 +130,7 @@ public class audioTimeline {
 	public void receiveSelectedSongs(ArrayList <AudioItem> songList){
 		selectedSongs = songList;
 		num_items = songList.size();
-		index = 1;
+		index = 0;
 	}
 	
 	/**
@@ -145,8 +145,8 @@ public class audioTimeline {
 	 * 
 	 */
 	public void nextSong(){
-		if(index >= selectedSongs.size()) return;
-		index = ((index+1) % 3);
+		index = ((index+1) % num_items) + 0;
+		System.out.println("Index is: " + index);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public class audioTimeline {
 	 */
 	public void prevSong(){
 		index--;
-		if (index < 0) index = selectedSongs.size();
+		if (index < 0) index = selectedSongs.size()-1;
 	}
 	
 	
@@ -162,7 +162,7 @@ public class audioTimeline {
 	 * 
 	 */
 	public int getIndex(){
-		return index;
+		return index+1;
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class audioTimeline {
 	 * 
 	 */
 	public AudioItem getCurrSong(){
-		return selectedSongs.get(index-1);
+		return selectedSongs.get(index);
 	}
 	
 	/**
