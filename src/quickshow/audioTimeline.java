@@ -19,6 +19,7 @@ public class audioTimeline {
 	private static final int timeLineHeight = 65;
 	private ArrayList <AudioItem> selectedSongs;
 	private int index;
+	private int num_items;
 	
 	/**
 	 * Class constructor.
@@ -56,7 +57,7 @@ public class audioTimeline {
 		int leftChunk = 0;
 		int chunkStartIndex = 0;
 		//Will have to generate for all songs, but choose at index 0 for now
-		audioClip = selectedSongs.get(0).getAudioSample();
+		audioClip = selectedSongs.get(index-1).getAudioSample();
 		
 		FFT fft = new FFT( fftSize, audioClip.sampleRate());
 
@@ -107,11 +108,9 @@ public class audioTimeline {
 	 * Draw the waveforms.
 	 */
 	public void drawWaveform(){
-		int numOfItems = 1;
 		if(selectedSongs.size() == 0) return;
-		if(selectedSongs != null) numOfItems = selectedSongs.size();
 		
-		float scaleMod = ((float) (timeLineWidth/numOfItems) / (float)leftSpectra.length);
+		float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
 		
 		for(int s = 0; s < leftSpectra.length; s++) {
 		    int i = 0;
@@ -130,6 +129,8 @@ public class audioTimeline {
 	 */
 	public void receiveSelectedSongs(ArrayList <AudioItem> songList){
 		selectedSongs = songList;
+		num_items = songList.size();
+		index = 1;
 	}
 	
 	/**
@@ -144,7 +145,8 @@ public class audioTimeline {
 	 * 
 	 */
 	public void nextSong(){
-		index = ((index+1) % 3) + 1;
+		if(index >= selectedSongs.size()) return;
+		index = ((index+1) % 3);
 	}
 	
 	/**
@@ -152,7 +154,7 @@ public class audioTimeline {
 	 */
 	public void prevSong(){
 		index--;
-		if (index < 0) index = 3;
+		if (index < 0) index = selectedSongs.size();
 	}
 	
 	
@@ -161,6 +163,21 @@ public class audioTimeline {
 	 */
 	public int getIndex(){
 		return index;
+	}
+	
+	/**
+	 * 
+	 */
+	public int getNumSelectedSongs(){
+		return num_items;
+	}
+	
+	/**
+	 * 
+	 * 
+	 */
+	public AudioItem getCurrSong(){
+		return selectedSongs.get(index-1);
 	}
 	
 	/**

@@ -224,6 +224,20 @@ public class Quickshow extends PApplet {
 	        case "Remove Annotation":
 	            
 	            break;
+	            
+	        case "prevSong":
+	        	aT.prevSong();
+	        	cbU.setSongTimelinePageIndex(aT.getNumSelectedSongs(), aT.getIndex());
+	        	cbU.setSongTitle(aT.getCurrSong());
+	        	aT.generateWaveForm();
+	        	break;
+	        	
+	        case "nextSong":
+	        	aT.nextSong();
+	        	cbU.setSongTimelinePageIndex(aT.getNumSelectedSongs(), aT.getIndex());
+	        	cbU.setSongTitle(aT.getCurrSong());
+	        	aT.generateWaveForm();
+	        	break;
 	        }
 	        break;
 	        
@@ -231,6 +245,8 @@ public class Quickshow extends PApplet {
 	    	float value = theEvent.getGroup().getValue();
 	    	audioListbox.addToSelectedSongs((int) value);
 	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
+        	cbU.setSongTimelinePageIndex(aT.getNumSelectedSongs(), aT.getIndex());
+        	cbU.setSongTitle(aT.getCurrSong());
     	    aT.generateWaveForm();
 	    	break;
 	    	

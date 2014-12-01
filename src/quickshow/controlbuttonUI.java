@@ -1,5 +1,6 @@
 package quickshow;
 
+import quickshow.datatypes.AudioItem;
 import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
@@ -39,7 +40,7 @@ public class controlbuttonUI {
 	private Button songIndex;
 	private Button nextSong;
 	private Button prevSong;
-	private String songIndexString = "0 of 3";
+	private String songIndexString = "0 of 0";
 	private String songTitleString = "Song: ";
 	private String indexString = "0 of 0";
 	private String timeLineIndexString = "0 of 0";
@@ -240,5 +241,23 @@ public class controlbuttonUI {
 	public void setTimeLinePageIndex(int pages, int index){
 		timeLineIndexString = index + " of " + pages;
 		timeLineIndex.setCaptionLabel(timeLineIndexString);
+	}
+	
+	/**
+	 * 
+	 * 
+	 */
+	public void setSongTitle(AudioItem a){
+		songTitleString = a.getTitle() + " - "+ a.getAuthor() + " - "+a.getLength();
+		songTitle.setCaptionLabel(songTitleString);
+	}
+	
+	/**
+	 * 
+	 * 
+	 */
+	public void setSongTimelinePageIndex(int pages, int index){
+		songIndexString = index + " of " + pages;
+		songIndex.setCaptionLabel(songIndexString);
 	}
 }
