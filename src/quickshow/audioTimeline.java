@@ -118,8 +118,8 @@ public class audioTimeline {
 		    for(i = 0; i < leftSpectra[s].length-1; i++){
 		        total += leftSpectra[s][i];
 		    }
-		    total = total / 80;
-		    parent.line((s*scaleMod) + 30,total+460,(s*scaleMod) + 30,-total+460);
+		    total = total / 120;
+		    parent.line((s*scaleMod) + 30,total+450,(s*scaleMod) + 30,-total+450);
 		}
 	}
 	

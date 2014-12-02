@@ -147,6 +147,8 @@ public class Quickshow extends PApplet {
 	        	audioListbox.clearSelectedSongs();
 	        	vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	        	cbU.setSongTimelinePageIndex(0, 0);
+	        	cbU.setSongTitle(null);
 	            break;
 	        
 	        case "Shuffle Slides":
@@ -163,7 +165,8 @@ public class Quickshow extends PApplet {
 	        
 	        case "Clear selected songs": 
 	        	audioListbox.clearSelectedSongs();
-	            
+	        	cbU.setSongTimelinePageIndex(0, 0);
+	        	cbU.setSongTitle(null);
 	        	break;
 	        
 	        case "Select All Pictures": 
