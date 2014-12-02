@@ -20,16 +20,13 @@ import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.Group;
 import controlP5.Toggle;
-import ddf.minim.Minim;
 
 @SuppressWarnings("static-access")
 public class slideShow {
     private Quickshow parent;
     
     private boolean debug;
-    
-    private Minim minim;
-    
+   
     private Group group;
     private Button stopButton;
     private Toggle playToggle;
@@ -53,26 +50,20 @@ public class slideShow {
     private String tagText = null;
     private Float[] tagTime = null;
     
-    private double curImgTime;
-    private static final int IMG_DISP_TIME = 5;
+    private float curImgTime;
     
     private boolean isPlaying = false, isEnabled = false, shuffle = false;
-    
-    private int shuffleIndex;
-    
+
     /**
      * Class constructor.
      * @param parent the instantiating Quickshow object 
-     * @param minim the Minim object handling the audio files
      * @param control the ControlP5 object handling UI elements
      */
-    public slideShow(Quickshow parent, Minim minim, ControlP5 control) {
+    public slideShow(Quickshow parent, ControlP5 control) {
         this.parent = parent;
         
         debug = parent.getDebugFlag();
-
-        this.minim = minim;
-        
+  
         audios = new ArrayList<AudioItem>();
         visuals = new ArrayList<VisualItem>();
         
@@ -110,7 +101,7 @@ public class slideShow {
      * Populates the audio component of the slide show.
      * @param newAudio an ArrayList containing the new AudioItems
      */
-    public void addAudio(ArrayList<AudioItem>  newAudio) {
+    public void addAudio(ArrayList<AudioItem> newAudio) {
         audios.addAll(newAudio);
         
         if(debug) {
@@ -128,7 +119,7 @@ public class slideShow {
      * Populates the visual component of the slide show.
      * @param newVisual an ArrayList containing the new VisualItems
      */
-    public void addVisual(ArrayList<VisualItem>  newVisual) {
+    public void addVisual(ArrayList<VisualItem> newVisual) {
         visuals.addAll(newVisual);
         
         if(debug) {
@@ -169,129 +160,77 @@ public class slideShow {
         if(isPlaying) {
             if(!transit) {
                 if(curAudioItem != null) {
-                    if(!curAudioItem.getAudio().isPlaying())
-                    {
+                    if(!curAudioItem.getAudio().isPlaying()) {
                         nextAudioItem();
                     }
                 }
                 
                 if(curVisualItem != null) {
-                    if(curVisualItem.checkType().equals("image")) {
-                        curImgTime += 1f/parent.frameRate;
-                        
-                        if(curImgTime >= IMG_DISP_TIME) {
-                            if(debug) {
-                                parent.println("slide show transition begin");
-                            }
-                            
-                            curImgTime = 0.;
-                            
-                            transit = true;
-                            
-                            transitFrame = parent.createImage(
-                                parent.width,
-                                parent.height,
-                                parent.RGB
-                            );
-                            transitFrame.loadPixels();
-                            for(
-                                int i = 0;
-                                i < transitFrame.pixels.length;
-                                i++
-                            ) {
-                                transitFrame.pixels[i] = 0xff555555;
-                            }
-                            transitFrame.updatePixels();
-                            transitFrame.set(
-                                (parent.width - curFrame.width)/2,
-                                (parent.height - curFrame.height)/2,
-                                curFrame
-                            );
-                            
-                            double rand = Math.random();
-                            transDir[0] = (rand < 0.33 ? 1 : 
-                                (rand < 0.66 ? 0 : -1));
-                            
-                            rand = Math.random();
-                            if(transDir[0] != 0) {
-                                transDir[1] = (rand < 0.33 ? 1 : 
-                                    (rand < 0.66 ? 0 : -1));
-                            }
-                            
-                            else {
-                                transDir[1] = (rand < 0.5 ? 1 : -1);
-                            }
-                            
-                            nextVisualItem();
-                            
-                            if(movie != null && movie.available()) {
-                                movie.read();
-                                
-                                curFrame = movie.get();
-                            }
-                        }                        
-                    }
+                    curImgTime += 1f/parent.frameRate;
                     
-                    else {
-                        if(movie.available()) {
+                    if(movie != null) {
+	                    if(movie.available()) {
+	                        movie.read();
+	                    }
+	                    
+	                    curFrame = movie.get();
+                    }
+                        
+                    if(curImgTime >= curVisualItem.getDisplayTime()) {
+                        if(debug) {
+                            parent.println("slide show transition begin");
+                        }
+                        
+                        curImgTime = 0f;
+                        
+                        transit = true;
+                        
+                        //create transition frame
+                        transitFrame = parent.createImage(
+                            parent.width,
+                            parent.height,
+                            parent.RGB
+                        );
+                        transitFrame.loadPixels();
+                        for(
+                            int i = 0;
+                            i < transitFrame.pixels.length;
+                            i++
+                        ) {
+                            transitFrame.pixels[i] = 0xff555555;
+                        }
+                        transitFrame.updatePixels();
+                        transitFrame.set(
+                            (parent.width - curFrame.width)/2,
+                            (parent.height - curFrame.height)/2,
+                            curFrame
+                        );
+                        
+                        //set horizontal transition direction
+                        double rand = Math.random();
+                        transDir[0] = (rand < 0.33 ? 1 : 
+                            (rand < 0.66 ? 0 : -1));
+                        
+                        //set vertical transition direction
+                        rand = Math.random();
+                        if(transDir[0] != 0) {
+                            transDir[1] = (rand < 0.33 ? 1 : 
+                                (rand < 0.66 ? 0 : -1));
+                        }
+                        
+                        else {
+                            transDir[1] = (rand < 0.5 ? 1 : -1);
+                        }
+                        
+                        nextVisualItem();
+                        
+                        if(movie != null && movie.available()) {
                             movie.read();
+                            
+                            curFrame = movie.get();
                         }
-                        
-                        curFrame = movie.get();
-                        
-                        if(movie.time() >= movie.duration()) {
-                            if(debug) {
-                                parent.println("slide show transition begin");
-                            }
-                            
-                            movie.stop();
-                            
-                            transit = true;
-                            
-                            transitFrame = parent.createImage(
-                                parent.width,
-                                parent.height,
-                                parent.RGB
-                            );
-                            transitFrame.loadPixels();
-                            for(
-                                int i = 0;
-                                i < transitFrame.pixels.length;
-                                i++
-                            ) {
-                                transitFrame.pixels[i] = 0xff555555;
-                            }
-                            transitFrame.updatePixels();
-                            transitFrame.set(
-                                (parent.width - curFrame.width)/2,
-                                (parent.height - curFrame.height)/2,
-                                curFrame
-                            );
-                            
-                            nextVisualItem();
-                            
-                            if(movie != null && movie.available()) {
-                                movie.read();
-                                
-                                curFrame = movie.get();
-                            }
-                            
-                            double rand = Math.random();
-                            transDir[0] = (rand < 0.33 ? 1 : 
-                                (rand < 0.66 ? 0 : -1));
-                            
-                            rand = Math.random();
-                            if(transDir[0] != 0) {
-                                transDir[1] = (rand < 0.33 ? 1 : 
-                                    (rand < 0.66 ? 0 : -1));
-                            }
-                            
-                            else {
-                                transDir[1] = (rand < 0.5 ? 1 : -1);
-                            }
-                        }
-                    }
-                    
+                    }                        
+
                     if(frameWidth != curFrame.width ||
                         frameHeight != curFrame.height)
                     {
@@ -322,8 +261,10 @@ public class slideShow {
                     parent.text(tagText, parent.width/2, parent.height * 11/12);
                 }
                     
-                else if((movie != null && movie.time() > tagTime[1]) || curImgTime > tagTime[1]) {
-                    nextAnnotation();
+                else if((movie != null && movie.time() > tagTime[1]) ||
+            		curImgTime > tagTime[1])
+                {
+                    nextTag();
                 }
             }
         }
@@ -430,7 +371,7 @@ public class slideShow {
     /**
      * Retrieves the next annotation
      */
-    private void nextAnnotation() {
+    private void nextTag() {
         if(!curTagTimes.isEmpty()) {
             int i = 0;
             float min = Float.MAX_VALUE;
@@ -485,22 +426,25 @@ public class slideShow {
         }
         
         if(curVisualItem != null) {
-            curTagTexts.addAll(curVisualItem.getAnnotationTexts());
-            curTagTimes.addAll(curVisualItem.getAnnotationTimes());
+            curTagTexts.addAll(curVisualItem.getTagTexts());
+            curTagTimes.addAll(curVisualItem.getTagTimes());
             
-            nextAnnotation();
+            nextTag();
             
             if(curVisualItem.checkType().equals("video")) {
                 movie = ((MovieItem)curVisualItem).getMovie();
                 movie.play();
-                
-                if(debug) {
-                    parent.println("playing movie: " + movie.duration());
-                }
             }
             
             else {
                 curFrame = ((ImageItem)curVisualItem).getImage();
+            }
+            
+            if(debug) {
+            	parent.println(
+        			"visual item type: " + curVisualItem.checkType() +
+        			"\nduration: " + curVisualItem.getDisplayTime()
+    			);
             }
         }
     }

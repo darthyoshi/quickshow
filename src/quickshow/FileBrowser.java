@@ -1146,7 +1146,8 @@ public class FileBrowser {
      * @return an ArrayList containing the selected MediaItems
      */
     public ArrayList<MediaItem> getResults() {
-        ArrayList<MediaItem> tmp = (ArrayList<MediaItem>) results.clone();
+        @SuppressWarnings("unchecked")
+		ArrayList<MediaItem> tmp = (ArrayList<MediaItem>) results.clone();
         
         results.clear();
         
@@ -1175,11 +1176,11 @@ public class FileBrowser {
      * Private class for queueing video files for thumbnail generation.
      */
     private class QItem {
-        protected int index;
-        protected String name;
-        protected boolean isHandled = false;
+        private int index;
+        private String name;
+        private boolean isHandled = false;
         
-        QItem(int i, String name) {
+        private QItem(int i, String name) {
             this.index = i;
             this.name = name;
         }

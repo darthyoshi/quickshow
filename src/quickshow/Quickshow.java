@@ -52,7 +52,7 @@ public class Quickshow extends PApplet {
         
 		minim = new Minim(this);
 		
-		show = new slideShow(this, minim, control);
+		show = new slideShow(this, control);
 		
 		audioListbox = new audiolistUI(this, control);
 		

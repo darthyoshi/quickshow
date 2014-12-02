@@ -17,10 +17,16 @@ public class MovieItem extends VisualItem {
      * @param fileName the file name of the video file to load
      * @param thumb the MediaItem thumbnail
      */
-    public MovieItem(quickshow.Quickshow parent, String fileName, processing.core.PImage thumb) {
+    public MovieItem(quickshow.Quickshow parent, String fileName,
+		processing.core.PImage thumb)
+    {
         super(parent, fileName, thumb);
         
         movie = new Movie(parent, fileName);
+        
+        movie.play();
+        displayTime = movie.duration();
+        movie.stop();
     }
     
     /**

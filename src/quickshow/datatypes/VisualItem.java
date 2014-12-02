@@ -12,10 +12,11 @@ import processing.core.PImage;
 import quickshow.Quickshow;
 
 public abstract class VisualItem extends MediaItem {
-    private ArrayList<String> annotationTexts;
-    private ArrayList<Float[]> annotationTimes;
+    private ArrayList<String> tagTexts;
+    private ArrayList<Float[]> tagTimes;
     private Quickshow parent;
     private PImage thumb;
+    protected float displayTime = 0;
     
     /**
      * Class constructor.
@@ -29,21 +30,21 @@ public abstract class VisualItem extends MediaItem {
         this.thumb = thumb;
         this.parent = parent;
         
-        annotationTexts = new ArrayList<String>();
-        annotationTimes = new ArrayList<Float[]>();
+        tagTexts = new ArrayList<String>();
+        tagTimes = new ArrayList<Float[]>();
         
         //debug tag
         Float[] f = new Float[2];
         f[0] = 0f;
         f[1] = 2f;
-        annotationTimes.add(f);
-        annotationTexts.add("test: " + fileName);
+        tagTimes.add(f);
+        tagTexts.add("test: " + fileName);
         
         f = new Float[2];
         f[0] = 3f;
         f[1] = 4f;
-        annotationTimes.add(f);
-        annotationTexts.add("test2");
+        tagTimes.add(f);
+        tagTexts.add("test2");
     }
     
     /**
@@ -60,13 +61,13 @@ public abstract class VisualItem extends MediaItem {
      * @param startTime the time when the annotation should appear
      * @param stopTime the time when the annotation should disappear
      */
-    public void addAnnotation(String text, float startTime, float stopTime) {
-        annotationTexts.add(text);
+    public void addTag(String text, float startTime, float stopTime) {
+        tagTexts.add(text);
         
         Float[] times = new Float[2];
         times[0] = startTime;
         times[1] = stopTime;
-        annotationTimes.add(times);
+        tagTimes.add(times);
     }
     
     /**
@@ -77,20 +78,20 @@ public abstract class VisualItem extends MediaItem {
      * @param startTime the time when the annotation should appear
      * @param stopTime the time when the annotation should disappear
      */
-    public void setAnnotation(int index, String text,
+    public void setTag(int index, String text,
         float startTime, float stopTime)
     {
-        if(index < annotationTexts.size()) {
-            annotationTexts.set(index, text);
+        if(index < tagTexts.size()) {
+            tagTexts.set(index, text);
             
             Float[] times = new Float[2];
             times[0] = startTime;
             times[1] = stopTime;
-            annotationTimes.set(index, times);
+            tagTimes.set(index, times);
         }
         
         else {
-            addAnnotation(text, startTime, stopTime);
+            addTag(text, startTime, stopTime);
         }
     }
     
@@ -98,32 +99,40 @@ public abstract class VisualItem extends MediaItem {
      * Retrieves all annotations associated with the VisualItem.
      * @return an ArrayList of Strings 
      */
-    public ArrayList<String> getAnnotationTexts() {
-        return annotationTexts;
+    public ArrayList<String> getTagTexts() {
+        return tagTexts;
     }
     
     /**
      * Removes all annotations from the VisualItem.
      */
-    public void clearAnnotations() {
-        annotationTexts.clear();
-        annotationTimes.clear();
+    public void clearTags() {
+        tagTexts.clear();
+        tagTimes.clear();
     }
     
     /**
      * Retrieves all timestamps associated with the VisualItem.
      * @return an ArrayList of arrays of Floats
      */
-    public ArrayList<Float[]> getAnnotationTimes() {
-        return annotationTimes;
+    public ArrayList<Float[]> getTagTimes() {
+        return tagTimes;
     }
     
     /**
      * Removes a text annotation from the VisualItem.
      * @param index the index of the annotation to remove
      */
-    public void removeAnnotation(int index) {
-        annotationTexts.remove(index);
-        annotationTimes.remove(index);
+    public void removeTag(int index) {
+        tagTexts.remove(index);
+        tagTimes.remove(index);
+    }
+    
+    /**
+     * Retrieves the time that the VisualItem will be displayed. 
+     * @return the time in seconds
+     */
+    public float getDisplayTime() {
+    	return displayTime;
     }
 }
