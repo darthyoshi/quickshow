@@ -17,6 +17,7 @@ public class AudioItem extends MediaItem {
     private String author;
     private int length;
     private AudioSample sample;
+    private String time;
     
     /**
      * Class constructor.
@@ -36,6 +37,10 @@ public class AudioItem extends MediaItem {
         title = meta.title();
         author = meta.author();
         length = meta.length()/1000;
+        
+        int minutes = length/60;
+        int seconds = length%60;
+        time = minutes + ":" + seconds;
     }
 
     /**
@@ -68,6 +73,14 @@ public class AudioItem extends MediaItem {
      */
     public int getLength() {
         return length;
+    }
+    
+    /**
+     * Retrieves the time of the audio file.
+     * @return the length in MM:SS format
+     */
+    public String getTime() {
+        return time;
     }
     
     /**

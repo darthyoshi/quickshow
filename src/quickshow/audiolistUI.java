@@ -88,10 +88,6 @@ public class audiolistUI {
 			selectedSong = songList.get(index);
 			
 			selectedSongList.add(selectedSong);
-			
-			if(debug) {
-			    parent.println("Added to selected song list: " + selectedSong.getAuthor() + " - " + selectedSong.getTitle());
-			}
 		}
 	}
 	
@@ -148,15 +144,9 @@ public class audiolistUI {
 		else {
 			songToAdd = list.getItem(num_items);
 			songToAdd.setText(songDisplay);
-			//songToAdd.
 		}
 		//Generate the Label for the listBoxItem
 		//Adds the actual song
-		//list.addItem(songDisplay, 0);
-		
-		if(debug) {
-		    parent.println("After adding song");
-		}
 		num_items++;
 	}
 

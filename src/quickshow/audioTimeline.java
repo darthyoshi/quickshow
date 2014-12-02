@@ -145,14 +145,15 @@ public class audioTimeline {
 	 * 
 	 */
 	public void nextSong(){
-		index = ((index+1) % num_items) + 0;
-		System.out.println("Index is: " + index);
+		if(selectedSongs.size() == 0) return;
+		index = ((index+1) % num_items);
 	}
 	
 	/**
 	 * 
 	 */
 	public void prevSong(){
+		if(selectedSongs.size() == 0) return;
 		index--;
 		if (index < 0) index = selectedSongs.size()-1;
 	}
@@ -162,14 +163,16 @@ public class audioTimeline {
 	 * 
 	 */
 	public int getIndex(){
-		return index+1;
+		if(selectedSongs.size() == 0) return 0;
+		else return index+1;
 	}
 	
 	/**
 	 * 
 	 */
 	public int getNumSelectedSongs(){
-		return num_items;
+		if(selectedSongs.size() == 0) return 0;
+		else return num_items;
 	}
 	
 	/**
@@ -177,7 +180,8 @@ public class audioTimeline {
 	 * 
 	 */
 	public AudioItem getCurrSong(){
-		return selectedSongs.get(index);
+		if(selectedSongs.size() == 0) return null;
+		else return selectedSongs.get(index);
 	}
 	
 	/**

@@ -249,7 +249,7 @@ public class controlbuttonUI {
 	 */
 	public void setSongTitle(AudioItem a){
 		if(a == null) songTitleString = "Song: ";
-		else songTitleString = "Song: " + a.getTitle() + " - "+ a.getAuthor() + " - "+a.getLength();
+		else songTitleString = "Song: " + a.getTitle() + " - "+ a.getAuthor() + " - "+a.getTime();
 		songTitle.setCaptionLabel(songTitleString);
 	}
 	
