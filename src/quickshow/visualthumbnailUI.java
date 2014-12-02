@@ -203,11 +203,13 @@ public class visualthumbnailUI {
 	 */
 	public void showNextItems(){
 		start_index += 15;
-		if(start_index > items.size()){
+		if(start_index >= items.size()){
 			start_index = 0;
+			curr_index = 1;
 		}
-		
-		curr_index = start_index/MAX_NUM_DISPLAY + 1;
+		else {
+			curr_index = start_index/MAX_NUM_DISPLAY + 1;
+		}
 	}
 	
 	/**

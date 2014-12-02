@@ -40,10 +40,12 @@ public class controlbuttonUI {
 	private Button songIndex;
 	private Button nextSong;
 	private Button prevSong;
+	private Button totalTime;
 	private String songIndexString = "0 of 0";
 	private String songTitleString = "Song: ";
 	private String indexString = "0 of 0";
 	private String timeLineIndexString = "0 of 0";
+	private String slideShowTime = "Total Time: 0:00";
 	
 	/**
 	 * Class constructor.
@@ -197,6 +199,14 @@ public class controlbuttonUI {
 			.setCaptionLabel("Prev Song")
 			.setGroup(group);
 		prevSong.getCaptionLabel().alignX(buttonUI.CENTER);
+		
+		totalTime = buttonUI.addButton("totalTime")
+				.setPosition(400, 580)
+				.setSize(130, 15)
+				.setCaptionLabel(slideShowTime)
+				.lock()
+				.setGroup(group);
+			totalTime.getCaptionLabel().alignX(buttonUI.CENTER);
 	}
 	
 	/**
@@ -239,7 +249,7 @@ public class controlbuttonUI {
 	 */
 	public void setSongTitle(AudioItem a){
 		if(a == null) songTitleString = "Song: ";
-		else songTitleString = "Song: " + a.getTitle() + " - "+ a.getAuthor() + " - "+a.getTime();
+		else songTitleString = "Song: " + a.getTitle() + " - "+ a.getAuthor() + " - " +a.getTime();
 		songTitle.setCaptionLabel(songTitleString);
 	}
 	
@@ -251,5 +261,16 @@ public class controlbuttonUI {
 	public void setSongTimelinePageIndex(int pages, int index){
 		songIndexString = index + " of " + pages;
 		songIndex.setCaptionLabel(songIndexString);
+	}
+	
+	/**
+	 * Sets the slideshow time display at the bottom of the screen
+	 * @param min
+	 * @param sec
+	 */
+	public void setSlideShowTime(int length){
+		int min = length/60;
+		int sec = length%60;
+		totalTime.setCaptionLabel(String.format("Total Time: %d:%02d", min, sec));
 	}
 }

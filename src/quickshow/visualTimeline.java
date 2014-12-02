@@ -24,6 +24,7 @@ public class visualTimeline {
     private boolean debug;
     private int num_pages = 0;
     private int curr_index = 0;
+    private int totalTime = 0;
     private PImage image;
     private final static int[] bounds = {30, 512, 870, 577};
     
@@ -58,6 +59,8 @@ public class visualTimeline {
     		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
     			image = itemsForDisplay.get(j).getThumbnail();
     			
+    			//Gets the total number of time from the visual element display time
+    			
     			//Adjust each image to fit on timeline maintaining Aspect Ratio
     			if (image.height > timeLineHeight || image.width > thumbnailWidth){
     				if(image.height >= image.width){
@@ -88,6 +91,7 @@ public class visualTimeline {
 		
 		for(int i = oldListSize; i < selectedList.size(); i++){
 			itemsForDisplay.add(selectedList.get(i));
+			totalTime += itemsForDisplay.get(i).getDisplayTime();
 		}
 		
 		oldListSize = selectedList.size();
@@ -107,6 +111,7 @@ public class visualTimeline {
 		start_index = 0;
 		curr_index = 0;
 		num_pages = 0;
+		totalTime = 0;
 	}
 	
 	/**
@@ -139,6 +144,13 @@ public class visualTimeline {
 		else {
 			start_index = curr_index = 0;
 		}
+	}
+	
+	/**
+	 * Returns the total length of time for the slide show
+	 */
+	public int getTotalTime(){
+		return totalTime;
 	}
 	
 	/**

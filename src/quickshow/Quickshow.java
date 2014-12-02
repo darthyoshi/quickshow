@@ -41,7 +41,7 @@ public class Quickshow extends PApplet {
 
 	public void setup() {
 		size(900, 600);
-		frameRate(25);
+		frameRate(24);
 
 		control = new ControlP5(this);
         control.setFont(control.getFont().getFont(), 15);
@@ -147,6 +147,7 @@ public class Quickshow extends PApplet {
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	        	cbU.setSongTimelinePageIndex(0, 0);
 	        	cbU.setSongTitle(null);
+	        	cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
 	        
 	        case "Shuffle Slides":
@@ -171,13 +172,14 @@ public class Quickshow extends PApplet {
 	            thumbnails.selectAllImages();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	            cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
 	        
 	        case "Select All Clips": 
 	            thumbnails.selectAllClips();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
-	        
+	            cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
 	        
 	        case "Clear slides": 
@@ -185,7 +187,7 @@ public class Quickshow extends PApplet {
 	            thumbnails.clearSelectedItems();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
-	        	
+	            cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
 	        
 	        case "Up":
@@ -276,6 +278,7 @@ public class Quickshow extends PApplet {
 	    		thumbnails.selectImage(mouseX, mouseY);
 	    		vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	    		cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	    		cbU.setSlideShowTime(vTimeline.getTotalTime());
 	    	}
 	    	
 	    	else {

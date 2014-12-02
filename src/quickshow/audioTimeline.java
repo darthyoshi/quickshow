@@ -135,7 +135,7 @@ public class audioTimeline {
 	
 	/**
 	 * For the audiotimeline marker
-	 * @return Returns a string thats in the MM:SS format
+	 * @return Nothing
 	 */
 	public void displayTimeMarkers(int x, int y){
 		if(selectedSongs.size() == 0) return;

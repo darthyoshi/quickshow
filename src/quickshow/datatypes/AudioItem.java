@@ -40,7 +40,7 @@ public class AudioItem extends MediaItem {
         
         int minutes = length/60;
         int seconds = length%60;
-        time = minutes + ":" + seconds;
+        time = String.format("%d:%02d", minutes, seconds);
     }
 
     /**
