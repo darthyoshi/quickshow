@@ -32,7 +32,7 @@ public class controlbuttonUI {
     private Button nextSlides;
 	private Button prevSlides;
 	private Button loadMedia;
-	private Button addNote, removeNote;
+	private Button editVisualItem, removeNote;
 	private Button[] lockButtons;
 	private Button pageIndex;
 	private Button timeLineIndex;
@@ -63,26 +63,19 @@ public class controlbuttonUI {
 
 		lockButtons[0] = playButton = buttonUI.addButton("Play")
 	        .setPosition(30, 10)
-	        .setSize(69, 15)
+	        .setSize(70, 15)
 	        .setGroup(group);
 		playButton.getCaptionLabel().alignX(buttonUI.CENTER);
-		
-		lockButtons[1] = shareExportButton = buttonUI.addButton("Share/Export")
-	        .setPosition(120, 10)
-	        .setGroup(group)
-	        .setSize(120, 15);
-		shareExportButton.getCaptionLabel().alignX(buttonUI.CENTER);
-		
-		
-		lockButtons[2] = resetShowButton = buttonUI.addButton("Reset")
-	        .setPosition(270, 10)
-	        .setSize(69, 15)
+
+		lockButtons[1] = resetShowButton = buttonUI.addButton("Reset")
+	        .setPosition(110, 10)
+	        .setSize(70, 15)
 	        .setGroup(group);
-	        resetShowButton.getCaptionLabel().alignX(buttonUI.CENTER);
+        resetShowButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		shuffleToggle = buttonUI.addToggle("Shuffle Slides")
 	        //.setMode(ControlP5.SWITCH)
-	        .setPosition(360, 10)
+	        .setPosition(530, 10)
 	        .setSize(15, 15)
 	        .setCaptionLabel(" Shuffle Slides")
 	        .setGroup(group);
@@ -90,122 +83,119 @@ public class controlbuttonUI {
 		    .align(buttonUI.RIGHT_OUTSIDE, buttonUI.CENTER);
 		
 		//For audioList
-		lockButtons[3] = clearSongsButton = buttonUI
+		lockButtons[2] = clearSongsButton = buttonUI
 	        .addButton("Clear selected songs")
 	        .setPosition(675, 402)
 	        .setSize(200, 15)
 	        .setGroup(group);
-		lockButtons[3].getCaptionLabel().alignX(buttonUI.CENTER);
+		clearSongsButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		//For the Thumbnail selector
-		lockButtons[4] = selectAllImages = buttonUI.addButton("Select All Pictures")
+		lockButtons[3] = selectAllImages = buttonUI
+			.addButton("Select All Pictures")
 		    .setPosition(140, 402)
 		    .setSize(140,15)
 		    .setGroup(group);
-		lockButtons[4].getCaptionLabel().alignX(buttonUI.CENTER);
+		selectAllImages.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		lockButtons[5] = selectAllVideos = buttonUI.addButton("Select All Clips")
+		lockButtons[4] = selectAllVideos = buttonUI
+			.addButton("Select All Clips")
 		    .setPosition(290, 402)
 		    .setSize(115, 15)
 		    .setGroup(group);
-		lockButtons[5].getCaptionLabel().alignX(buttonUI.CENTER);
+		selectAllVideos.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		lockButtons[6] = clearVisualTimeline = buttonUI
+		lockButtons[5] = clearVisualTimeline = buttonUI
 	        .addButton("Clear slides")
 		    .setPosition(30, 402)
 		    .setSize(100,15)
 		    .setGroup(group);
-		lockButtons[6].getCaptionLabel().alignX(buttonUI.CENTER);
+		clearVisualTimeline.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		lockButtons[7] = upButton = buttonUI.addButton("Up")
+		lockButtons[6] = upButton = buttonUI.addButton("Up")
 		    .setPosition(465, 402)
 		    .setSize(50,15)
 		    .setGroup(group);
-		lockButtons[7].getCaptionLabel().alignX(buttonUI.CENTER);
+		upButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		lockButtons[8] = downButton = buttonUI.addButton("Down")
+		lockButtons[7] = downButton = buttonUI.addButton("Down")
 		    .setPosition(600, 402)
 		    .setSize(50,15)
 		    .setGroup(group);
-		lockButtons[8].getCaptionLabel().alignX(buttonUI.CENTER);
+		downButton.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		//To control the visual timeline thumbnail
-		lockButtons[9] = nextSlides = buttonUI.addButton("Next")
+		lockButtons[8] = nextSlides = buttonUI.addButton("Next")
 		    .setPosition(802, 580)
 		    .setSize(69, 15)
 		    .setGroup(group);
-		lockButtons[9].getCaptionLabel().alignX(buttonUI.CENTER);
+		nextSlides.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		lockButtons[10] = prevSlides = buttonUI.addButton("Previous")
+		lockButtons[9] = prevSlides = buttonUI.addButton("Previous")
 		    .setPosition(648, 580)
 		    .setSize(69, 15)
 		    .setGroup(group);
-		lockButtons[10].getCaptionLabel().alignX(buttonUI.CENTER);
+		prevSlides.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		//Load media
-		lockButtons[11] = loadMedia = buttonUI.addButton("Load Media")
+		lockButtons[10] = loadMedia = buttonUI.addButton("Load Media")
 		    .setPosition(675, 10)
 		    .setSize(200, 15)
 		    .setGroup(group);
-		lockButtons[11].getCaptionLabel().alignX(buttonUI.CENTER);
+		loadMedia.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		lockButtons[12] = addNote = buttonUI.addButton("Add Annotation")
+		lockButtons[11] = editVisualItem = buttonUI
+			.addButton("Visual Item Properties")
 	        .setPosition(30, 580)
-	        .setSize(150, 15)
+	        .setSize(175, 15)
 	        .setGroup(group);
-		lockButtons[12].getCaptionLabel().alignX(buttonUI.CENTER);
-		
-		lockButtons[13] = removeNote = buttonUI.addButton("Remove Annotation")
-	        .setPosition(185, 580)
-	        .setSize(150, 15)
-	        .setGroup(group);
-		lockButtons[13].getCaptionLabel().alignX(buttonUI.CENTER);
-		
+		editVisualItem.getCaptionLabel().alignX(buttonUI.CENTER);
+
 		pageIndex = buttonUI.addButton("pageIndex")
-				.setPosition(520, 402)
-				.setSize(75, 15)
-				.setCaptionLabel(indexString)
-				.lock()
-				.setGroup(group);
+			.setPosition(520, 402)
+			.setSize(75, 15)
+			.setCaptionLabel(indexString)
+			.lock()
+			.setGroup(group);
 		pageIndex.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		timeLineIndex = buttonUI.addButton("timeLineIndex")
-				.setPosition(722, 580)
-				.setSize(75, 15)
-				.setCaptionLabel(timeLineIndexString)
-				.lock()
-				.setGroup(group);
+			.setPosition(722, 580)
+			.setSize(75, 15)
+			.setCaptionLabel(timeLineIndexString)
+			.lock()
+			.setGroup(group);
 		timeLineIndex.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		//For audio timeline control
 		songTitle = buttonUI.addButton("songTitle")
-				.setPosition(30, 490)
-				.setSize(350, 15)
-				.setCaptionLabel(songTitleString)
-				.lock()
-				.setGroup(group);
+			.setPosition(30, 490)
+			.setSize(350, 15)
+			.setCaptionLabel(songTitleString)
+			.lock()
+			.setGroup(group);
 		timeLineIndex.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		songIndex = buttonUI.addButton("songIndex")
-				.setPosition(722, 490)
-				.setSize(75, 15)
-				.setCaptionLabel(songIndexString)
-				.lock()
-				.setGroup(group);
+			.setPosition(720, 490)
+			.setSize(75, 15)
+			.setCaptionLabel(songIndexString)
+			.lock()
+			.setGroup(group);
 		songIndex.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		nextSong = buttonUI.addButton("nextSong")
-				.setPosition(802, 490)
-				.setSize(69, 15)
-				.setCaptionLabel("Next Song")
-				.setGroup(group);
+		lockButtons[12] = nextSong = buttonUI.addButton("nextSong")
+			.setPosition(800, 490)
+			.setSize(70, 15)
+			.setCaptionLabel("Next Song")
+			.setGroup(group);
 		nextSong.getCaptionLabel().alignX(buttonUI.CENTER);
 		
-		prevSong = buttonUI.addButton("prevSong")
-				.setPosition(645, 490)
-				.setSize(69, 15)
-				.setCaptionLabel("Prev Song")
-				.setGroup(group);
+		lockButtons[13] = prevSong = buttonUI.addButton("prevSong")
+			.setPosition(645, 490)
+			.setSize(70, 15)
+			.setCaptionLabel("Prev Song")
+			.setGroup(group);
 		prevSong.getCaptionLabel().alignX(buttonUI.CENTER);
 	}
 	
@@ -234,7 +224,7 @@ public class controlbuttonUI {
 	}
 	
 	/**
-	 * Sets the page indexing string for the label for timeline.
+	 * Sets the page indexing string for the label for the visual timeline.
 	 * @param pages the total number of pages
 	 * @param index the current page number
 	 */
@@ -244,8 +234,8 @@ public class controlbuttonUI {
 	}
 	
 	/**
-	 * 
-	 * 
+	 * Sets the title of the song currently displayed in the audio timeline.  
+	 * @param a the AudioItem
 	 */
 	public void setSongTitle(AudioItem a){
 		if(a == null) songTitleString = "Song: ";
@@ -254,8 +244,9 @@ public class controlbuttonUI {
 	}
 	
 	/**
-	 * 
-	 * 
+	 * Sets the page indexing string for the label for the audio timeline.
+	 * @param pages the total number of pages 
+	 * @param index the curent page number
 	 */
 	public void setSongTimelinePageIndex(int pages, int index){
 		songIndexString = index + " of " + pages;

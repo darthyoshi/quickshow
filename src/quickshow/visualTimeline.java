@@ -105,20 +105,32 @@ public class visualTimeline {
 	 * to show next items
 	 */
 	public void showNextOnTimeline(){
-		start_index += 8;
-		if(start_index > itemsForDisplay.size()) start_index = 0;
+		if(!itemsForDisplay.isEmpty()) {
+			start_index += 8;
+			if(start_index > itemsForDisplay.size()) start_index = 0;
+			
+			curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
+		}
 		
-		curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
+		else {
+			start_index = curr_index = 0;
+		}
 	}
 	
 	/**
 	 * TODO add method header
 	 */
 	public void showPrevOnTimeline(){
-		start_index -= 8;
-		if(start_index < 0) 
-			start_index = itemsForDisplay.size() - (itemsForDisplay.size()%MAX_THUMBNAIL_DISPLAY);
-		curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
+		if(!itemsForDisplay.isEmpty()) {
+			start_index -= 8;
+			if(start_index < 0) 
+				start_index = itemsForDisplay.size() - (itemsForDisplay.size()%MAX_THUMBNAIL_DISPLAY);
+			curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
+		}
+		
+		else {
+			start_index = curr_index = 0;
+		}
 	}
 	
 	/**
