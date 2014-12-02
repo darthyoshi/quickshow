@@ -134,6 +134,32 @@ public class audioTimeline {
 	}
 	
 	/**
+	 * For the audiotimeline marker
+	 * @return Returns a string thats in the MM:SS format
+	 */
+	public void displayTimeMarkers(int x, int y){
+		if(selectedSongs.size() == 0) return;
+		
+		//To offset from the left hand side
+		x -= 30;
+		
+		int currSongLength = getCurrSong().getLength();
+		
+		//See where in the song to show time stamp
+		float scaleFactor = (float) x/ (float) timeLineWidth;
+		
+		float timeMarker = scaleFactor * currSongLength;
+		
+		int min = (int) timeMarker/60;
+		int sec = (int) timeMarker%60;
+		
+		//Do we want a box or just the text?
+		parent.fill(0xffffffff);
+		parent.text(String.format("%d:%02d", min, sec), x, y);
+	}
+	
+	
+	/**
 	 * 
 	 * @param visible
 	 */

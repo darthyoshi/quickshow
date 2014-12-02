@@ -90,6 +90,7 @@ public class Quickshow extends PApplet {
 			vTimeline.generateThumbnails();
 			
 			//TODO check if mouse over timelines, do popups
+			mouseOver();
 	    }
 	}
 	
@@ -307,6 +308,14 @@ public class Quickshow extends PApplet {
         if(browse.isEnabled()) {
             browse.mousePressed(mouseX, mouseY);
         }
+    }
+    
+    public void mouseOver(){
+    	if(mouseY > 420 && mouseY < 485){
+    		if(mouseX > 30 && mouseX < 870){
+    			aT.displayTimeMarkers(mouseX, mouseY);
+    		}
+    	}
     }
     
     /**
