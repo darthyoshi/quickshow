@@ -41,10 +41,10 @@ public class controlbuttonUI {
 	private Button nextSong;
 	private Button prevSong;
 	private Button totalTime;
-	private String songIndexString = "0 of 0";
+	private String songIndexString = "0:00 - 0:00";
 	private String songTitleString = "Song: ";
 	private String indexString = "0 of 0";
-	private String timeLineIndexString = "0 of 0";
+	private String timeLineIndexString = "0:00 - 0:00";
 	private String slideShowTime = "Total Time: 0:00";
 	
 	/**
@@ -201,12 +201,12 @@ public class controlbuttonUI {
 		prevSong.getCaptionLabel().alignX(buttonUI.CENTER);
 		
 		totalTime = buttonUI.addButton("totalTime")
-				.setPosition(400, 580)
-				.setSize(130, 15)
-				.setCaptionLabel(slideShowTime)
-				.lock()
-				.setGroup(group);
-			totalTime.getCaptionLabel().alignX(buttonUI.CENTER);
+			.setPosition(400, 580)
+			.setSize(130, 15)
+			.setCaptionLabel(slideShowTime)
+			.lock()
+			.setGroup(group);
+		totalTime.getCaptionLabel().alignX(buttonUI.CENTER);
 	}
 	
 	/**
@@ -234,13 +234,30 @@ public class controlbuttonUI {
 	}
 	
 	/**
-	 * Sets the page indexing string for the label for the visual timeline.
+	 * Sets the page indexing string for the visual timeline label.
 	 * @param pages the total number of pages
 	 * @param index the current page number
 	 */
-	public void setTimeLinePageIndex(int pages, int index){
-		timeLineIndexString = index + " of " + pages;
-		timeLineIndex.setCaptionLabel(timeLineIndexString);
+	public void setTimeLinePageIndex(int pages, int index) {
+	    int min = 0, sec = 0;
+	    
+	    if(pages > 0) {
+	        min = (index-1)*30/60;
+	        sec = (index-1)*30%60;
+	    }
+	    
+	    StringBuilder build = new StringBuilder(
+            String.format("%d:%02d", min, sec));
+	    
+	    if(pages > 0) {
+    	    min = index*30/60;
+            sec = index*30%60;
+	    }
+        
+	    build.append(String.format(" - %d:%02d", min, sec));
+        
+        timeLineIndexString = build.toString();
+        timeLineIndex.setCaptionLabel(timeLineIndexString);
 	}
 	
 	/**
@@ -258,8 +275,24 @@ public class controlbuttonUI {
 	 * @param pages the total number of pages 
 	 * @param index the curent page number
 	 */
-	public void setSongTimelinePageIndex(int pages, int index){
-		songIndexString = index + " of " + pages;
+	public void setSongTimelinePageIndex(int pages, int index) {
+        int min = 0, sec = 0;
+        
+        if(pages > 0) {
+            min = (index-1)*30/60;
+            sec = (index-1)*30%60;
+        }
+        
+        StringBuilder build = new StringBuilder(
+            String.format("%d:%02d", min, sec));
+        
+        if(pages > 0) {
+            min = index*30/60;
+            sec = index*30%60;
+        }
+        
+        build.append(String.format(" - %d:%02d", min, sec));
+		songIndexString = build.toString();
 		songIndex.setCaptionLabel(songIndexString);
 	}
 	
