@@ -1,3 +1,9 @@
+/**
+ * @file visualTimeline.java
+ * @author Moses Lee
+ * @description Renders the Quickshow timeline.
+ */
+
 package quickshow;
 
 import java.util.ArrayList;
@@ -19,11 +25,13 @@ public class visualTimeline {
     private int num_pages = 0;
     private int curr_index = 0;
     private PImage image;
+    private final static int[] bounds = {30, 512, 870, 577};
     
     private ArrayList <VisualItem> itemsForDisplay;
    
 	/**
-	 * Empty Constructor need to some how do something
+	 * Class constructor.
+	 * @param parent the instantiating Quickshow object
 	 */
 	public visualTimeline(Quickshow parent){
 		this.parent = parent;
@@ -35,7 +43,7 @@ public class visualTimeline {
 	/**
 	 * Drawing a simple background canvas
 	 */
-	public void drawBackgroundCanvas(){
+	public void drawBackgroundCanvas() {
 		parent.rect(30, 512, timeLineWidth, timeLineHeight);
 	}
 	
@@ -141,5 +149,23 @@ public class visualTimeline {
 	}
 	public int getCurrIndexPages(){
 		return curr_index;
+	}
+	
+	/**
+     * Handler for mouse click. Selects a single timeline item if applicable.
+     * @param mouseX the x-coordinate of the mouse
+     * @param mouseY the y-coordinate of the mouse
+     */
+    public void mouseClicked(int mouseX, int mouseY) {
+		//TODO implement
+	}
+
+	/**
+	 * Returns the boundaries of the timeline window.
+	 * @return an integer array with the mapping:
+	 *   {left border, top border, right border, bottom border}
+	 */
+	public int[] getBounds() {
+		return bounds;
 	}
 }

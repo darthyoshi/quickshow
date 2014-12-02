@@ -1,7 +1,7 @@
 /**
  * @file visualthumbnailUI.java
- * @author Moses Lee
- * @description TODO add description 
+ * @author Moses Lee, Kay Choi
+ * @description Previews the VisualItems currently loaded into the Quickshow. 
  */
 
 package quickshow;
@@ -9,10 +9,9 @@ package quickshow;
 import java.util.ArrayList;
 
 import processing.core.PImage;
-import processing.core.PShape;
-import quickshow.datatypes.*;
-import controlP5.*;
+import quickshow.datatypes.VisualItem;
 
+@SuppressWarnings("static-access")
 public class visualthumbnailUI {
     private Quickshow parent;
 
@@ -20,7 +19,7 @@ public class visualthumbnailUI {
     
 	private PImage p;
 	private ArrayList <VisualItem> items;
-	private ArrayList <VisualItem> selectedItems;
+	private ArrayList<Integer> selectedIndex;
 	
 	static final private int MAX_THUMBNAIL_HEIGHT = 124;
 	static final private int MAX_THUMBNAIL_WIDTH = 123;
@@ -34,11 +33,8 @@ public class visualthumbnailUI {
 	
 	private float my_new_height;
 	private float my_new_width;
-	private static final int lowXBound = 30;
-	private static final int lowYBound = 30;
+	private static final int bounds[] = {30, 30, 650, 400};
 
-	private int oldListSize = 0;
-	
 	/**
      * Class constructor. 
 	 * @param parent the instantiating Quickshow object
@@ -48,22 +44,18 @@ public class visualthumbnailUI {
 	    
 	    debug = parent.getDebugFlag();
 	    items = new ArrayList<VisualItem>();
-	    selectedItems = new ArrayList<VisualItem>();
-	}
-	
-	/**
-	 * TODO add method header
-	 */
-	public void drawBackgroundCanvas(){
-		parent.rect(30, 30, width, height);
+	    
+	    selectedIndex = new ArrayList<Integer>();
 	}
 	
 	/**
 	 * TODO add method header
 	 */
 	public void drawThumbNails(){
-		int xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 30;
-		int yStartIndex = MAX_THUMBNAIL_HEIGHT/2 + 30;
+		parent.rect(30, 30, width, height);
+		
+		int xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 34;
+		int yStartIndex = MAX_THUMBNAIL_HEIGHT/2 + 29;
 		float scaleFactor;
 		
 		if(!items.isEmpty()) {
@@ -74,25 +66,33 @@ public class visualthumbnailUI {
 				p = items.get(j).getThumbnail();
 				if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
 					if(p.height >= p.width){
-						scaleFactor = 1.0f/((float) p.height/ (float) (MAX_THUMBNAIL_HEIGHT-15));
+						scaleFactor = 1.0f*(MAX_THUMBNAIL_HEIGHT-15)/p.height;
 					}
 					else {
-						scaleFactor = 1.0f/((float) p.width/ (float) (MAX_THUMBNAIL_WIDTH-15));
+						scaleFactor = 1.0f*(MAX_THUMBNAIL_WIDTH-15)/p.width;
 					}
 				}
 				
 				my_new_height = (float) p.height * scaleFactor;
 				my_new_width = (float) p.width * scaleFactor;
-				
+
 				parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
 				
-				
+				//selected highlight
+				if(!selectedIndex.isEmpty() && selectedIndex.contains(j)) {
+					parent.stroke(0xff5522ff);
+					parent.noFill();
+					parent.rectMode(parent.CENTER);
+					parent.rect(xStartIndex, yStartIndex,
+						MAX_THUMBNAIL_WIDTH - 2, MAX_THUMBNAIL_HEIGHT - 4);
+				}
+
 				//Move up the next index whether its video or image
 				xStartIndex += MAX_THUMBNAIL_WIDTH;
 				if(xStartIndex > width) {
 					if(yStartIndex < height){
 						yStartIndex += MAX_THUMBNAIL_HEIGHT;
-						xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 30;
+						xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 34;
 					}
 				}
 			}
@@ -104,18 +104,12 @@ public class visualthumbnailUI {
 	 * @param vItems an ArrayList of VisualItems
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
-		if (vItems.size() == 0) return;
-		
 		if(debug) {
-		    parent.println("Receiving items size: " + vItems.size() + " What is oldListSize: " + oldListSize);
+			parent.println("Receiving items size: " + vItems.size());
 		}
-		
-		for(int i = oldListSize; i < vItems.size(); i++){
-			items.add(vItems.get(i));
-		}
-		oldListSize = vItems.size();
-		
-		num_pages = items.size()/MAX_NUM_DISPLAY + 1;
+
+		items.addAll(vItems);
+		num_pages = (int)Math.ceil(1f*items.size()/MAX_NUM_DISPLAY);
 		curr_index = 1;
 	}
 	
@@ -125,8 +119,8 @@ public class visualthumbnailUI {
 	 * @param y the y-coordinate of the mouse
 	 */
 	public void selectImage(int x, int y){
-	    int xValue = x - lowXBound;
-		int yValue = y - lowYBound;
+	    int xValue = x - bounds[0];
+		int yValue = y - bounds[1];
 		
 		int xIndex = xValue/124;
 		int yIndex = yValue/123;
@@ -140,22 +134,31 @@ public class visualthumbnailUI {
     		);
 	    }
 		
-//		//Make sure we are in legal range
-		if(mainIndex < items.size()){
-			if(!selectedItems.contains(items.get(mainIndex)))
-				selectedItems.add(items.get(mainIndex));
+		//Make sure we are in legal range
+		if(mainIndex < items.size()) {
+			if(!selectedIndex.contains(mainIndex)) {
+				selectedIndex.add(mainIndex);
+			}
 		}	
-//			if(debug) {
-//			    parent.println("Added image: " + selectedItems.get(mainIndex).checkType());
-//			}
+
+		if(debug) {
+		    parent.println(items.get(mainIndex).checkType() +
+	    		" added to timeline");
+		}
 	}
 	
 	/**
 	 * Retrieves the selected items.
 	 * @return an ArrayList containing the selected VisualItems.
 	 */
-	public ArrayList<VisualItem> returnSelectedItems(){
-		return selectedItems;
+	public ArrayList<VisualItem> returnSelectedItems() {
+		ArrayList<VisualItem> result = new ArrayList<VisualItem>();
+		
+		for(Integer index : selectedIndex) {
+			result.add(items.get(index));
+		}
+		return result;
+		//return selectedItems;
 	}
 	
 	/**
@@ -163,9 +166,11 @@ public class visualthumbnailUI {
 	 */
 	public void selectAllImages(){
 		if(!items.isEmpty()) {
-			for(VisualItem v: items){
-    			if(v.checkType().equals("image") && !selectedItems.contains(v)){
-    				selectedItems.add(v);
+			VisualItem v;
+			for(int i = 0; i < items.size(); i++) {
+				v = items.get(i);
+    			if(v.checkType().equals("image") && !selectedIndex.contains(i)){
+    				selectedIndex.add(i);
     			}
     		}
 		}
@@ -176,9 +181,11 @@ public class visualthumbnailUI {
 	 */
 	public void selectAllClips(){
 		if(!items.isEmpty()) {
-    		for(VisualItem v: items){
-    			if(v.checkType().equals("video") && !selectedItems.contains(v)){
-    				selectedItems.add(v);
+			VisualItem v;
+			for(int i = 0; i < items.size(); i++) {
+				v = items.get(i);
+    			if(v.checkType().equals("video") && !selectedIndex.contains(i)){
+    				selectedIndex.add(i);
     			}
     		}
 		}
@@ -188,7 +195,7 @@ public class visualthumbnailUI {
 	 * Clears the selected visual items from the selectedList.
 	 */
 	public void clearSelectedItems(){
-		selectedItems.clear();
+		selectedIndex.clear();
 	}
 	
 	/**
@@ -229,5 +236,14 @@ public class visualthumbnailUI {
 	 */
 	public int getCurrIndex(){
 		return curr_index;
+	}
+
+	/**
+	 * Returns the boundaries of the thumbnail window.
+	 * @return an integer array with the mapping:
+	 *   {left border, top border, right border, bottom border}
+	 */
+	public int[] getBounds() {
+		return bounds;
 	}
 }

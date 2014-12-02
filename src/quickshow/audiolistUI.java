@@ -103,7 +103,6 @@ public class audiolistUI {
 	
 	//Receive the list of songs
 	public void receiveSongs(ArrayList <AudioItem> fileList){
-		//songList.clear();
 		songList.addAll(fileList);
 		
 		System.out.println("Size of fileList: " + fileList.size());

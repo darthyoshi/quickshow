@@ -61,8 +61,7 @@ public class FileBrowser {
     
     private boolean isAudioMode = false;
     
-    private int thumbWidth, thumbHeight;
-    private static final int firstThumbX = 111, firstThumbY = 120;
+    private static final int thumbWidth = 136, thumbHeight = 102;
     
     /**
      * Class constructor.
@@ -98,10 +97,7 @@ public class FileBrowser {
         this.curDir = path.toString();
         
         this.minim = minim;
-        
-        thumbHeight = 102;
-        thumbWidth = 136;
-        
+   
         fileNames = new ArrayList<String>();
         thumbs = new ArrayList<PImage>();
         q = new ArrayList<QItem>();
@@ -325,7 +321,9 @@ public class FileBrowser {
                 loadVisual();
             }
             
-            toggle(false);
+            if(!results.isEmpty()) {
+            	toggle(false);
+            }
         
             selectedIndex.clear();
         }
@@ -334,7 +332,7 @@ public class FileBrowser {
     /**
      * Generates thumbnails when paginating through a directory if necessary.
      */
-    private void updateThumbs() {
+    private void updateThumbs(int displayIndex) {
     	String fullPath;
     	String[] fileNameParts;
     	PImage thumb;
@@ -348,8 +346,8 @@ public class FileBrowser {
         short j;
         
     	for(
-	        int i = curDisplayIndex;
-	        i < curDisplayIndex + 20 && i < fileNames.size();
+	        int i = displayIndex;
+	        i < displayIndex + 20 && i < fileNames.size();
 	        i++
         ) {
     		if(thumbs.get(i) == null) {
@@ -408,7 +406,7 @@ public class FileBrowser {
         if(curDisplayIndex > 0) {
             curDisplayIndex -= 20;
 
-            updateThumbs();
+            updateThumbs(curDisplayIndex);
             
             int lastPage = (int)(Math.ceil(fileNames.size()/20.));
             
@@ -429,7 +427,7 @@ public class FileBrowser {
         
         curDisplayIndex = 0;
         
-        updateThumbs();
+        updateThumbs(curDisplayIndex);
             
         int lastPage = (int)(Math.ceil(fileNames.size()/20.));
         
@@ -450,7 +448,7 @@ public class FileBrowser {
         if(curDisplayIndex + 20 < fileNames.size()) {
             curDisplayIndex += 20;
             
-            updateThumbs();
+            updateThumbs(curDisplayIndex);
             
             int lastPage = (int)(Math.ceil(fileNames.size()/20.));
             
@@ -473,7 +471,7 @@ public class FileBrowser {
         
         curDisplayIndex = (lastPage - 1) * 20;
         
-        updateThumbs();
+        updateThumbs(curDisplayIndex);
         
         pageLabel.setCaptionLabel("\n\n\n" + lastPage + 
             "\n\nof\n\n" + lastPage);
@@ -549,7 +547,7 @@ public class FileBrowser {
                 if(thumbs.get(curDisplayIndex+col+5*row) != null) {
                     parent.image(
                         thumbs.get(curDisplayIndex+col+5*row),
-                        109 + col*162, 120 + row*115
+                        109 + col*162, 125 + row*115
                     );
                 }
                 
@@ -560,13 +558,13 @@ public class FileBrowser {
                 }
                 
                 parent.fill(0xffffffff);
-                parent.text(fileName, 111 + col*162, 165 + row*115);
+                parent.text(fileName, 111 + col*162, 173 + row*115);
                 
                 parent.noFill();
                 if(!selectedIndex.isEmpty() && 
                     selectedIndex.contains((int)imgIndex+curDisplayIndex)) 
                 {
-                    parent.rect(111 + col*162, 130 + row*115, 125, 100);
+                    parent.rect(109 + col*162, 128 + row*115, thumbWidth + 10, thumbHeight + 10);
                 }
             }
         }
@@ -589,11 +587,13 @@ public class FileBrowser {
         
         float aspect = 1f * image.width / image.height;
         
-        results[0] = thumbWidth;
-        results[1] = (int)(results[0] / aspect);
+        if(aspect > 1f) {
+        	results[0] = thumbWidth;
+        	results[1] = (int)(results[0] / aspect);
+        }
         
-        if(results[1] > thumbHeight) {
-            results[1] = thumbHeight;
+        else {
+    	    results[1] = thumbHeight;
             results[0] = (int)(results[1] * aspect);
         }
         
@@ -858,8 +858,6 @@ public class FileBrowser {
                 }
             }
         }
-        
-        toggle(false);
     }
     
     /**
@@ -879,10 +877,17 @@ public class FileBrowser {
         }
         
         else {
-            String[] fileNameParts;
+        	String[] fileNameParts;
             String fileName;
             short i;
-            for(int j = 0; j < fileNames.size(); j++) {
+            int j;
+            
+            //ensure all thumbnails actually loaded
+            for(j = 0; j < fileNames.size(); j += 20) {
+            	updateThumbs(j);
+            }
+            
+            for(j = 0; j < fileNames.size(); j++) {
                 fileName = fileNames.get(j);
                 file = new File(curDir + '/' + fileName);
                 

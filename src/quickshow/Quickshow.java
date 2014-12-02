@@ -38,10 +38,6 @@ public class Quickshow extends PApplet {
 	private visualTimeline vTimeline;
 	
 	//These variables are for the Visual Thumbnail UI to bound where the mouse responds
-	private static final int lowXBound = 30;
-	private static final int highXBound = 650;
-	private static final int lowYBound = 30;
-	private static final int highYBound = 400;
 
 	public void setup() {
 		size(900, 600);
@@ -87,12 +83,13 @@ public class Quickshow extends PApplet {
 	    	imageMode(CENTER);
 	    	aT.drawBackgroundCanvas();
     	    vTimeline.drawBackgroundCanvas();
-    	    thumbnails.drawBackgroundCanvas();
-    	    
+
 	    	//This line is a place holder
     	    aT.drawWaveform();
 			thumbnails.drawThumbNails();
 			vTimeline.generateThumbnails();
+			
+			//TODO check if mouse over timelines, do popups
 	    }
 	}
 	
@@ -268,13 +265,26 @@ public class Quickshow extends PApplet {
 	    
 	        }
 	    }
+
 	    else {
-	    	if(mouseX > lowXBound && mouseX < highXBound && 
-    	        mouseY > lowYBound && mouseY < highYBound)
+	    	//thumbnail window
+	    	int[] bounds = thumbnails.getBounds(); 
+	    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
+    	        mouseY > bounds[1] && mouseY < bounds[3])
 	    	{
 	    		thumbnails.selectImage(mouseX, mouseY);
 	    		vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	    		cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	    	}
+	    	
+	    	else {
+		    	//visual timeline
+		    	bounds = vTimeline.getBounds();
+		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
+	    	        mouseY > bounds[1] && mouseY < bounds[3])
+		    	{
+		    		vTimeline.mouseClicked(mouseX, mouseY);
+		    	}
 	    	}
 	    	
 	    }
