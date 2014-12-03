@@ -8,8 +8,8 @@ package quickshow;
 
 import java.util.ArrayList;
 
+import processing.core.PConstants;
 import processing.core.PImage;
-import quickshow.datatypes.ImageItem;
 import quickshow.datatypes.VisualItem;
 
 public class visualTimeline {
@@ -45,7 +45,26 @@ public class visualTimeline {
 	 * Drawing a simple background canvas
 	 */
 	public void drawBackgroundCanvas() {
+		parent.rectMode(PConstants.CORNER);
+    	parent.imageMode(PConstants.CENTER);
+    	
+    	parent.fill(90,90,90);
+		parent.stroke(0);
 		parent.rect(30, 512, timeLineWidth, timeLineHeight);
+		
+		parent.stroke(0xffffffff);
+		short x;
+		for(short i = 1; i < 30; i++) {
+			x = (short)(i*28 + 30);
+			
+			if(i%5 == 0) {
+				parent.line(x, 525, x, timeLineHeight+503);
+			}
+			
+			else {
+				parent.line(x, 540, x, timeLineHeight+488);
+			}
+		}
 	}
 	
 	/**
@@ -54,6 +73,8 @@ public class visualTimeline {
 	public void generateThumbnails(){
 		//If empty exit function
 		if(!itemsForDisplay.isEmpty()) {
+			parent.imageMode(PConstants.CENTER);
+    	
     		int drawIndex = thumbnailWidth/2 + 25;
     		
     		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
@@ -75,7 +96,9 @@ public class visualTimeline {
     			parent.image(image, drawIndex, 547, new_width , new_height);
     			
     			//Increment the x index
-    			if(drawIndex < timeLineWidth) drawIndex+= thumbnailWidth;
+    			if(drawIndex < timeLineWidth) { 
+    				drawIndex += thumbnailWidth;
+    			}
     		}
 		}
 	}

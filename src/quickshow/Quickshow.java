@@ -77,10 +77,6 @@ public class Quickshow extends PApplet {
 	    
 	    else {
 			//Background for the thumbnails
-	    	stroke(0,0,0);
-	    	fill(90,90,90);
-	    	rectMode(CORNER);
-	    	imageMode(CENTER);
 	    	aT.drawBackgroundCanvas();
     	    vTimeline.drawBackgroundCanvas();
 
@@ -313,11 +309,25 @@ public class Quickshow extends PApplet {
         }
     }
     
-    public void mouseOver(){
-    	if(mouseY > 420 && mouseY < 485){
-    		if(mouseX > 30 && mouseX < 870){
+    public void mouseOver() {
+    	if(!browse.isEnabled()) {
+    		//audio timeline
+    		int[] bounds = aT.getBounds();
+	    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
+    	        mouseY > bounds[1] && mouseY < bounds[3])
+	    	{
     			aT.displayTimeMarkers(mouseX, mouseY);
     		}
+	    	
+	    	else {
+	    		//visual timeline
+	    		bounds = vTimeline.getBounds();
+		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
+	    	        mouseY > bounds[1] && mouseY < bounds[3])
+		    	{
+	    			
+	    		}
+	    	}
     	}
     }
     
@@ -362,7 +372,6 @@ public class Quickshow extends PApplet {
      */
     public void toggleMain(boolean visible) {
         cbU.toggle(visible);
-        aT.toggle(visible);
         audioListbox.toggle(visible);
     }
     

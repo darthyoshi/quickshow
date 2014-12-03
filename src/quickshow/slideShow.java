@@ -9,6 +9,7 @@ package quickshow;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import processing.core.PConstants;
 import processing.core.PImage;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
@@ -21,7 +22,6 @@ import controlP5.ControlP5;
 import controlP5.Group;
 import controlP5.Toggle;
 
-@SuppressWarnings("static-access")
 public class slideShow {
     private Quickshow parent;
     
@@ -94,7 +94,7 @@ public class slideShow {
             .setImage(parent.loadImage("data/img/stopbutton.png"))
             .setGroup(group);
         
-        curFrame = parent.createImage(0, 0, parent.RGB);
+        curFrame = parent.createImage(0, 0, PConstants.RGB);
     }
     
     /**
@@ -105,7 +105,7 @@ public class slideShow {
         audios.addAll(newAudio);
         
         if(debug) {
-            parent.println("#audio items in slide show: " + audios.size());
+            Quickshow.println("#audio items in slide show: " + audios.size());
         }
         
         if(!shuffle) {
@@ -123,7 +123,7 @@ public class slideShow {
         visuals.addAll(newVisual);
         
         if(debug) {
-            parent.println("#visual items slide show: " + visuals.size());
+            Quickshow.println("#visual items slide show: " + visuals.size());
         }
         
         if(!shuffle) {
@@ -178,7 +178,7 @@ public class slideShow {
                         
                     if(curImgTime >= curVisualItem.getDisplayTime()) {
                         if(debug) {
-                            parent.println("slide show transition begin");
+                            Quickshow.println("slide show transition begin");
                         }
                         
                         curImgTime = 0f;
@@ -189,7 +189,7 @@ public class slideShow {
                         transitFrame = parent.createImage(
                             parent.width,
                             parent.height,
-                            parent.RGB
+                            PConstants.RGB
                         );
                         transitFrame.loadPixels();
                         for(
@@ -246,7 +246,7 @@ public class slideShow {
             }
         }
         
-        parent.imageMode(parent.CENTER);
+        parent.imageMode(PConstants.CENTER);
         parent.image(curFrame, parent.width/2, parent.height/2);
         
         if(!transit) {
@@ -257,7 +257,7 @@ public class slideShow {
                     (curImgTime > tagTime[0] && curImgTime < tagTime[1])
                 ) {
                     parent.fill(0xffffffff);
-                    parent.textAlign(parent.CENTER, parent.CENTER);
+                    parent.textAlign(PConstants.CENTER, PConstants.CENTER);
                     parent.text(tagText, parent.width/2, parent.height * 11/12);
                 }
                     
@@ -291,7 +291,7 @@ public class slideShow {
                     transit = false;
                     
                     if(debug) {
-                        parent.println("slide show transition end");
+                        Quickshow.println("slide show transition end");
                     }
                 }
             }
@@ -306,7 +306,7 @@ public class slideShow {
         isPlaying = mode;
         
         if(debug) {
-            parent.println("slide show playing: " + mode);
+            Quickshow.println("slide show playing: " + mode);
         }
 
         if(!isPlaying) {
@@ -388,7 +388,7 @@ public class slideShow {
             tagText = curTagTexts.remove(i);
             
             if(debug) {
-                parent.println("next tag: \"" + tagText + "\", from " +
+                Quickshow.println("next tag: \"" + tagText + "\", from " +
                     tagTime[0] + "s to " + tagTime[1] + 's');
             }
         }
@@ -398,7 +398,7 @@ public class slideShow {
             tagTime = null;
             
             if(debug) {
-                parent.println("No tags to show");
+                Quickshow.println("No tags to show");
             }
         }
     }
@@ -441,7 +441,7 @@ public class slideShow {
             }
             
             if(debug) {
-            	parent.println(
+            	Quickshow.println(
         			"visual item type: " + curVisualItem.checkType() +
         			"\nduration: " + curVisualItem.getDisplayTime()
     			);
@@ -521,7 +521,7 @@ public class slideShow {
         
         if(curAudioItem != null) {
             if(debug) {
-                parent.println("starting audio file");
+                Quickshow.println("starting audio file");
             }
             curAudioItem.getAudio().play();
         }

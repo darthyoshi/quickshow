@@ -20,6 +20,10 @@ public class audioTimeline {
 	private ArrayList <AudioItem> selectedSongs;
 	private int index;
 	private int num_items;
+	private static final int[] bounds = {30, 420, 870, 485};
+
+	private int num_pages = 0;
+	private int curr_index = 0;
 	
 	/**
 	 * Class constructor.
@@ -39,8 +43,24 @@ public class audioTimeline {
 	 */
 	public void drawBackgroundCanvas(){
 		parent.rectMode(parent.CORNER);
-		parent.rect(30, 420, timeLineWidth, timeLineHeight);
+    	parent.imageMode(parent.CENTER);
+    	
+		parent.fill(90,90,90);
+		parent.stroke(0);
+		parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
 		
+		parent.stroke(0xffffffff);
+		short x;
+		for(short i = 1; i < 30; i++) {
+			x = (short)(i*28 + 30);
+
+			if(i%5 == 0) {
+				parent.line(x, 432, x, timeLineHeight+410);
+			}
+			else {
+				parent.line(x, 447, x, timeLineHeight+395);
+			}
+		}
 	}
 	
 	/*
@@ -80,7 +100,7 @@ public class audioTimeline {
 			
 			// the chunk size will always be fftSize, except for the 
 			// last chunk, which will be however many samples are left in source
-			int leftchunkSize = min( leftChannel.length - chunkStartIndex, fftSize );
+			int leftchunkSize = Math.min(leftChannel.length - chunkStartIndex, fftSize);
 			// copy first chunk into our analysis array
 			System.arraycopy( leftChannel, // source of the copy
 					chunkStartIndex, // index to start in the source
@@ -108,18 +128,20 @@ public class audioTimeline {
 	 * Draw the waveforms.
 	 */
 	public void drawWaveform(){
-		if(selectedSongs.size() == 0) return;
+		parent.stroke(0);
 		
-		float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
-		
-		for(int s = 0; s < leftSpectra.length; s++) {
-		    int i = 0;
-		    float total = 0; 
-		    for(i = 0; i < leftSpectra[s].length-1; i++){
-		        total += leftSpectra[s][i];
-		    }
-		    total = total / 120;
-		    parent.line((s*scaleMod) + 30,total+450,(s*scaleMod) + 30,-total+450);
+		if(!selectedSongs.isEmpty()) {
+			float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
+			
+			for(int s = 0; s < leftSpectra.length; s++) {
+			    int i = 0;
+			    float total = 0; 
+			    for(i = 0; i < leftSpectra[s].length-1; i++){
+			        total += leftSpectra[s][i];
+			    }
+			    total = total / 120;
+			    parent.line((s*scaleMod) + 30,total+450,(s*scaleMod) + 30,-total+450);
+			}
 		}
 	}
 	
@@ -138,45 +160,37 @@ public class audioTimeline {
 	 * @return Nothing
 	 */
 	public void displayTimeMarkers(int x, int y){
-		if(selectedSongs.size() == 0) return;
-		
-		//To offset from the left hand side
-		x -= 30;
-		
-		int currSongLength = getCurrSong().getLength();
-		
-		//See where in the song to show time stamp
-		float scaleFactor = (float) x/ (float) timeLineWidth;
-		
-		float timeMarker = scaleFactor * currSongLength;
-		
-		int min = (int) timeMarker/60;
-		int sec = (int) timeMarker%60;
-		
-		//Do we want a box or just the text?
-		parent.fill(0xffffffff);
-		parent.text(String.format("%d:%02d", min, sec), x, y);
+		if(!selectedSongs.isEmpty()) {
+			
+			//To offset from the left hand side
+			x -= 30;
+			
+			int currSongLength = getCurrSong().getLength();
+			
+			//See where in the song to show time stamp
+			float scaleFactor = (float) x/ (float) timeLineWidth;
+			
+			float timeMarker = scaleFactor * currSongLength;
+			
+			int min = (int) timeMarker/60;
+			int sec = (int) timeMarker%60;
+			
+			//Do we want a box or just the text?
+			parent.fill(0xffffffff);
+			parent.text(String.format("%d:%02d", min, sec), x, y);
+		}
 	}
-	
-	
+
 	/**
-	 * 
-	 * @param visible
-	 */
-	public void toggle(boolean visible){
-		
-	}
-	
-	/**
-	 * 
+	 * TODO add method header
 	 */
 	public void nextSong(){
 		if(selectedSongs.size() == 0) return;
 		index = ((index+1) % num_items);
 	}
-	
+
 	/**
-	 * 
+	 * TODO add method header
 	 */
 	public void prevSong(){
 		if(selectedSongs.size() == 0) return;
@@ -184,17 +198,17 @@ public class audioTimeline {
 		if (index < 0) index = selectedSongs.size()-1;
 	}
 	
-	
+
 	/**
-	 * 
+	 * TODO add method header
 	 */
 	public int getIndex(){
 		if(selectedSongs.size() == 0) return 0;
 		else return index+1;
 	}
-	
+
 	/**
-	 * 
+	 * TODO add method header
 	 */
 	public int getNumSelectedSongs(){
 		if(selectedSongs.size() == 0) return 0;
@@ -202,22 +216,19 @@ public class audioTimeline {
 	}
 	
 	/**
-	 * 
-	 * 
+	 * TODO add method header
 	 */
 	public AudioItem getCurrSong(){
 		if(selectedSongs.size() == 0) return null;
 		else return selectedSongs.get(index);
 	}
-	
+
 	/**
-	 * @param i
-	 * @param j
-	 * @return
+	 * Returns the boundaries of the thumbnail window.
+	 * @return an integer array with the mapping:
+	 *   {left border, top border, right border, bottom border}
 	 */
-	
-	//private Helper Functions for generation of waveform data.
-	private int min(int i, int j){
-		return (i < j ? i : j);
+	public int[] getBounds() {
+		return bounds;
 	}
 }

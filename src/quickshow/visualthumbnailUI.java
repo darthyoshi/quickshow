@@ -8,10 +8,10 @@ package quickshow;
 
 import java.util.ArrayList;
 
+import processing.core.PConstants;
 import processing.core.PImage;
 import quickshow.datatypes.VisualItem;
 
-@SuppressWarnings("static-access")
 public class visualthumbnailUI {
     private Quickshow parent;
 
@@ -51,8 +51,13 @@ public class visualthumbnailUI {
 	/**
 	 * TODO add method header
 	 */
-	public void drawThumbNails(){
-		parent.rect(30, 30, width, height);
+	public void drawThumbNails() {
+		parent.rectMode(PConstants.CORNER);
+    	parent.imageMode(PConstants.CENTER);
+		
+    	parent.stroke(0);
+		parent.fill(90,90,90);
+    	parent.rect(bounds[0], bounds[1], width, height);
 		
 		int xStartIndex = MAX_THUMBNAIL_WIDTH/2 + 34;
 		int yStartIndex = MAX_THUMBNAIL_HEIGHT/2 + 29;
@@ -82,7 +87,7 @@ public class visualthumbnailUI {
 				if(!selectedIndex.isEmpty() && selectedIndex.contains(j)) {
 					parent.stroke(0xff5522ff);
 					parent.noFill();
-					parent.rectMode(parent.CENTER);
+					parent.rectMode(PConstants.CENTER);
 					parent.rect(xStartIndex, yStartIndex,
 						MAX_THUMBNAIL_WIDTH - 2, MAX_THUMBNAIL_HEIGHT - 4);
 				}
@@ -105,7 +110,7 @@ public class visualthumbnailUI {
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){
 		if(debug) {
-			parent.println("Receiving items size: " + vItems.size());
+			Quickshow.println("Receiving items size: " + vItems.size());
 		}
 
 		items.addAll(vItems);
@@ -127,7 +132,7 @@ public class visualthumbnailUI {
 		int mainIndex = start_index + ((yIndex * 5) + xIndex);
 	    
 		if(debug) {
-	        parent.println(
+	        Quickshow.println(
                 "X: " + x + " Y: " + y +
                 "\nGrid coord x: " + xIndex + " y: " + yIndex +
         		"\nmain index: " + mainIndex
@@ -142,7 +147,7 @@ public class visualthumbnailUI {
 		}	
 
 		if(debug) {
-		    parent.println(items.get(mainIndex).checkType() +
+		    Quickshow.println(items.get(mainIndex).checkType() +
 	    		" added to timeline");
 		}
 	}
@@ -158,7 +163,6 @@ public class visualthumbnailUI {
 			result.add(items.get(index));
 		}
 		return result;
-		//return selectedItems;
 	}
 	
 	/**

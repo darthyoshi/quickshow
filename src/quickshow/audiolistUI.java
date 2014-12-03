@@ -105,7 +105,9 @@ public class audiolistUI {
 	public void receiveSongs(ArrayList <AudioItem> fileList){
 		songList.addAll(fileList);
 		
-		System.out.println("Size of fileList: " + fileList.size());
+		if(debug) {
+			Quickshow.println("Size of fileList: " + fileList.size());
+		}
 		//Display the songs on the list
 		for(int i = oldListSize; i < songList.size(); i++){
 			addToList(songList.get(i));
@@ -132,7 +134,7 @@ public class audiolistUI {
 		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
 		
 		if(debug) {
-		    parent.println("Song being added " + songDisplay);
+		    Quickshow.println("Song being added " + songDisplay);
 		}
 		
 		ListBoxItem songToAdd;
