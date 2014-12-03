@@ -19,7 +19,7 @@ public class ImageItem extends VisualItem {
     public ImageItem(quickshow.Quickshow parent, String fileName,
 		PImage thumb)
     {
-        super(parent, fileName, thumb);
+        super(fileName, thumb);
 
         displayTime = 5f;
         

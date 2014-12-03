@@ -1,3 +1,9 @@
+/**
+ * @file FileExtensions.java
+ * @author Kay Choi 
+ * @description A class containing file extension definitions.
+ */
+
 package quickshow.datatypes;
 
 public final class FileExtensions {

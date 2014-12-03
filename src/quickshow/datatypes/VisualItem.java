@@ -9,26 +9,22 @@ package quickshow.datatypes;
 import java.util.ArrayList;
 
 import processing.core.PImage;
-import quickshow.Quickshow;
 
 public abstract class VisualItem extends MediaItem {
     private ArrayList<String> tagTexts;
     private ArrayList<Float[]> tagTimes;
-    private Quickshow parent;
     private PImage thumb;
     protected float displayTime = 0;
     
     /**
      * Class constructor.
-     * @param parent the Quickshow object
      * @param fileName the file name of the media file to load 
      * @param thumb the media item thumbnail 
      */
-    public VisualItem(Quickshow parent, String fileName, PImage thumb) {
+    public VisualItem(String fileName, PImage thumb) {
         super(fileName);
         
         this.thumb = thumb;
-        this.parent = parent;
         
         tagTexts = new ArrayList<String>();
         tagTimes = new ArrayList<Float[]>();

@@ -1,3 +1,9 @@
+/**
+ * @file controlbuttonUI.java
+ * @author Moses Lee, Kay Choi
+ * @description A handler class for the main Quickshow window UI controls. 
+ */
+
 package quickshow;
 
 import quickshow.datatypes.AudioItem;
@@ -69,7 +75,6 @@ public class controlbuttonUI {
         resetShowButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		shuffleToggle = buttonUI.addToggle("Shuffle Slides")
-	        //.setMode(ControlP5.SWITCH)
 	        .setPosition(530, 10)
 	        .setSize(15, 15)
 	        .setCaptionLabel(" Shuffle Slides")

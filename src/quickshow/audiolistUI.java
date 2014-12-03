@@ -1,7 +1,7 @@
 /**
  * @file audiolistUI.java
  * @author Moses Lee
- * @description TODO add description 
+ * @description A class for displaying and selecting audio items.
  */
 
 package quickshow;
@@ -32,7 +32,11 @@ public class audiolistUI {
 
 	private int oldListSize;
 	
-	//Constructors
+	/**
+	 * Class constructor.
+	 * @param parent the instantiating Quickshow object
+	 * @param audioList the ControlP5 object handling UI elements
+	 */
 	public audiolistUI(Quickshow parent, ControlP5 audioList){
 		this.parent = parent;
 		
@@ -65,7 +69,10 @@ public class audiolistUI {
 	//Class method for audio list
 
 	
-	//Future feature to remove songs from the list
+	/**
+	 * Remove a song from the list.
+	 * @param itemToRemove the song label
+	 */
 	public void removeFromList(String itemToRemove){
 		//Remove song
 		list.removeItem(itemToRemove);
@@ -75,12 +82,17 @@ public class audiolistUI {
 		placeHolder.setColorBackground(0xffff0000);
 	}
 	
-	//Clear songs in the selectedSongList
+	/**
+	 * Clear songs in the selectedSongList.
+	 */
 	public void clearSelectedSongs(){
 		selectedSongList.clear();
 	}
 	
-	//Add the song to selected song list
+	/**
+	 * Add the song to selected song list.
+	 * @param index the index of the selected song
+	 */
 	public void addToSelectedSongs(int index){
 		AudioItem selectedSong;
 		if(MAX_SONGS > selectedSongList.size() && num_items > 0 && index < num_items){
@@ -91,17 +103,27 @@ public class audiolistUI {
 		}
 	}
 	
-	//Check if song is selected
+	/**
+	 * Check if a song is selected.
+	 * @param songName the song label
+	 * @return true if the selected songs list contains a song matching songName
+	 */
 	public boolean isSongSelected(String songName){
 		return selectedSongList.contains(songName);
 	}
 	
-	//Return the vector with the selected songs
+	/**
+	 * Retrieves the selected songs.
+	 * @return an ArrayList containing the selected AudioItems
+	 */
 	public ArrayList<AudioItem> returnSelectedSongList(){
 		return selectedSongList;
 	}
 	
-	//Receive the list of songs
+	/**
+	 * Adds the loaded songs to the available song list.
+	 * @param fileList an ArrayList containing the AudioItems to be added
+	 */
 	public void receiveSongs(ArrayList <AudioItem> fileList){
 		songList.addAll(fileList);
 		
@@ -117,9 +139,9 @@ public class audiolistUI {
 	
 
 	/**
-	 * TODO add method header
-	 * @param visible
-	 */
+	 * Toggles display of the audiolistUI.
+     * @param visible whether the audiolistUI should be visible
+     */
 	public void toggle(boolean visible){
 		group.setVisible(visible);
 	}
@@ -128,7 +150,10 @@ public class audiolistUI {
 	 * Helper functions
 	 */
 	//TODO Make sure to add more songs in the future and update the list
-	//add item to the audio list
+	/**
+	 * Adds an item to the audio list.
+	 * @param audio the AudioItem to add
+	 */
 	protected void addToList(AudioItem audio){
 		
 		String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();

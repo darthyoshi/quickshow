@@ -27,7 +27,6 @@ public class Quickshow extends PApplet {
 	private Minim minim;
 	
 	private visualthumbnailUI thumbnails;
-	private ArrayList <AudioItem> audioFiles;
 
 	private controlbuttonUI cbU;
 	private FileBrowser browse;

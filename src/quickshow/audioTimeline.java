@@ -1,3 +1,9 @@
+/**
+ * @file audioTimeline.java
+ * @author Moses Lee
+ * @description Renders the Quickshow audio timeline
+ */
+
 package quickshow;
 
 import java.util.Arrays;
@@ -39,7 +45,7 @@ public class audioTimeline {
 	}
 	
 	/**
-	 * TODO add method header
+	 * Callback method from drawing the timeline background.
 	 */
 	public void drawBackgroundCanvas(){
 		parent.rectMode(parent.CORNER);
@@ -125,7 +131,7 @@ public class audioTimeline {
 	}
 	
 	/**
-	 * Draw the waveforms.
+	 * Callback method for drawing the waveforms.
 	 */
 	public void drawWaveform(){
 		parent.stroke(0);
@@ -208,7 +214,8 @@ public class audioTimeline {
 	}
 
 	/**
-	 * TODO add method header
+	 * Retrieves the number of selected songs.
+	 * @return integer
 	 */
 	public int getNumSelectedSongs(){
 		if(selectedSongs.size() == 0) return 0;

@@ -49,7 +49,7 @@ public class visualthumbnailUI {
 	}
 	
 	/**
-	 * TODO add method header
+	 * Callback method for drawing the thumbnails of the loaded items.
 	 */
 	public void drawThumbNails() {
 		parent.rectMode(PConstants.CORNER);
@@ -105,7 +105,7 @@ public class visualthumbnailUI {
 	}
 	
 	/**
-	 * Receive from the file browser
+	 * Adds the loaded visual items to the available item list.
 	 * @param vItems an ArrayList of VisualItems
 	 */
 	public void receiveVisualItems(ArrayList <VisualItem> vItems){

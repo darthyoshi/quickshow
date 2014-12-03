@@ -1,7 +1,7 @@
 /**
  * @file visualTimeline.java
- * @author Moses Lee
- * @description Renders the Quickshow timeline.
+ * @author Moses Lee, Kay Choi
+ * @description Renders the Quickshow visual item timeline.
  */
 
 package quickshow;
@@ -68,7 +68,7 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * Function to generate the thumb nails for the selected items vector
+	 * Generates thumbnails for the selected items.
 	 */
 	public void generateThumbnails(){
 		//If empty exit function
@@ -104,28 +104,29 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * Receiving the visual items
+	 * Adds the selected visual items to the timeline.
+	 * @param selectedList an ArrayList containing the selected VisualItems
 	 */
 	public void receiveSelectedItems(ArrayList<VisualItem> selectedList){
-		if(selectedList.size() == 0) {
+		if(selectedList.isEmpty()) {
 			oldListSize = 0;
-			return;
 		}
 		
-		for(int i = oldListSize; i < selectedList.size(); i++){
-			itemsForDisplay.add(selectedList.get(i));
-			totalTime += itemsForDisplay.get(i).getDisplayTime();
+		else {
+			for(int i = oldListSize; i < selectedList.size(); i++){
+				itemsForDisplay.add(selectedList.get(i));
+				totalTime += itemsForDisplay.get(i).getDisplayTime();
+			}
+			
+			oldListSize = selectedList.size();
+			
+			num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
+			curr_index = 1;
 		}
-		
-		oldListSize = selectedList.size();
-		
-		num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
-		curr_index = 1;
 	}
 	
-	/**
-	 * 
-	 * Clear the selected slides
+	/** 
+	 * Removes all visual items from the timeline.
 	 */
 	public void clearSelectedSlides(){
 		itemsForDisplay.clear();
@@ -138,7 +139,7 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * to show next items
+	 * Goes to the next page on the timeline.
 	 */
 	public void showNextOnTimeline(){
 		if(!itemsForDisplay.isEmpty()) {
@@ -154,7 +155,7 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * TODO add method header
+	 * Goes to the previous page on the timeline.
 	 */
 	public void showPrevOnTimeline(){
 		if(!itemsForDisplay.isEmpty()) {

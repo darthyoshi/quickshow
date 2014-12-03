@@ -20,7 +20,7 @@ public class MovieItem extends VisualItem {
     public MovieItem(quickshow.Quickshow parent, String fileName,
 		processing.core.PImage thumb)
     {
-        super(parent, fileName, thumb);
+        super(fileName, thumb);
         
         movie = new Movie(parent, fileName);
         
