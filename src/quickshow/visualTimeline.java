@@ -254,8 +254,6 @@ public class visualTimeline {
 				}
 			}
 			
-			System.out.println("timelineBounds.size: " + timeLineBounds.size() + " start index: " + start_index);
-			
 			//If legal index was found then generate the marker and preview thumbnail 
 			if(index > -1){
 				prevThumbnail = itemsForDisplay.get(index).getThumbnail();
