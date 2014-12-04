@@ -146,7 +146,8 @@ public class audioTimeline {
 			        total += leftSpectra[s][i];
 			    }
 			    total = total / 120;
-			    parent.line((s*scaleMod) + 30,total+450,(s*scaleMod) + 30,-total+450);
+			    parent.line((s*scaleMod) + 30,total+(bounds[1]+bounds[3])/2,
+			    			(s*scaleMod) + 30,-total+(bounds[1]+bounds[3])/2);
 			}
 		}
 	}
