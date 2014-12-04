@@ -54,17 +54,17 @@ public class audioTimeline {
 		parent.fill(90,90,90);
 		parent.stroke(0);
 		parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
-		
+
 		parent.stroke(0xffffffff);
 		short x;
 		for(short i = 1; i < 30; i++) {
 			x = (short)(i*28 + 30);
 
 			if(i%5 == 0) {
-				parent.line(x, 432, x, timeLineHeight+410);
+				parent.line(x, (bounds[1]+bounds[3])/2-22, x, (bounds[1]+bounds[3])/2+22);
 			}
 			else {
-				parent.line(x, 447, x, timeLineHeight+395);
+				parent.line(x, (bounds[1]+bounds[3])/2-7, x, (bounds[1]+bounds[3])/2+7);
 			}
 		}
 	}

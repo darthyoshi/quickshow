@@ -57,13 +57,12 @@ public class visualTimeline {
 		for(short i = 1; i < 30; i++) {
 			x = (short)(i*28 + 30);
 			
-			if(i%5 == 0) {
-				parent.line(x, 525, x, timeLineHeight+503);
-			}
-			
-			else {
-				parent.line(x, 540, x, timeLineHeight+488);
-			}
+            if(i%5 == 0) {
+                parent.line(x, (bounds[1]+bounds[3])/2-22, x, (bounds[1]+bounds[3])/2+22);
+            }
+            else {
+                parent.line(x, (bounds[1]+bounds[3])/2-7, x, (bounds[1]+bounds[3])/2+7);
+            }
 		}
 	}
 	
