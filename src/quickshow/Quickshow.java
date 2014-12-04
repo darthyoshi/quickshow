@@ -71,6 +71,7 @@ public class Quickshow extends PApplet {
 	    if(browse.isEnabled()) {
 	        browse.draw();
 	    }
+	    
 	    else if(show.isEnabled()){
 	    	show.draw();
 	    }
@@ -84,6 +85,12 @@ public class Quickshow extends PApplet {
     	    aT.drawWaveform();
 			thumbnails.drawThumbNails();
 			vTimeline.generateThumbnails();
+			
+//			if(cbU.isPopupEnabled()) {
+//			    int[] origin = cbU.getPopupOrigin();
+//			    fill(0xff3333aa);
+//			    rect(origin[0]-10, origin[1]-10, 300, 100);
+//			}
 			
 			//TODO check if mouse over timelines, do popups
 			mouseOver();
@@ -141,7 +148,6 @@ public class Quickshow extends PApplet {
 	        	audioListbox.clearSelectedSongs();
 	        	vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
-	        	cbU.setSongTimelinePageIndex(0, 0);
 	        	cbU.setSongTitle(null);
 	        	cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
@@ -160,7 +166,6 @@ public class Quickshow extends PApplet {
 	        
 	        case "Clear selected songs": 
 	        	audioListbox.clearSelectedSongs();
-	        	cbU.setSongTimelinePageIndex(0, 0);
 	        	cbU.setSongTitle(null);
 	        	break;
 	        
@@ -216,24 +221,21 @@ public class Quickshow extends PApplet {
 	            
 	            break;
 	            
-	        case "Add Annotation":
-	            
-	            break;
-	           
-	        case "Remove Annotation":
-	            
+	        case "Visual Item Properties":
+             //   aT.toggleLock(true);
+	            cbU.togglePopup(true);
+	           // audioListbox.toggleLock(true);
+
 	            break;
 	            
 	        case "prevSong":
 	        	aT.prevSong();
-	        	cbU.setSongTimelinePageIndex(aT.getNumSelectedSongs(), aT.getIndex());
 	        	cbU.setSongTitle(aT.getCurrSong());
 	        	aT.generateWaveForm();
 	        	break;
 	        	
 	        case "nextSong":
 	        	aT.nextSong();
-	        	cbU.setSongTimelinePageIndex(aT.getNumSelectedSongs(), aT.getIndex());
 	        	cbU.setSongTitle(aT.getCurrSong());
 	        	aT.generateWaveForm();
 	        	break;
@@ -244,7 +246,6 @@ public class Quickshow extends PApplet {
 	    	float value = theEvent.getGroup().getValue();
 	    	audioListbox.addToSelectedSongs((int) value);
 	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
-        	cbU.setSongTimelinePageIndex(aT.getNumSelectedSongs(), aT.getIndex());
         	cbU.setSongTitle(aT.getCurrSong());
     	    aT.generateWaveForm();
 	    	break;
@@ -265,7 +266,7 @@ public class Quickshow extends PApplet {
 	        }
 	    }
 
-	    else {
+	    else if(!cbU.isPopupEnabled()){
 	    	//thumbnail window
 	    	int[] bounds = thumbnails.getBounds(); 
 	    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
@@ -385,5 +386,13 @@ public class Quickshow extends PApplet {
      */
     public static void main(String[] args) {
         PApplet.main(new String[] { "--present", "Quickshow" });
+    }
+    
+    public void keyPressed() {
+        if(show.isEnabled()) {
+            if(key == ' ') {
+                show.playToggle(!show.isPlaying());
+            }
+        }
     }
 }

@@ -15,7 +15,6 @@ import quickshow.datatypes.VisualItem;
 public class visualTimeline {
 	private final static int timeLineWidth = 840;
 	private final static int timeLineHeight = 65;
-	private final static int thumbnailWidth = 104;
 	private final static int MAX_THUMBNAIL_DISPLAY = 8;
 	private int start_index = 0;
 	private float scaleFactor;
@@ -27,7 +26,10 @@ public class visualTimeline {
     private int curr_items_displayed = 0;
     private int totalTime = 0;
     private int curr_Time = 0;
+    private int curr_img_length = 0;
+    private int overall_img_length = 0;
     private ArrayList<Integer[]> timeStamps;
+    private ArrayList<Integer[]> timeLineBounds;
     private PImage image;
     private final static int[] bounds = {30, 512, 870, 577};
     
@@ -41,6 +43,7 @@ public class visualTimeline {
 		this.parent = parent;
 		itemsForDisplay = new ArrayList<VisualItem>();
 		timeStamps = new ArrayList<Integer[]>();
+		timeLineBounds = new ArrayList<Integer[]>();
 		debug = parent.getDebugFlag();
 	}
 	
@@ -80,11 +83,8 @@ public class visualTimeline {
     		int drawIndex = bounds[0] + 5;
     		
     		for (int j = start_index; j < itemsForDisplay.size(); j++){
-  
     				
     			image = itemsForDisplay.get(j).getThumbnail();
-    			
-    			//Gets the total number of time from the visual element display time
     			
     			//Adjust each image to fit on timeline maintaining Aspect Ratio
     			if (image.height > timeLineHeight){
@@ -96,11 +96,10 @@ public class visualTimeline {
     			
     			int duration = itemsForDisplay.get(j).getDisplayTime();
     			float timeScaleFactor = duration/5;
-    			new_width = timeScaleFactor * new_width;
+    			float time_scaled_width = timeScaleFactor * new_width;
     			
-    			curr_Time += duration;
-    			
-    			parent.image(image, drawIndex, 520, new_width , new_height);
+    			//Draw the image and a box around it
+    			parent.image(image, drawIndex, 520, time_scaled_width , new_height);
     			parent.noFill();
     			parent.stroke(0x00000000);
     			parent.rectMode(parent.CORNER);
@@ -108,12 +107,14 @@ public class visualTimeline {
     			
     			//Increment the x index
     			drawIndex += new_width;
+    			curr_img_length = drawIndex;
+    			
+    			//Get the current duration of the current images that are drawn
+    			if(curr_Time < totalTime) curr_Time += duration;
     			
     			//Check to see if the image can be drawn within the timeline
     			if(drawIndex + new_width > timeLineWidth) break;
-    			
-    			//Keep track of how many items are on the visualtimeline
-    			curr_items_displayed++;
+
     		}
 		}
 	}
@@ -135,12 +136,54 @@ public class visualTimeline {
 				Integer[] times = {totalTime - totalTime, totalTime};
 				timeStamps.add(times);
 			}
-			
+			curr_Time = 0;
+			calculateTimeLineBounds();
 			oldListSize = selectedList.size();
 			
 			num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
 			curr_index = 1;
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void calculateTimeLineBounds(){
+		//Get initial draw index
+		int drawIndex = bounds[0] + 5;
+		
+		//Clear the timeline
+		//timeLineBounds.clear();
+		
+		//Go through the list and calculate placements along the time line
+   		for (int j = oldListSize; j < itemsForDisplay.size(); j++){
+			
+			image = itemsForDisplay.get(j).getThumbnail();
+			
+			//Adjust each image to fit on timeline maintaining Aspect Ratio
+			if (image.height > timeLineHeight){
+				scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
+			}
+			
+			float new_width = scaleFactor * image.width;
+			int duration = itemsForDisplay.get(j).getDisplayTime();
+			float timeScaleFactor = duration/5.0f;
+			float time_scaled_width = timeScaleFactor * new_width;
+			
+			drawIndex += time_scaled_width;
+			curr_img_length = drawIndex;
+			
+			Integer [] tbBounds = {(int) (drawIndex - time_scaled_width), drawIndex};
+			timeLineBounds.add(tbBounds);
+			//Check to see if the image can be drawn within the timeline
+			if(drawIndex + new_width > timeLineWidth) break;
+			
+			//Keep track of how many items are on the visualtimeline
+			curr_items_displayed++;
+			
+   		}
+   		System.out.println("curr_Items display: " + curr_items_displayed);
+   		overall_img_length += curr_img_length;
 	}
 	
 	/** 
@@ -161,32 +204,15 @@ public class visualTimeline {
 	 * Goes to the next page on the timeline.
 	 */
 	public void showNextOnTimeline(){
-		if(!itemsForDisplay.isEmpty()) {
-			start_index += 8;
-			if(start_index > itemsForDisplay.size()) start_index = 0;
-			
-			curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
-		}
-		
-		else {
-			start_index = curr_index = 0;
-		}
+		start_index = start_index + curr_items_displayed + 1;
+		calculateTimeLineBounds();
 	}
 	
 	/**
 	 * Goes to the previous page on the timeline.
 	 */
 	public void showPrevOnTimeline(){
-		if(!itemsForDisplay.isEmpty()) {
-			start_index -= 8;
-			if(start_index < 0) 
-				start_index = itemsForDisplay.size() - (itemsForDisplay.size()%MAX_THUMBNAIL_DISPLAY);
-			curr_index = start_index/MAX_THUMBNAIL_DISPLAY + 1;
-		}
-		
-		else {
-			start_index = curr_index = 0;
-		}
+
 	}
 	
 	/**
@@ -207,33 +233,37 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * 
-	 * 
+	 * Displays the marker in the visual timeline and the thumbnail 
+	 * that the image is hovering over
 	 */
 	public void displayTimeMarker(int x, int y){
 		if(itemsForDisplay.size() != 0){
-			System.out.println("What is x: " + x);
-			float timeScale = x/timeLineWidth;
-			float where = (timeScale * curr_Time);
+			//Find the scale factor
+			float timeScale = (float) x/curr_img_length;
+			
+			//Locate where in timeline to show preview
+			float where = (timeScale * curr_img_length);
 			int index = -1;
 			PImage prevThumbnail;
 			
-			for(int i = 0; i < timeStamps.size(); i++){
-				if(where >= timeStamps.get(i)[0] && where < timeStamps.get(i)[1]){
+			//Find the image that falls within the bounds
+			for(int i = start_index; i < timeLineBounds.size(); i++){
+				if(where >= timeLineBounds.get(i)[0] && where < timeLineBounds.get(i)[1]){
 					index = i;
 					break;
 				}
 			}
 			
-			System.out.println("Where: " + where + "   Index: " + index + "  timescale: " + timeScale);
+			System.out.println("timelineBounds.size: " + timeLineBounds.size() + " start index: " + start_index);
 			
+			//If legal index was found then generate the marker and preview thumbnail 
 			if(index > -1){
 				prevThumbnail = itemsForDisplay.get(index).getThumbnail();
 				parent.image(prevThumbnail, x, bounds[1]-60);
+				parent.stroke(0xffff0000);
+				parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
+				
 			}
-			parent.stroke(0xffff0000);
-			parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
-			
 		}
 	}
 	

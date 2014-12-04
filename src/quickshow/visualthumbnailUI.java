@@ -146,10 +146,10 @@ public class visualthumbnailUI {
 			}
 		}	
 
-		if(debug) {
-		    Quickshow.println(items.get(mainIndex).checkType() +
-	    		" added to timeline");
-		}
+//		if(debug) {
+//		    Quickshow.println(items.get(mainIndex).checkType() +
+//	    		" added to timeline");
+//		}
 	}
 	
 	/**
