@@ -312,7 +312,7 @@ public class Quickshow extends PApplet {
     	if(!browse.isEnabled()) {
     		//audio timeline
     		int[] bounds = aT.getBounds();
-	    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
+	    	if(mouseX > bounds[0] && mouseX < bounds[2] + 1 && 
     	        mouseY > bounds[1] && mouseY < bounds[3])
 	    	{
     			aT.displayTimeMarkers(mouseX, mouseY);

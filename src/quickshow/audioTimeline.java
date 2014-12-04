@@ -184,6 +184,8 @@ public class audioTimeline {
 			//Do we want a box or just the text?
 			parent.fill(0xffffffff);
 			parent.text(String.format("%d:%02d", min, sec), x, y);
+			parent.stroke(0xffff0000);
+			parent.line(x + 28, bounds[1] + 2 , x + 28, bounds[3] - 2);
 		}
 	}
 
