@@ -176,7 +176,7 @@ public class slideShow {
 	                    curFrame = movie.get();
                     }
                         
-                    if(curImgTime >= curVisualItem.getDisplayTime()) {
+                    if(curImgTime >= (float)curVisualItem.getDisplayTime()) {
                         if(debug) {
                             Quickshow.println("slide show transition begin");
                         }
@@ -305,8 +305,10 @@ public class slideShow {
     public void playToggle(boolean mode){
         isPlaying = mode;
         
+        playToggle.setValue(isPlaying);
+        
         if(debug) {
-            Quickshow.println("slide show playing: " + mode);
+            Quickshow.println("slide show playing: " + isPlaying);
         }
 
         if(!isPlaying) {

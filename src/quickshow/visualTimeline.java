@@ -63,13 +63,9 @@ public class visualTimeline {
 		for(short i = 1; i < 30; i++) {
 			x = (short)(i*28 + 30);
 			
-            if(i%5 == 0) {
-                parent.line(x, (bounds[1]+bounds[3])/2-22, x, (bounds[1]+bounds[3])/2+22);
-            }
-            else {
-                parent.line(x, (bounds[1]+bounds[3])/2-7, x, (bounds[1]+bounds[3])/2+7);
-            }
-		}
+			parent.stroke((i%5 == 0 ? 0xff55aaff : 0xffffffff));
+		    parent.line(x, bounds[1]+2, x, bounds[3]-2);
+        }
 	}
 	
 	/**
@@ -101,7 +97,7 @@ public class visualTimeline {
     			//Draw the image and a box around it
     			parent.image(image, drawIndex, 520, time_scaled_width , new_height);
     			parent.noFill();
-    			parent.stroke(0x00000000);
+    			parent.stroke(0xffff2233);
     			parent.rectMode(parent.CORNER);
     			parent.rect(drawIndex, 520, new_width, new_height);
     			
@@ -152,8 +148,7 @@ public class visualTimeline {
 		//Get initial draw index
 		int drawIndex = bounds[0] + 5;
 		
-		//Clear the timeline
-		//timeLineBounds.clear();
+		System.out.println("What is start: " + start);
 		
 		//Go through the list and calculate placements along the time line
    		for (int j = start; j < itemsForDisplay.size(); j++){
@@ -182,7 +177,10 @@ public class visualTimeline {
 			curr_items_displayed++;
 			
    		}
-   		System.out.println("curr_Items display: " + curr_items_displayed);
+   		
+   		if(debug) {
+   		    Quickshow.println("curr_Items display: " + curr_items_displayed);
+   		}
    		overall_img_length += curr_img_length;
 	}
 	
@@ -212,7 +210,8 @@ public class visualTimeline {
 	 * Goes to the previous page on the timeline.
 	 */
 	public void showPrevOnTimeline(){
-
+		start_index = start_index - curr_items_displayed + 1;
+		calculateTimeLineBounds(start_index);
 	}
 	
 	/**
@@ -252,6 +251,10 @@ public class visualTimeline {
 					index = i;
 					break;
 				}
+			}
+			
+			if(debug) {
+			    Quickshow.println("timelineBounds.size: " + timeLineBounds.size() + " start index: " + start_index);
 			}
 			
 			//If legal index was found then generate the marker and preview thumbnail 

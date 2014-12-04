@@ -60,12 +60,8 @@ public class audioTimeline {
 		for(short i = 1; i < 30; i++) {
 			x = (short)(i*28 + 30);
 
-			if(i%5 == 0) {
-				parent.line(x, (bounds[1]+bounds[3])/2-22, x, (bounds[1]+bounds[3])/2+22);
-			}
-			else {
-				parent.line(x, (bounds[1]+bounds[3])/2-7, x, (bounds[1]+bounds[3])/2+7);
-			}
+            parent.stroke((i%5 == 0 ? 0xff55aaff : 0xffffffff));
+            parent.line(x, bounds[1]+2, x, bounds[3]-2);
 		}
 	}
 	

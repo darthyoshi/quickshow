@@ -142,14 +142,14 @@ public class visualthumbnailUI {
 		//Make sure we are in legal range
 		if(mainIndex < items.size()) {
 			if(!selectedIndex.contains(mainIndex)) {
-				selectedIndex.add(mainIndex);
-			}
-		}	
+				selectedIndex.add(mainIndex);	
 
-//		if(debug) {
-//		    Quickshow.println(items.get(mainIndex).checkType() +
-//	    		" added to timeline");
-//		}
+        		if(debug) {
+        		    Quickshow.println(items.get(mainIndex).checkType() +
+        	    		" added to timeline");
+        		}
+			}
+		}
 	}
 	
 	/**

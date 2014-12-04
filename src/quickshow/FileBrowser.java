@@ -7,6 +7,7 @@
 package quickshow;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
@@ -24,7 +25,6 @@ import controlP5.DropdownList;
 import controlP5.Group;
 import controlP5.Textfield;
 
-@SuppressWarnings("static-access")
 public class FileBrowser {
     private boolean debug;
     
@@ -85,7 +85,7 @@ public class FileBrowser {
             for(String part:pathParts) {
                 parent.print(part + '/');
             }
-            parent.println("\ncurDir depth: " + pathParts.length);
+            Quickshow.println("\ncurDir depth: " + pathParts.length);
         }
         
         for(short i = 0; i < pathParts.length - 1; i++) {
@@ -226,8 +226,23 @@ public class FileBrowser {
             break;
             
         case "pathField":
-            if(!pathField.getText().trim().equals("")) {
-                changeDir(pathField.getText().trim());
+            String path = pathField.getText().trim();
+            if(!path.equals("")) {
+                File file = new File(path);
+                
+                if(file.exists()) {
+                    if(file.isDirectory()) {
+                        changeDir(path);
+                    }
+                    
+                    else {
+                        loadFile(file);
+                        
+                        if(!results.isEmpty()) {
+                            toggle(false);
+                        }
+                    }
+                }
             }
             
             pathField.setFocus(false).setText(curDir);
@@ -249,6 +264,94 @@ public class FileBrowser {
         }
     }
     
+    /**
+     * TODO implement direct file loading
+     * @param file
+     */
+    private void loadFile(File file) {
+        String path;
+
+        try {
+            path = file.getCanonicalPath();
+            
+            if(debug) {
+                Quickshow.println("loading file: " + path);
+            }
+        }
+        
+        catch (IOException e1) {
+            if(debug) {
+                e1.printStackTrace();
+            }
+            
+            return;
+        }
+        
+        String[] fileNameParts = path.split("\\.");
+        
+        int i;
+        for(i = 0; i < FileExtensions.AUDIO_EXT.length; i++) {
+            if(fileNameParts[fileNameParts.length-1]
+                .equalsIgnoreCase(FileExtensions.AUDIO_EXT[i]))
+            {
+                results.add(new AudioItem(minim, path));
+                
+                break;
+            }
+        }
+        
+        if(i == FileExtensions.AUDIO_EXT.length) {
+            for(i = 0; i < FileExtensions.VIDEO_EXT.length; i++) {
+                if(fileNameParts[fileNameParts.length-1]
+                    .equalsIgnoreCase(FileExtensions.VIDEO_EXT[i]))
+                {
+                    qIter.add(new QItem(-1, path));
+                    
+                    getNextQItem();
+                    
+                    break;
+                }
+            }
+            
+            if(i == FileExtensions.VIDEO_EXT.length) {
+                PImage thumb;
+                int[] thumbDims;
+                
+                for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
+                    if(fileNameParts[fileNameParts.length-1]
+                        .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
+                    {
+                        thumb = parent.loadImage(path);
+                        
+                        thumbDims = newImageDims(thumb);
+                        thumb.resize(thumbDims[0], thumbDims[1]);
+                        
+                        results.add(new ImageItem(parent, path, thumb));
+                        
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if(debug) {
+            Quickshow.println("Files loaded: " + results.size());
+        }
+/*
+        try {
+            curDir = file.getParentFile().getCanonicalPath();
+            
+            changeDir(curDir);
+        }
+        
+        catch (IOException e) {
+            if(debug) {
+                e.printStackTrace();
+            }
+        }
+        */
+    }
+
     /**
      * Retrieves the next video queue item for thumbnail generation.
      */
@@ -320,12 +423,12 @@ public class FileBrowser {
             else {
                 loadVisual();
             }
-            
-            if(!results.isEmpty()) {
-            	toggle(false);
-            }
         
             selectedIndex.clear();
+        }
+            
+        if(!results.isEmpty()) {
+        	toggle(false);
         }
     }
     
@@ -415,7 +518,7 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("curDisplayIndex: " + curDisplayIndex);
+            Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -435,7 +538,7 @@ public class FileBrowser {
             lastPage);
         
         if(debug) {
-            parent.println("curDisplayIndex: " + curDisplayIndex);
+            Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -457,7 +560,7 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("curDisplayIndex: " + curDisplayIndex);
+            Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -477,7 +580,7 @@ public class FileBrowser {
             "\n\nof\n\n" + lastPage);
         
         if(debug) {
-            parent.println("curDisplayIndex: " + curDisplayIndex);
+            Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
     
@@ -508,7 +611,15 @@ public class FileBrowser {
                 
                 thumb.resize(thumbDims[0], thumbDims[1]);
                 
-                thumbs.set(curQItem.index, thumb);
+                if(curQItem.index >= 0) {
+                    thumbs.set(curQItem.index, thumb);
+                }
+                
+                else {
+                    results.add(new MovieItem(parent, curQItem.name, thumb));
+                    
+                    toggle(false);
+                }
                 
                 curQItem.isHandled = true;
                 
@@ -611,7 +722,7 @@ public class FileBrowser {
             try {
                 curDir = file.getCanonicalPath();
             }
-            catch (java.io.IOException e) {
+            catch (IOException e) {
                 return;
             }
     
@@ -622,7 +733,7 @@ public class FileBrowser {
             curDisplayIndex = 0;
             
             if(debug) {
-                parent.println("cd " + curDir + "\nls");
+                Quickshow.println("cd " + curDir + "\nls");
             }
             
             ArrayList<File> files =
@@ -671,7 +782,7 @@ public class FileBrowser {
                     fileNameParts = fileName.split("\\.");
                     
                     if(debug) {
-                        parent.println(curDir + '/' + fileName);
+                        Quickshow.println(curDir + '/' + fileName);
                     }
                     
                     for(i = 0; i < FileExtensions.AUDIO_EXT.length; i++) {
@@ -703,7 +814,7 @@ public class FileBrowser {
                     fullPath = curDir + '/' + fileName;
                     
                     if(debug) {
-                        parent.println(fullPath);
+                        Quickshow.println(fullPath);
                     }
     
                     //create image thumbnail
@@ -719,7 +830,7 @@ public class FileBrowser {
     	                        thumbs.add(thumb);
     	                        
     	                        if(debug) {
-    	                            parent.println("" + thumbDims[0] + ' ' +
+    	                            Quickshow.println("" + thumbDims[0] + ' ' +
 	                                    thumbDims[1]);
     	                        }
     	                        
@@ -779,7 +890,7 @@ public class FileBrowser {
             }
             
             if(debug) {
-                parent.println("#valid items in directory: " + 
+                Quickshow.println("#valid items in directory: " + 
                     fileNames.size());
             }
         }
@@ -844,7 +955,7 @@ public class FileBrowser {
                     //file is video
                     if(i == FileExtensions.IMG_EXT.length) {
                         if(debug) {
-                            parent.println("Adding video to results arraylist");
+                            Quickshow.println("Adding video to results arraylist");
                         }
 
                         results.add(
@@ -917,14 +1028,13 @@ public class FileBrowser {
                             new MovieItem(
                                 parent, 
                                 curDir + '/' + fileName,
-                                thumbs.get(j))
+                                thumbs.get(j)
+                            )
                         );
                     }
                 }
             }
         }
-        
-        toggle(false);
     }
     
     /**
@@ -971,7 +1081,7 @@ public class FileBrowser {
             }
                     
             if(debug) {
-                parent.println(
+                Quickshow.println(
                     "mouse clicked: " + mouseX + ',' + mouseY +
                     "\nthumbnail: " + row + ' ' + col +
                     "\nrowSelect: " + rowSelect +
@@ -1033,7 +1143,7 @@ public class FileBrowser {
             selectBox[3] = tmp[1];
             
             if(debug) {
-                parent.println("mouse dragged: " + tmp[0] + ' ' + tmp[1]);
+                Quickshow.println("mouse dragged: " + tmp[0] + ' ' + tmp[1]);
             }
         }
     }
@@ -1091,7 +1201,7 @@ public class FileBrowser {
             }
             
             if(debug) {
-                parent.println(
+                Quickshow.println(
                     "mouse released: " + mouseX + ' ' + mouseY + 
                     "\nminSel: " + minRow + ' ' + minCol + 
                     "\nmaxSel: " + maxRow + ' ' + maxCol +
@@ -1119,7 +1229,7 @@ public class FileBrowser {
         }
         
         if(debug) {
-            parent.println("mouse pressed: " + mouseX + ' ' + mouseY);
+            Quickshow.println("mouse pressed: " + mouseX + ' ' + mouseY);
         }
     }
     
