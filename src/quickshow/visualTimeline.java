@@ -137,7 +137,7 @@ public class visualTimeline {
 				timeStamps.add(times);
 			}
 			curr_Time = 0;
-			calculateTimeLineBounds();
+			calculateTimeLineBounds(oldListSize);
 			oldListSize = selectedList.size();
 			
 			num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
@@ -148,7 +148,7 @@ public class visualTimeline {
 	/**
 	 * 
 	 */
-	public void calculateTimeLineBounds(){
+	public void calculateTimeLineBounds(int start){
 		//Get initial draw index
 		int drawIndex = bounds[0] + 5;
 		
@@ -156,7 +156,7 @@ public class visualTimeline {
 		//timeLineBounds.clear();
 		
 		//Go through the list and calculate placements along the time line
-   		for (int j = oldListSize; j < itemsForDisplay.size(); j++){
+   		for (int j = start; j < itemsForDisplay.size(); j++){
 			
 			image = itemsForDisplay.get(j).getThumbnail();
 			
@@ -205,7 +205,7 @@ public class visualTimeline {
 	 */
 	public void showNextOnTimeline(){
 		start_index = start_index + curr_items_displayed + 1;
-		calculateTimeLineBounds();
+		calculateTimeLineBounds(start_index);
 	}
 	
 	/**
