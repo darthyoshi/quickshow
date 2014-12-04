@@ -14,7 +14,7 @@ public abstract class VisualItem extends MediaItem {
     private ArrayList<String> tagTexts;
     private ArrayList<Float[]> tagTimes;
     private PImage thumb;
-    protected float displayTime = 0;
+    protected int displayTime = 0;
     
     /**
      * Class constructor.
@@ -128,7 +128,7 @@ public abstract class VisualItem extends MediaItem {
      * Retrieves the time that the VisualItem will be displayed. 
      * @return the time in seconds
      */
-    public float getDisplayTime() {
+    public int getDisplayTime() {
     	return displayTime;
     }
 }

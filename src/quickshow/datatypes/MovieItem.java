@@ -25,7 +25,7 @@ public class MovieItem extends VisualItem {
         movie = new Movie(parent, fileName);
         
         movie.play();
-        displayTime = movie.duration();
+        displayTime = (int)Math.ceil(movie.duration());
         movie.stop();
     }
     

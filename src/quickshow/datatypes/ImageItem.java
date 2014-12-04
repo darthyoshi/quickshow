@@ -21,7 +21,7 @@ public class ImageItem extends VisualItem {
     {
         super(fileName, thumb);
 
-        displayTime = 5f;
+        displayTime = 5;
         
         image = parent.loadImage(fileName);
     }
@@ -38,7 +38,7 @@ public class ImageItem extends VisualItem {
      * Changes the time that the ImageItem is displayed. 
      * @param time the new display time in seconds
      */
-	public void setDisplayTime(float time) {
+	public void setDisplayTime(int time) {
 		displayTime = time;
 	}
 }

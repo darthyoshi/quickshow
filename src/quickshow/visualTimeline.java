@@ -74,7 +74,7 @@ public class visualTimeline {
 		if(!itemsForDisplay.isEmpty()) {
 			parent.imageMode(PConstants.CENTER);
     	
-    		int drawIndex = thumbnailWidth/2 + 25;
+    		int drawIndex = bounds[0];
     		
     		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
     			image = itemsForDisplay.get(j).getThumbnail();
