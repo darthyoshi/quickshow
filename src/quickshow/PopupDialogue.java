@@ -263,10 +263,12 @@ public class PopupDialogue {
                 );
             }
             
-            item.addTag(text, startTime, endTime);
-            
-            if(item.checkType().equalsIgnoreCase("image")) {
-                ((ImageItem)item).setDisplayTime(duration);
+            if(item != null) {
+                item.addTag(text, startTime, endTime);
+                
+                if(item.checkType().equalsIgnoreCase("image")) {
+                    ((ImageItem)item).setDisplayTime(duration);
+                }
             }
         
             togglePopup(false, null);

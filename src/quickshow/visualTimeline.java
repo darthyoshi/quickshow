@@ -178,7 +178,10 @@ public class visualTimeline {
 			curr_items_displayed++;
 			
    		}
-   		System.out.println("curr_Items display: " + curr_items_displayed);
+   		
+   		if(debug) {
+   		    Quickshow.println("curr_Items display: " + curr_items_displayed);
+   		}
    		overall_img_length += curr_img_length;
 	}
 	
@@ -250,7 +253,9 @@ public class visualTimeline {
 				}
 			}
 			
-			System.out.println("timelineBounds.size: " + timeLineBounds.size() + " start index: " + start_index);
+			if(debug) {
+			    Quickshow.println("timelineBounds.size: " + timeLineBounds.size() + " start index: " + start_index);
+			}
 			
 			//If legal index was found then generate the marker and preview thumbnail 
 			if(index > -1){
