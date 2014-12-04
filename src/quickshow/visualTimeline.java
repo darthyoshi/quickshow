@@ -63,13 +63,9 @@ public class visualTimeline {
 		for(short i = 1; i < 30; i++) {
 			x = (short)(i*28 + 30);
 			
-            if(i%5 == 0) {
-                parent.line(x, (bounds[1]+bounds[3])/2-22, x, (bounds[1]+bounds[3])/2+22);
-            }
-            else {
-                parent.line(x, (bounds[1]+bounds[3])/2-7, x, (bounds[1]+bounds[3])/2+7);
-            }
-		}
+			parent.stroke((i%5 == 0 ? 0xff55aaff : 0xffffffff));
+		    parent.line(x, bounds[1]+2, x, bounds[3]-2);
+        }
 	}
 	
 	/**
@@ -101,7 +97,7 @@ public class visualTimeline {
     			//Draw the image and a box around it
     			parent.image(image, drawIndex, 520, time_scaled_width , new_height);
     			parent.noFill();
-    			parent.stroke(0x00000000);
+    			parent.stroke(0xffff2233);
     			parent.rectMode(parent.CORNER);
     			parent.rect(drawIndex, 520, new_width, new_height);
     			

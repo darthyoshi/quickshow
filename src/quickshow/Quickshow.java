@@ -31,6 +31,7 @@ public class Quickshow extends PApplet {
 	private controlbuttonUI cbU;
 	private FileBrowser browse;
 	private slideShow show;
+	private PopupDialogue popup;
 	
 	//Test variables for debug purposes
 	private audioTimeline aT;
@@ -45,7 +46,6 @@ public class Quickshow extends PApplet {
 		control = new ControlP5(this);
         control.setFont(control.getFont().getFont(), 15);
         
-        
 		minim = new Minim(this);
 		
 		show = new slideShow(this, control);
@@ -53,6 +53,8 @@ public class Quickshow extends PApplet {
 		audioListbox = new audiolistUI(this, control);
 		
 		cbU = new controlbuttonUI(this, control);
+		
+		popup = new PopupDialogue(this, control);
 		
 		//Test purposes delete/modify this after
 		aT = new audioTimeline(this, minim);
@@ -86,11 +88,13 @@ public class Quickshow extends PApplet {
 			thumbnails.drawThumbNails();
 			vTimeline.generateThumbnails();
 			
-//			if(cbU.isPopupEnabled()) {
-//			    int[] origin = cbU.getPopupOrigin();
-//			    fill(0xff3333aa);
-//			    rect(origin[0]-10, origin[1]-10, 300, 100);
-//			}
+			if(popup.isPopupEnabled()) {
+			    popup.draw();
+			}
+			
+			if(browse.isReady()) {
+			    closeFBActions();
+			}
 			
 			//TODO check if mouse over timelines, do popups
 			mouseOver();
@@ -102,15 +106,12 @@ public class Quickshow extends PApplet {
 	 * @param theEvent the initiating ControlEvent
 	 */
 	public void controlEvent(ControlEvent theEvent) {
-	    String srcName = "";
-	    if(theEvent.isController()) {
-	        srcName = theEvent.getController().getParent().getName();
-	    }
-	    
-	    else if (theEvent.isGroup()) {
-	        srcName = theEvent.getGroup().getParent().getName();
-	    }
-       
+	    String srcName = (
+                theEvent.isController() ?
+                theEvent.getController() :
+                theEvent.getGroup()
+            ).getParent().getName();
+
 	    if(debug) {
             println("Event source: " + srcName + "\nEvent name: " +
                 theEvent.getName());
@@ -122,6 +123,9 @@ public class Quickshow extends PApplet {
 	            browse.controlEvent(theEvent);
                 
                 if(!browse.isEnabled()) {
+                    if(debug) {
+                        println("FileBrowser closed");
+                    }
                     closeFBActions();
                 }
 	        }
@@ -137,11 +141,7 @@ public class Quickshow extends PApplet {
 	        	show.startPlaying();
 	        	
 	            break;
-	        
-	        case "Share/Export": 
-	            
-	            break;
-	        
+	       
 	        case "Reset":
 	        	thumbnails.clearSelectedItems();
 	        	vTimeline.clearSelectedSlides();
@@ -222,12 +222,20 @@ public class Quickshow extends PApplet {
 	            break;
 	            
 	        case "Visual Item Properties":
-             //   aT.toggleLock(true);
-	            cbU.togglePopup(true);
-	           // audioListbox.toggleLock(true);
+	            VisualItem item = null;//TODO get clicked item from vTimeline
+	
+	            //-----Test-----\\
+	            popup.togglePopup(true, null);
+	            //-----Test-----\\
+	            /*
+	            if(item != null) {
+                    cbU.setLock(true);
+    	          
+    	            popup.togglePopup(true, item);
+	           }*/
 
 	            break;
-	            
+	            /*
 	        case "prevSong":
 	        	aT.prevSong();
 	        	cbU.setSongTitle(aT.getCurrSong());
@@ -238,16 +246,27 @@ public class Quickshow extends PApplet {
 	        	aT.nextSong();
 	        	cbU.setSongTitle(aT.getCurrSong());
 	        	aT.generateWaveForm();
-	        	break;
+	        	break;*/
 	        }
 	        break;
 	        
+	    case "popupUI":
+	        popup.controlEvent(theEvent);
+	        
+	        if(!popup.isPopupEnabled()) {
+	            cbU.setLock(false);
+	        }
+	        
+	        break;
+	        
 	    case "AudioList":
-	    	float value = theEvent.getGroup().getValue();
-	    	audioListbox.addToSelectedSongs((int) value);
-	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
-        	cbU.setSongTitle(aT.getCurrSong());
-    	    aT.generateWaveForm();
+	        if(!popup.isPopupEnabled()) {
+    	    	float value = theEvent.getGroup().getValue();
+    	    	audioListbox.addToSelectedSongs((int) value);
+    	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
+            	cbU.setSongTitle(aT.getCurrSong());
+        	    aT.generateWaveForm();
+	        }
 	    	break;
 	    	
 	    case "slideShow":
@@ -262,11 +281,10 @@ public class Quickshow extends PApplet {
 	        
 	        if(!browse.isEnabled()) {
 	            closeFBActions();
-	    
 	        }
 	    }
 
-	    else if(!cbU.isPopupEnabled()){
+	    else if(!popup.isPopupEnabled()){
 	    	//thumbnail window
 	    	int[] bounds = thumbnails.getBounds(); 
 	    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
