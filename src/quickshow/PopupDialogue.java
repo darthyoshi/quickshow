@@ -159,7 +159,7 @@ public class PopupDialogue {
      * Checks the state of the popup dialogue.
      * @return true if popup dialogue is open
      */
-    public boolean isPopupEnabled() {
+    public boolean isEnabled() {
         return popupGroup.isVisible();
     }
     
