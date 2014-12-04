@@ -45,6 +45,7 @@ public class Quickshow extends PApplet {
 		control = new ControlP5(this);
         control.setFont(control.getFont().getFont(), 15);
         
+        
 		minim = new Minim(this);
 		
 		show = new slideShow(this, control);
@@ -324,7 +325,7 @@ public class Quickshow extends PApplet {
 		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
 	    	        mouseY > bounds[1] && mouseY < bounds[3])
 		    	{
-	    			
+	    			vTimeline.displayTimeMarker(mouseX, mouseY);
 	    		}
 	    	}
     	}

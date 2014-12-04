@@ -24,7 +24,10 @@ public class visualTimeline {
     private boolean debug;
     private int num_pages = 0;
     private int curr_index = 0;
+    private int curr_items_displayed = 0;
     private int totalTime = 0;
+    private int curr_Time = 0;
+    private ArrayList<Integer[]> timeStamps;
     private PImage image;
     private final static int[] bounds = {30, 512, 870, 577};
     
@@ -37,7 +40,7 @@ public class visualTimeline {
 	public visualTimeline(Quickshow parent){
 		this.parent = parent;
 		itemsForDisplay = new ArrayList<VisualItem>();
-		
+		timeStamps = new ArrayList<Integer[]>();
 		debug = parent.getDebugFlag();
 	}
 	
@@ -72,32 +75,45 @@ public class visualTimeline {
 	public void generateThumbnails(){
 		//If empty exit function
 		if(!itemsForDisplay.isEmpty()) {
-			parent.imageMode(PConstants.CENTER);
+			parent.imageMode(PConstants.CORNER);
     	
-    		int drawIndex = bounds[0];
+    		int drawIndex = bounds[0] + 5;
     		
-    		for (int i = 0, j = start_index; i < MAX_THUMBNAIL_DISPLAY && j < itemsForDisplay.size(); i++, j++){
+    		for (int j = start_index; j < itemsForDisplay.size(); j++){
+  
+    				
     			image = itemsForDisplay.get(j).getThumbnail();
     			
     			//Gets the total number of time from the visual element display time
     			
     			//Adjust each image to fit on timeline maintaining Aspect Ratio
-    			if (image.height > timeLineHeight || image.width > thumbnailWidth){
-    				if(image.height >= image.width){
-    					scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
-    				}
-    				else {
-    					scaleFactor = 1.0f/((float) image.width/ (float) (thumbnailWidth-35));
-    				}
+    			if (image.height > timeLineHeight){
+					scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
     			}
+    			
     			float new_height = scaleFactor * image.height;
     			float new_width = scaleFactor * image.width;
-    			parent.image(image, drawIndex, 547, new_width , new_height);
+    			
+    			int duration = itemsForDisplay.get(j).getDisplayTime();
+    			float timeScaleFactor = duration/5;
+    			new_width = timeScaleFactor * new_width;
+    			
+    			curr_Time += duration;
+    			
+    			parent.image(image, drawIndex, 520, new_width , new_height);
+    			parent.noFill();
+    			parent.stroke(0x00000000);
+    			parent.rectMode(parent.CORNER);
+    			parent.rect(drawIndex, 520, new_width, new_height);
     			
     			//Increment the x index
-    			if(drawIndex < timeLineWidth) { 
-    				drawIndex += thumbnailWidth;
-    			}
+    			drawIndex += new_width;
+    			
+    			//Check to see if the image can be drawn within the timeline
+    			if(drawIndex + new_width > timeLineWidth) break;
+    			
+    			//Keep track of how many items are on the visualtimeline
+    			curr_items_displayed++;
     		}
 		}
 	}
@@ -114,7 +130,10 @@ public class visualTimeline {
 		else {
 			for(int i = oldListSize; i < selectedList.size(); i++){
 				itemsForDisplay.add(selectedList.get(i));
+
 				totalTime += itemsForDisplay.get(i).getDisplayTime();
+				Integer[] times = {totalTime - totalTime, totalTime};
+				timeStamps.add(times);
 			}
 			
 			oldListSize = selectedList.size();
@@ -135,6 +154,7 @@ public class visualTimeline {
 		curr_index = 0;
 		num_pages = 0;
 		totalTime = 0;
+		curr_items_displayed = 0;
 	}
 	
 	/**
@@ -184,6 +204,37 @@ public class visualTimeline {
 	}
 	public int getCurrIndexPages(){
 		return curr_index;
+	}
+	
+	/**
+	 * 
+	 * 
+	 */
+	public void displayTimeMarker(int x, int y){
+		if(itemsForDisplay.size() != 0){
+			System.out.println("What is x: " + x);
+			float timeScale = x/timeLineWidth;
+			float where = (timeScale * curr_Time);
+			int index = -1;
+			PImage prevThumbnail;
+			
+			for(int i = 0; i < timeStamps.size(); i++){
+				if(where >= timeStamps.get(i)[0] && where < timeStamps.get(i)[1]){
+					index = i;
+					break;
+				}
+			}
+			
+			System.out.println("Where: " + where + "   Index: " + index + "  timescale: " + timeScale);
+			
+			if(index > -1){
+				prevThumbnail = itemsForDisplay.get(index).getThumbnail();
+				parent.image(prevThumbnail, x, bounds[1]-60);
+			}
+			parent.stroke(0xffff0000);
+			parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
+			
+		}
 	}
 	
 	/**
