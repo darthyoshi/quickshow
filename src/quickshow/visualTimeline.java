@@ -24,6 +24,7 @@ public class visualTimeline {
     private int num_pages = 0;
     private int curr_index = 0;
     private int curr_items_displayed = 0;
+    private int prev_items_displayed = 0;
     private int totalTime = 0;
     private int curr_Time = 0;
     private int curr_img_length = 0;
@@ -147,9 +148,7 @@ public class visualTimeline {
 	public void calculateTimeLineBounds(int start){
 		//Get initial draw index
 		int drawIndex = bounds[0] + 5;
-		
-		System.out.println("What is start: " + start);
-		
+		curr_items_displayed = 0;
 		//Go through the list and calculate placements along the time line
    		for (int j = start; j < itemsForDisplay.size(); j++){
 			
@@ -189,6 +188,7 @@ public class visualTimeline {
 	 */
 	public void clearSelectedSlides(){
 		itemsForDisplay.clear();
+		timeLineBounds.clear();
 		
 		//Reset the display index
 		start_index = 0;
@@ -203,14 +203,21 @@ public class visualTimeline {
 	 */
 	public void showNextOnTimeline(){
 		start_index = start_index + curr_items_displayed + 1;
+		if(start_index > itemsForDisplay.size()) start_index = 0;
+		prev_items_displayed = curr_items_displayed;
 		calculateTimeLineBounds(start_index);
 	}
 	
 	/**
 	 * Goes to the previous page on the timeline.
+	 * TODO make sure to wrap around back to the end of the time line
 	 */
 	public void showPrevOnTimeline(){
-		start_index = start_index - curr_items_displayed + 1;
+		start_index = start_index - prev_items_displayed - 1;
+		if(start_index < 0) {
+			start_index = 0;
+			//start_index = itemsForDisplay.size() - 1;
+		}
 		calculateTimeLineBounds(start_index);
 	}
 	
@@ -272,9 +279,32 @@ public class visualTimeline {
      * Handler for mouse click. Selects a single timeline item if applicable.
      * @param mouseX the x-coordinate of the mouse
      * @param mouseY the y-coordinate of the mouse
+     * @return The visual item corresponding to timeline
      */
-    public void mouseClicked(int mouseX, int mouseY) {
+    public VisualItem selectItemClicked(int x, int mouseY) {
 		//TODO implement
+    	if(itemsForDisplay.size() != 0 && timeLineBounds.size() != 0){
+    		//Get relative to current pixel length
+			float timeScale = (float) x/curr_img_length;
+			//Locate where in timeline to show preview
+			float where = (timeScale * curr_img_length);
+			int index = -1;
+			
+			//Find the image that falls within the bounds
+			for(int i = start_index; i < timeLineBounds.size(); i++){
+				if(where >= timeLineBounds.get(i)[0] && where < timeLineBounds.get(i)[1]){
+					index = i;
+					break;
+				}
+			}
+			
+			//If in legal index return the visual item
+			if(index > -1) return itemsForDisplay.get(index);
+			else return null;
+    	}
+    	else {
+    		return null;
+    	}
 	}
 
 	/**

@@ -304,7 +304,7 @@ public class Quickshow extends PApplet {
 		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
 	    	        mouseY > bounds[1] && mouseY < bounds[3])
 		    	{
-		    		vTimeline.mouseClicked(mouseX, mouseY);
+		    		vTimeline.selectItemClicked(mouseX, mouseY);
 		    	}
 	    	}
 	    	
