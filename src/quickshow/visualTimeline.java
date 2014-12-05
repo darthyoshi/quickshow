@@ -29,6 +29,7 @@ public class visualTimeline {
     private int curr_Time = 0;
     private int curr_img_length = 0;
     private int overall_img_length = 0;
+    private int selectedIndex = -1;
     private ArrayList<Integer[]> timeStamps;
     private ArrayList<Integer[]> timeLineBounds;
     private PImage image;
@@ -97,7 +98,15 @@ public class visualTimeline {
     			
     			//Draw the image and a box around it
     			parent.image(image, drawIndex, 520, time_scaled_width , new_height);
-    			parent.noFill();
+    			
+    			if(selectedIndex == j) {
+    			    parent.fill(0x55ff3210);
+    			}
+    			
+    			else {
+    			    parent.noFill();
+    			}
+    			
     			parent.stroke(0xffff2233);
     			parent.rectMode(PConstants.CORNER);
     			parent.rect(drawIndex, 520, time_scaled_width, new_height);
@@ -263,8 +272,7 @@ public class visualTimeline {
 	public void displayTimeMarker(int x, int y){
 		int index = getTimelineIndex(x, y);
 		
-		//If legal index was found then generate the marker and preview thumbnail 
-
+		//If legal index was found then generate the marker and preview thumbnail
 		if(index > -1) {
 			PImage prevThumbnail = itemsForDisplay.get(index).getThumbnail();
 			parent.image(prevThumbnail, x, bounds[1]-60);
@@ -318,9 +326,9 @@ public class visualTimeline {
 	
 	/**
 	 * TODO add method header
-	 * @param mouseX
-	 * @param mouseY
-	 * @return
+	 * @param mouseX the x-coordinates of the mouse
+	 * @param mouseY the y-coordinates of the mouse
+	 * @return integer
 	 */
 	public int getTimelineIndex(int mouseX, int mouseY) {
 		int index = -1;
@@ -371,5 +379,13 @@ public class visualTimeline {
 			
 			i++;
 		}
+	}
+	
+	/**
+	 * TODO add method header
+	 * @param index
+	 */
+	public void setSelectedIndex(int index) {
+	    selectedIndex = index;
 	}
 }
