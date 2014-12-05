@@ -1,7 +1,7 @@
 /**
  * @file slideShow.java
  * @author Kay Choi, Moses Lee
- * @description TODO add description 
+ * @description Plays the slide show. 
  */
 
 package quickshow;
@@ -29,7 +29,7 @@ public class slideShow {
    
     private Group group;
     private Button stopButton;
-    private Toggle playToggle;
+    private Toggle playPause;
 
     private PImage curFrame, transitFrame;
     private int[] transDelta = {0, 0}, transDir = {1, 1};
@@ -74,7 +74,7 @@ public class slideShow {
             .setCaptionLabel("")
             .setVisible(false);
         
-        playToggle = control.addToggle("playToggle")
+        playPause = control.addToggle("playToggle")
             .setCaptionLabel("")
             .setPosition(10, 10)
             .setSize(30, 30)
@@ -140,7 +140,7 @@ public class slideShow {
     public void controlEvent(ControlEvent e) {
         switch(e.getName()) {
         case "playToggle":
-            playToggle(playToggle.getState());
+            playToggle(playPause.getState());
             
             break;
             
@@ -305,8 +305,6 @@ public class slideShow {
     public void playToggle(boolean mode){
         isPlaying = mode;
         
-        playToggle.setValue(isPlaying);
-        
         if(debug) {
             Quickshow.println("slide show playing: " + isPlaying);
         }
@@ -456,9 +454,7 @@ public class slideShow {
      */
     public void stopButton() {
         transit = isEnabled = false;
-        
-        playToggle.setState(isEnabled);
-        
+     
         audioIter = null;
         if(curAudioItem != null) {
             curAudioItem.getAudio().pause();
@@ -496,7 +492,7 @@ public class slideShow {
     private void toggleUI(boolean visible) {
         group.setVisible(visible);
         
-        playToggle.setLock(!visible);
+        playPause.setLock(!visible);
         
         stopButton.setLock(!visible);
     }
@@ -515,7 +511,7 @@ public class slideShow {
     public void startPlaying() {
         isEnabled = true;
         
-        playToggle.setState(isEnabled);
+        playPause.setState(isEnabled);
         
         if(movie != null) {
             movie.play();
@@ -540,4 +536,26 @@ public class slideShow {
     public void toggleShuffle(boolean shuffle) {
         this.shuffle = shuffle;
     }
+
+    /**
+     * Callback method for handling keyboard events.
+     * @param key the ASCII character of the pressed key
+     * @param keyCode the code of the pressed key
+     */
+	public void keyPressed(char key, int keyCode) {
+		if(debug) {
+			Quickshow.println("Key pressed: '" + key +
+				"'\nKey code: " + keyCode);
+		}
+
+		switch(key) {
+		case ' ':
+			playPause.toggle();
+			break;
+			
+		case 'q':
+			stopButton();
+			break;
+		}
+	}
 }

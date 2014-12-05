@@ -12,16 +12,10 @@ import controlP5.ControlP5;
 import controlP5.ControlP5Constants;
 import controlP5.Controller;
 import controlP5.Group;
-import controlP5.Slider;
-import controlP5.Textfield;
 import controlP5.Toggle;
 
 public class controlbuttonUI {
-    private Quickshow parent;
-    
-    private boolean debug;
-    
-    private Group mainUIGroup;
+	private Group mainUIGroup;
     private Button playButton;
     private Button resetShowButton;
     private Button clearSongsButton;
@@ -40,8 +34,6 @@ public class controlbuttonUI {
 	private Button timeLineIndex;
 	private Button songTitle;
 	private Button songIndex;
-	private Button nextSong;
-	private Button prevSong;
 	private Button totalTime;
 
 	private String songTitleString = "Song: ";
@@ -51,20 +43,14 @@ public class controlbuttonUI {
 	
 	/**
 	 * Class constructor.
-     * @param parent the instantiating Quickshow object 
      * @param control the ControlP5 object handling UI elements
 	 */
-	public controlbuttonUI(Quickshow parent, ControlP5 buttonUI){
-	    this.parent = parent;
-	    
-	    debug = parent.getDebugFlag();
-	    
-		mainUIGroup = buttonUI.addGroup("buttonUI").setLabel("");
+	public controlbuttonUI(ControlP5 buttonUI){
+	    mainUIGroup = buttonUI.addGroup("buttonUI").setLabel("");
 		
         lockControllers = new Controller[13];
 		
 		//For the entire slideshow
-
 		lockControllers[0] = playButton = buttonUI.addButton("Play")
 	        .setPosition(30, 10)
 	        .setSize(70, 15)
@@ -151,6 +137,7 @@ public class controlbuttonUI {
 			.addButton("Visual Item Properties")
 	        .setPosition(30, 580)
 	        .setSize(175, 15)
+	        .setVisible(false)
 	        .setGroup(mainUIGroup);
 		editVisualItem.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
@@ -260,9 +247,22 @@ public class controlbuttonUI {
 		totalTime.setCaptionLabel(String.format("Total Time: %d:%02d", min, sec));
 	}
 	
+	/**
+	 * Sets the main UI element interactivity.
+	 * @param lock whether to lock the main UI elements
+	 */
 	public void setLock(boolean lock) {
         for(Controller control : lockControllers) {
             control.setLock(lock);
         }
+	}
+	
+	/**
+	 * Sets the visibility of the VisualItem properties button.
+	 * @param show whether to show the button
+	 */
+	public void showCaptionButton(boolean show) {
+		editVisualItem.setVisible(show);
+		editVisualItem.setLock(!show);
 	}
 }

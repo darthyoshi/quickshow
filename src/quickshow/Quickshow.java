@@ -36,6 +36,7 @@ public class Quickshow extends PApplet {
 	//Test variables for debug purposes
 	private audioTimeline aT;
 	private visualTimeline vTimeline;
+	private VisualItem selected = null;
 	
 	//These variables are for the Visual Thumbnail UI to bound where the mouse responds
 
@@ -52,7 +53,7 @@ public class Quickshow extends PApplet {
 		
 		audioListbox = new audiolistUI(this, control);
 		
-		cbU = new controlbuttonUI(this, control);
+		cbU = new controlbuttonUI(control);
 		
 		popup = new PopupDialogue(this, control);
 		
@@ -234,20 +235,12 @@ public class Quickshow extends PApplet {
 	            break;
 	            
 	        case "Visual Item Properties":
-	            //TODO get clicked item from vTimeline
-	            VisualItem item = null;
-	
-	            //-----Test-----\\
-	            cbU.setLock(true);
-	            popup.togglePopup(true, null);
-	            //-----Test-----\\
-	            /*
-	            if(item != null) {
-                    cbU.setLock(true);
-    	          
-    	            popup.togglePopup(true, item);
-	           }*/
-
+	            popup.togglePopup(true, selected);
+	            
+	            if(popup.isEnabled()) {
+	            	cbU.setLock(true);
+	            }
+	          
 	            break;
 	        }
 	        break;
@@ -287,6 +280,8 @@ public class Quickshow extends PApplet {
 	    }
 
 	    else if(!popup.isEnabled()){
+	    	selected = null;
+	    	
 	    	//thumbnail window
 	    	int[] bounds = thumbnails.getBounds(); 
 	    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
@@ -304,11 +299,12 @@ public class Quickshow extends PApplet {
 		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
 	    	        mouseY > bounds[1] && mouseY < bounds[3])
 		    	{
-		    		vTimeline.selectItemClicked(mouseX, mouseY);
+		    		selected = vTimeline.selectItemClicked(mouseX, mouseY);
 		    	}
 	    	}
 	    	
-	    }
+		    cbU.showCaptionButton(selected != null);
+    	}
         
     }
     
@@ -330,6 +326,9 @@ public class Quickshow extends PApplet {
         }
     }
     
+    /**
+     * Handler for mouse over events.
+     */
     public void mouseOver() {
     	if(!browse.isEnabled() && !popup.isEnabled()) {
     		//audio timeline
@@ -388,14 +387,18 @@ public class Quickshow extends PApplet {
     }
 
     /**
-     * 
-     * @param visible
+     * Toggles the main Quickshow UI components.
+     * @param visible whether or not to show the main UI components
      */
     public void toggleMain(boolean visible) {
         cbU.toggle(visible);
         audioListbox.toggle(visible);
     }
     
+    /**
+     * Retrieves the Quickshow debug status. 
+     * @return true if debug statements are enabled
+     */
     public boolean getDebugFlag() {
         return debug;
     }
@@ -405,14 +408,12 @@ public class Quickshow extends PApplet {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        PApplet.main(new String[] { "--present", "Quickshow" });
+        PApplet.main(new String[] {/* "--present", */"quickshow.Quickshow" });
     }
     
     public void keyPressed() {
         if(show.isEnabled()) {
-            if(key == ' ') {
-                show.playToggle(!show.isPlaying());
-            }
+        	show.keyPressed(key, keyCode);
         }
     }
 }

@@ -32,7 +32,6 @@ public class PopupDialogue {
     private Slider imgDisplaySlider;
     private Button popupAccept, popupCancel;
     private Textfield tagField, tagStartField, tagEndField;
-    private Textarea tagLabel, tagStartLabel, tagEndLabel, tagFieldLabel;
     private Controller[] popupLock;
 
     /**
@@ -52,12 +51,12 @@ public class PopupDialogue {
         
         popupLock = new Controller[6];
         
-        tagFieldLabel = controlp5.addTextarea("tagFieldLabel")
+        controlp5.addTextarea("tagFieldLabel")
             .setPosition(popupOrigin[0], popupOrigin[1]+20)
             .setText("SET CAPTION TEXT")
             .setGroup(popupGroup);
         
-        tagLabel = controlp5.addTextarea("tagLabel")
+        controlp5.addTextarea("tagLabel")
             .setPosition(popupOrigin[0], popupOrigin[1]+42)
             .setText("CAPTION TIME")
             .setGroup(popupGroup);
@@ -66,7 +65,7 @@ public class PopupDialogue {
         
         lblOffset[0] = 130;
         lblOffset[1] = 40;
-        tagStartLabel = controlp5.addTextarea("tagStartLabel")
+        controlp5.addTextarea("tagStartLabel")
             .setPosition(popupOrigin[0] + lblOffset[0] - 41,
                 popupOrigin[1] + lblOffset[1] + 2)
             .setText("START")
@@ -81,7 +80,7 @@ public class PopupDialogue {
             .setGroup(popupGroup);
         
         lblOffset[0] = 210;
-        tagEndLabel = controlp5.addTextarea("tagEndLabel")
+        controlp5.addTextarea("tagEndLabel")
             .setPosition(popupOrigin[0] + lblOffset[0] - 28,
                 popupOrigin[1] + lblOffset[1] + 2)
             .setText("END")
@@ -137,10 +136,12 @@ public class PopupDialogue {
     public void togglePopup(boolean toggle, VisualItem item) {
         this.item = item;
         
-        popupGroup.setVisible(toggle);
-        
-        for(Controller popup : popupLock) {
-            popup.setLock(!toggle);
+        if(!toggle || item != null) {
+        	popupGroup.setVisible(toggle);
+	        
+	        for(Controller popup : popupLock) {
+	            popup.setLock(!toggle);
+	        }
         }
         
         if(item != null) {

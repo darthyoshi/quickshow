@@ -277,11 +277,11 @@ public class visualTimeline {
 	
 	/**
      * Handler for mouse click. Selects a single timeline item if applicable.
-     * @param mouseX the x-coordinate of the mouse
-     * @param mouseY the y-coordinate of the mouse
+     * @param x the x-coordinate of the mouse
+     * @param y the y-coordinate of the mouse
      * @return The visual item corresponding to timeline
      */
-    public VisualItem selectItemClicked(int x, int mouseY) {
+    public VisualItem selectItemClicked(int x, int y) {
 		//TODO implement
     	if(itemsForDisplay.size() != 0 && timeLineBounds.size() != 0){
     		//Get relative to current pixel length

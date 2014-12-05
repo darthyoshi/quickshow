@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
@@ -21,6 +23,7 @@ import quickshow.datatypes.MovieItem;
 import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.DropdownList;
 import controlP5.Group;
 import controlP5.Textfield;
@@ -81,9 +84,9 @@ public class FileBrowser {
         StringBuilder path = new StringBuilder();
         
         if(debug) {
-            parent.print("curDir: ");
+            PApplet.print("curDir: ");
             for(String part:pathParts) {
-                parent.print(part + '/');
+                PApplet.print(part + '/');
             }
             Quickshow.println("\ncurDir depth: " + pathParts.length);
         }
@@ -127,7 +130,7 @@ public class FileBrowser {
             .setSize(55, 30)
             .setLock(true)
             .setGroup(group);
-        lockButtons[0].getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[0].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
 
         lockButtons[1] = control.addButton("cancelButton")
             .setCaptionLabel("Cancel")
@@ -135,7 +138,7 @@ public class FileBrowser {
             .setSize(55, 30)
             .setPosition(815, 540)
             .setGroup(group);
-        lockButtons[1].getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[1].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
 
         lockButtons[2] = control.addButton("scrollUpButton")
             .setSize(30, 75)
@@ -143,7 +146,7 @@ public class FileBrowser {
             .setPosition(840, 145)
             .setCaptionLabel("^")
             .setGroup(group);
-        lockButtons[2].getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[2].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
 
         lockButtons[3] = control.addButton("scrollTopButton")
             .setSize(30, 75)
@@ -151,7 +154,7 @@ public class FileBrowser {
             .setPosition(840, 70)
             .setCaptionLabel("^\n^")
             .setGroup(group);
-        lockButtons[3].getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[3].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
         
         lockButtons[4] = control.addButton("scrollDownButton")
             .setSize(30, 75)
@@ -159,7 +162,7 @@ public class FileBrowser {
             .setPosition(840, 380)
             .setCaptionLabel("v")
             .setGroup(group);
-        lockButtons[4].getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[4].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
 
         lockButtons[5] = control.addButton("scrollBottomButton")
             .setSize(30, 75)
@@ -167,7 +170,7 @@ public class FileBrowser {
             .setPosition(840, 455)
             .setCaptionLabel("v\nv")
             .setGroup(group);
-        lockButtons[5].getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[5].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
 
         lockButtons[6] = control.addButton("parentDirButton")
             .setCaptionLabel("..")
@@ -175,7 +178,7 @@ public class FileBrowser {
             .setGroup(group)
             .setPosition(815, 30)
             .setSize(55, 30);
-        lockButtons[6].getCaptionLabel().align(control.CENTER, control.CENTER);
+        lockButtons[6].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
 
         String label = "Visual (bmp, jpg, png, gif, mov, avi, mpg, mp4)";
         mediaTypeList = control.addDropdownList("mediaTypeList")
@@ -184,7 +187,7 @@ public class FileBrowser {
             .setSize(710, 30)
             .setBarHeight(30)
             .setGroup(group);
-        mediaTypeList.getCaptionLabel().align(control.LEFT, control.CENTER);
+        mediaTypeList.getCaptionLabel().align(ControlP5Constants.LEFT, ControlP5Constants.CENTER);
         mediaTypeList.addItem(label, 0);
         mediaTypeList.addItem("Audio (mp3, wav, aiff, au, snd)", 1);
         
@@ -194,7 +197,7 @@ public class FileBrowser {
             .setSize(30, 150)
             .setCaptionLabel("")
             .setGroup(group);
-        pageLabel.getCaptionLabel().align(control.CENTER, control.TOP);
+        pageLabel.getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.TOP);
         
         changeDir(this.curDir);
     }
@@ -265,8 +268,8 @@ public class FileBrowser {
     }
     
     /**
-     * TODO implement direct file loading
-     * @param file
+     * Loads a single file. 
+     * @param file a Java File object representing the file to load
      */
     private void loadFile(File file) {
         String path;
@@ -337,19 +340,6 @@ public class FileBrowser {
         if(debug) {
             Quickshow.println("Files loaded: " + results.size());
         }
-/*
-        try {
-            curDir = file.getParentFile().getCanonicalPath();
-            
-            changeDir(curDir);
-        }
-        
-        catch (IOException e) {
-            if(debug) {
-                e.printStackTrace();
-            }
-        }
-        */
     }
 
     /**
@@ -630,21 +620,21 @@ public class FileBrowser {
         //draw thumbnail window
         parent.fill(0xffffff);
         parent.stroke(0);
-        parent.rectMode(parent.CORNERS);
+        parent.rectMode(PConstants.CORNERS);
         parent.rect(30, 70, 840, 530);
         parent.line(869, 70, 869, 530);
         
         //thumbnail pic
-        parent.imageMode(parent.CENTER);
+        parent.imageMode(PConstants.CENTER);
         
         //filename
-        parent.textAlign(parent.CENTER, parent.CENTER);
+        parent.textAlign(PConstants.CENTER, PConstants.CENTER);
         parent.textSize(15);
         parent.fill(0);
         
         //selected highlight
         parent.noFill();
-        parent.rectMode(parent.CENTER);
+        parent.rectMode(PConstants.CENTER);
         parent.stroke(0xff5522ff);
         
         short row, col, imgIndex;
@@ -682,7 +672,7 @@ public class FileBrowser {
         
         //draw selection box
         if(isSelecting) {
-            parent.rectMode(parent.CORNERS);
+            parent.rectMode(PConstants.CORNERS);
             parent.stroke(0xff00FF5E);
             parent.rect(selectBox[0], selectBox[1], selectBox[2], selectBox[3]);
         }
