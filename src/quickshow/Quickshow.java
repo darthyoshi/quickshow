@@ -36,7 +36,9 @@ public class Quickshow extends PApplet {
 	//Test variables for debug purposes
 	private audioTimeline aT;
 	private visualTimeline vTimeline;
-	private VisualItem selected = null;
+	private VisualItem selectedItem = null;
+	private int selectedItemIndex = -1;
+	private int visualOffset;
 	
 	//These variables are for the Visual Thumbnail UI to bound where the mouse responds
 
@@ -235,7 +237,7 @@ public class Quickshow extends PApplet {
 	            break;
 	            
 	        case "Visual Item Properties":
-	            popup.togglePopup(true, selected);
+	            popup.togglePopup(true, selectedItem, visualOffset);
 	            
 	            if(popup.isEnabled()) {
 	            	cbU.setLock(true);
@@ -250,6 +252,8 @@ public class Quickshow extends PApplet {
 	        
 	        if(!popup.isEnabled()) {
 	            cbU.setLock(false);
+	            
+	            vTimeline.updateTimeStamps(selectedItemIndex);
 	        }
 	        
 	        break;
@@ -280,7 +284,7 @@ public class Quickshow extends PApplet {
 	    }
 
 	    else if(!popup.isEnabled()){
-	    	selected = null;
+	    	selectedItem = null;
 	    	
 	    	//thumbnail window
 	    	int[] bounds = thumbnails.getBounds(); 
@@ -299,11 +303,17 @@ public class Quickshow extends PApplet {
 		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
 	    	        mouseY > bounds[1] && mouseY < bounds[3])
 		    	{
-		    		selected = vTimeline.selectItemClicked(mouseX, mouseY);
+		    		selectedItemIndex = vTimeline.getTimelineIndex(mouseX, mouseY);
+		    		selectedItem = vTimeline.getItemAt(selectedItemIndex);
+		    		
+		    		Integer[] tmp = vTimeline.getItemTimeStamps(selectedItemIndex);
+		    		if( tmp!= null){
+		    			visualOffset = tmp[0];
+		    		}
 		    	}
 	    	}
 	    	
-		    cbU.showCaptionButton(selected != null);
+		    cbU.showCaptionButton(selectedItem != null);
     	}
         
     }

@@ -33,6 +33,7 @@ public class PopupDialogue {
     private Button popupAccept, popupCancel;
     private Textfield tagField, tagStartField, tagEndField;
     private Controller[] popupLock;
+    private int offset;
 
     /**
      * Class constructor.
@@ -132,8 +133,9 @@ public class PopupDialogue {
      * Toggles the popup dialogue.
      * @param toggle whether or not to show the popup dialogue
      * @param item the VisualItem being modified
+     * @param offset the timeline offset
      */
-    public void togglePopup(boolean toggle, VisualItem item) {
+    public void togglePopup(boolean toggle, VisualItem item, Integer offset) {
         this.item = item;
         
         if(!toggle || item != null) {
@@ -153,6 +155,8 @@ public class PopupDialogue {
             else {
                 imgDisplaySlider.setValue(item.getDisplayTime());
             }
+                
+            this.offset = offset;
         }
     }
     
@@ -252,6 +256,7 @@ public class PopupDialogue {
             if(!text.trim().equals("")) {
                 startTime = getTagStartTime();
                 endTime = getTagEndTime();
+                item.setTag(0, text, startTime - offset, endTime - offset);
             }
             
             int duration = (int)imgDisplaySlider.getValue();
@@ -263,21 +268,17 @@ public class PopupDialogue {
                     "s\nImage duration: " + duration
                 );
             }
-            
-            if(item != null) {
-                item.addTag(text, startTime, endTime);
-                
-                if(item.checkType().equalsIgnoreCase("image")) {
-                    ((ImageItem)item).setDisplayTime(duration);
-                }
+              
+            if(item.checkType().equalsIgnoreCase("image")) {
+                ((ImageItem)item).setDisplayTime(duration);
             }
         
-            togglePopup(false, null);
+            togglePopup(false, null, null);
             
             break;
             
         case "Cancel":
-            togglePopup(false, null);
+            togglePopup(false, null, null);
             
             break;
         }
