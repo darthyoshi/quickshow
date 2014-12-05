@@ -92,7 +92,7 @@ public class visualTimeline {
     			float new_width = scaleFactor * image.width;
     			
     			int duration = itemsForDisplay.get(j).getDisplayTime();
-    			float timeScaleFactor = duration/5;
+    			float timeScaleFactor = (float) duration/5.0f;
     			float time_scaled_width = timeScaleFactor * new_width;
     			
     			//Draw the image and a box around it
@@ -103,7 +103,7 @@ public class visualTimeline {
     			parent.rect(drawIndex, 520, time_scaled_width, new_height);
     			
     			//Increment the x index
-    			drawIndex += new_width;
+    			drawIndex += time_scaled_width;
     			curr_img_length = drawIndex;
     			
     			//Get the current duration of the current images that are drawn
@@ -164,7 +164,7 @@ public class visualTimeline {
 			
 			float new_width = scaleFactor * image.width;
 			int duration = itemsForDisplay.get(j).getDisplayTime();
-			float timeScaleFactor = duration/5.0f;
+			float timeScaleFactor = (float) duration/5.0f;
 			float time_scaled_width = timeScaleFactor * new_width;
 			
 			drawIndex += time_scaled_width;
@@ -370,6 +370,15 @@ public class visualTimeline {
 			stamps[1] = totalTime;
 			
 			i++;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void updateTimeLineBounds(){
+		for(int i = start_index; i < timeLineBounds.size(); i++){
+			timeLineBounds.get(i);
 		}
 	}
 }

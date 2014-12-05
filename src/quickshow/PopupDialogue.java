@@ -16,7 +16,6 @@ import controlP5.ControlP5Constants;
 import controlP5.Controller;
 import controlP5.Group;
 import controlP5.Slider;
-import controlP5.Textarea;
 import controlP5.Textfield;
 
 public class PopupDialogue {
