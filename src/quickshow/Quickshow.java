@@ -254,6 +254,7 @@ public class Quickshow extends PApplet {
 	            cbU.setLock(false);
 	            
 	            vTimeline.updateTimeStamps(selectedItemIndex);
+	            vTimeline.calculateTimeLineBounds(vTimeline.getStartIndex());
 	        }
 	        
 	        break;
@@ -304,6 +305,7 @@ public class Quickshow extends PApplet {
 	    	        mouseY > bounds[1] && mouseY < bounds[3])
 		    	{
 		    		selectedItemIndex = vTimeline.getTimelineIndex(mouseX, mouseY);
+		    		vTimeline.setSelectedIndex(selectedItemIndex);
 		    		selectedItem = vTimeline.getItemAt(selectedItemIndex);
 		    		
 		    		Integer[] tmp = vTimeline.getItemTimeStamps(selectedItemIndex);
@@ -418,7 +420,7 @@ public class Quickshow extends PApplet {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        PApplet.main(new String[] {/* "--present", */"quickshow.Quickshow" });
+        PApplet.main(new String[] { "quickshow.Quickshow" });
     }
     
     public void keyPressed() {

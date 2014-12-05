@@ -29,6 +29,7 @@ public class visualTimeline {
     private int curr_Time = 0;
     private int curr_img_length = 0;
     private int overall_img_length = 0;
+    private int selectedIndex = -1;
     private ArrayList<Integer[]> timeStamps;
     private ArrayList<Integer[]> timeLineBounds;
     private PImage image;
@@ -97,7 +98,15 @@ public class visualTimeline {
     			
     			//Draw the image and a box around it
     			parent.image(image, drawIndex, 520, time_scaled_width , new_height);
-    			parent.noFill();
+    			
+    			if(selectedIndex == j) {
+    			    parent.fill(0x55ff3210);
+    			}
+    			
+    			else {
+    			    parent.noFill();
+    			}
+    			
     			parent.stroke(0xffff2233);
     			parent.rectMode(PConstants.CORNER);
     			parent.rect(drawIndex, 520, time_scaled_width, new_height);
@@ -110,7 +119,7 @@ public class visualTimeline {
     			if(curr_Time < totalTime) curr_Time += duration;
     			
     			//Check to see if the image can be drawn within the timeline
-    			if(drawIndex + new_width > timeLineWidth) break;
+    			if(drawIndex + time_scaled_width > timeLineWidth) break;
 
     		}
 		}
@@ -150,8 +159,11 @@ public class visualTimeline {
 	 */
 	public void calculateTimeLineBounds(int start){
 		//Get initial draw index
+		if(start >= itemsForDisplay.size()) return;
+		
 		int drawIndex = bounds[0] + 5;
 		curr_items_displayed = 0;
+		
 		//Go through the list and calculate placements along the time line
    		for (int j = start; j < itemsForDisplay.size(); j++){
 			
@@ -171,13 +183,20 @@ public class visualTimeline {
 			curr_img_length = drawIndex;
 			
 			Integer [] tbBounds = {(int) (drawIndex - time_scaled_width), drawIndex};
-			timeLineBounds.add(tbBounds);
+			
+			try{
+				timeLineBounds.get(j)[0] = tbBounds[0];
+				timeLineBounds.get(j)[1] = tbBounds[1];
+			}
+			catch (IndexOutOfBoundsException e){
+				timeLineBounds.add(tbBounds);
+			}
+			//timeLineBounds.add(tbBounds);
 			//Check to see if the image can be drawn within the timeline
-			if(drawIndex + new_width > timeLineWidth) break;
+			if(drawIndex + time_scaled_width > timeLineWidth) break;
 			
 			//Keep track of how many items are on the visualtimeline
 			curr_items_displayed++;
-			
    		}
    		
    		if(debug) {
@@ -263,17 +282,12 @@ public class visualTimeline {
 	public void displayTimeMarker(int x, int y){
 		int index = getTimelineIndex(x, y);
 		
-		//If legal index was found then generate the marker and preview thumbnail 
-
+		//If legal index was found then generate the marker and preview thumbnail
 		if(index > -1) {
 			PImage prevThumbnail = itemsForDisplay.get(index).getThumbnail();
 			parent.image(prevThumbnail, x, bounds[1]-60);
 			parent.stroke(0xffff0000);
 			parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
-			
-			if(debug) {
-			    Quickshow.println("timelineBounds.size: " + timeLineBounds.size() + " start index: " + start_index);
-			}
 		}
 	}
 	
@@ -318,9 +332,9 @@ public class visualTimeline {
 	
 	/**
 	 * TODO add method header
-	 * @param mouseX
-	 * @param mouseY
-	 * @return
+	 * @param mouseX the x-coordinates of the mouse
+	 * @param mouseY the y-coordinates of the mouse
+	 * @return integer
 	 */
 	public int getTimelineIndex(int mouseX, int mouseY) {
 		int index = -1;
@@ -373,12 +387,19 @@ public class visualTimeline {
 		}
 	}
 	
+	
+	/**
+	 * TODO add method header
+	 * @param index
+	 */
+	public void setSelectedIndex(int index) {
+	    selectedIndex = index;
+	}
+	
 	/**
 	 * 
 	 */
-	public void updateTimeLineBounds(){
-		for(int i = start_index; i < timeLineBounds.size(); i++){
-			timeLineBounds.get(i);
-		}
+	public int getStartIndex(){
+		return start_index;
 	}
 }
