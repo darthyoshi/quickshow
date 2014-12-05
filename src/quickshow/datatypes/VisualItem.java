@@ -30,7 +30,7 @@ public abstract class VisualItem extends MediaItem {
         tagTimes = new ArrayList<Float[]>();
         
         //debug tag
-        Float[] f = new Float[2];
+/*        Float[] f = new Float[2];
         f[0] = 0f;
         f[1] = 2f;
         tagTimes.add(f);
@@ -41,6 +41,7 @@ public abstract class VisualItem extends MediaItem {
         f[1] = 4f;
         tagTimes.add(f);
         tagTexts.add("test2");
+*/
     }
     
     /**

@@ -282,7 +282,8 @@ public class visualTimeline {
      * @return The visual item corresponding to timeline
      */
     public VisualItem selectItemClicked(int x, int y) {
-		//TODO implement
+		VisualItem result = null;
+		
     	if(itemsForDisplay.size() != 0 && timeLineBounds.size() != 0){
     		//Get relative to current pixel length
 			float timeScale = (float) x/curr_img_length;
@@ -299,12 +300,12 @@ public class visualTimeline {
 			}
 			
 			//If in legal index return the visual item
-			if(index > -1) return itemsForDisplay.get(index);
-			else return null;
+			if(index > -1) {
+				result = itemsForDisplay.get(index);
+			}
     	}
-    	else {
-    		return null;
-    	}
+
+    	return result;
 	}
 
 	/**
