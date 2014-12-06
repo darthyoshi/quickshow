@@ -294,6 +294,25 @@ public class visualTimeline {
 			parent.image(prevThumbnail, x, bounds[1]-60);
 			parent.stroke(0xffff0000);
 			parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
+			
+			parent.rectMode(PConstants.CORNER);
+			parent.rect(x, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
+			
+			Integer[] stamp = timeStamps.get(index);
+			int min = stamp[0]/60;
+			int sec = stamp[0]%60;
+			String text = String.format("%d:%02d", min, sec);
+			
+			parent.fill(0xffffffff);
+			parent.textAlign(PConstants.RIGHT);
+			parent.text(text, x-5, bounds[1]);
+			
+			min = stamp[1]/60;
+			sec = stamp[1]%60;
+			text = String.format("%d:%02d", min, sec);
+			
+			parent.textAlign(PConstants.LEFT);
+			parent.text(text, x+prevThumbnail.width+5, bounds[1]);
 		}
 	}
 	
