@@ -45,6 +45,10 @@ public class Quickshow extends PApplet {
 	public void setup() {
 		size(900, 600);
 		frameRate(24);
+		
+		if(frame != null) {
+			frame.setTitle("Quickshow");
+		}
 
 		control = new ControlP5(this);
         control.setFont(control.getFont().getFont(), 15);
