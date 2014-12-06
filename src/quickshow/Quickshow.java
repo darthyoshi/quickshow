@@ -206,7 +206,7 @@ public class Quickshow extends PApplet {
 	        	break;
 	        
 	        case "Next":
-                aT.nextPage();
+                aT.nextSong();
                 
 	            vTimeline.showNextOnTimeline();
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
@@ -214,7 +214,7 @@ public class Quickshow extends PApplet {
 	        	break;
 	        
 	        case "Previous":
-                aT.prevPage();
+                aT.prevSong();
                
 	        	vTimeline.showPrevOnTimeline();
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());

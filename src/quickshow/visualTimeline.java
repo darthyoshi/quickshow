@@ -156,6 +156,7 @@ public class visualTimeline {
 	
 	/**
 	 * TODO add method header
+	 * @param start
 	 */
 	public void calculateTimeLineBounds(int start){
 		//Get initial draw index
@@ -317,24 +318,29 @@ public class visualTimeline {
 	}
 	
 	/**
-     * TODO add method header
-     * @param index 
+     * Retrieves the VisualItem at the specified index.
+     * @param index the index of the VisualItem
+     * @return VisualItem
+     * @return null if index is out of bounds
      */
     public VisualItem getItemAt(int index) {
-    	return index < 0 ? null : itemsForDisplay.get(index);
+    	return (index < 0 || index >= itemsForDisplay.size()) ?
+			null : itemsForDisplay.get(index);
 	}
 
 	/**
-	 * TODO add method header
-	 * @param index
-	 * @return
+	 * Retieves the timestamps of the VisualItem at the specified index.
+	 * @param index the index of the VisualItem
+     * @return Integer array containing the start and stop times
+     * @return null if index is out of bounds
 	 */
 	public Integer[] getItemTimeStamps(int index) {
-		return index < 0 ? null : timeStamps.get(index);
+		return (index < 0 || index >= timeStamps.size()) ? 
+			null : timeStamps.get(index);
 	}
 	
 	/**
-	 * TODO add method header
+	 * Determines the index of the VisualItem at the mouse pointer.
 	 * @param mouseX the x-coordinates of the mouse
 	 * @param mouseY the y-coordinates of the mouse
 	 * @return integer
@@ -361,8 +367,8 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * TODO add method header
-	 * @param index
+	 * Updates the VisualItem timestamps.
+	 * @param index the index of the edited VisualItem
 	 */
 	public void updateTimeStamps(int index) {
 		if(debug) {
@@ -392,15 +398,16 @@ public class visualTimeline {
 	
 	
 	/**
-	 * TODO add method header
-	 * @param index
+	 * Designates an item on the timeline as selected.
+	 * @param index the index of the VisualItem to select
 	 */
 	public void setSelectedIndex(int index) {
 	    selectedIndex = index;
 	}
 	
 	/**
-	 * 
+	 * TODO add method header
+	 * @return integer
 	 */
 	public int getStartIndex(){
 		return start_index;

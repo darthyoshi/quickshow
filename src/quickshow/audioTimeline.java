@@ -144,9 +144,7 @@ public class audioTimeline {
 	public void drawWaveform(){
 		if(!spectraList.isEmpty()) {
 			parent.stroke(0);
-			
-			//int startIndex = 
-			
+
 			float[][] leftSpectra = spectraList.get(index); 
 		
 			float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
@@ -204,27 +202,28 @@ public class audioTimeline {
 	}
 
 	/**
-	 * TODO add method header
+	 * Goes to the next song.
 	 */
-	public void nextPage(){
+	public void nextSong(){
 		if(!selectedSongs.isEmpty()) {
 			index = ((index+1) % num_pages);
 		}
 	}
 
 	/**
-	 * TODO add method header
+	 * Goes to the previous song.
 	 */
-	public void prevPage(){
+	public void prevSong(){
 		if(!selectedSongs.isEmpty()) {
 			index = ((--index) < 0 ? selectedSongs.size()-1 : index);
 		}
 	}	
 
 	/**
-	 * TODO add method header
+	 * Retrieves the current song index.
+	 * @return integer
 	 */
-	public int getIndex(){
+	public int getCurSongIndex(){
 		return (selectedSongs.isEmpty() ? 0 : index+1);
 	}
 
@@ -237,7 +236,7 @@ public class audioTimeline {
 	}
 	
 	/**
-	 * TODO add method header
+	 * Retrieves the current Song
 	 */
 	public AudioItem getCurrSong(){
 		return (selectedSongs.isEmpty() ? null : selectedSongs.get(index));
