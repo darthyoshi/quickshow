@@ -74,7 +74,7 @@ public class slideShow {
             .setCaptionLabel("")
             .setVisible(false);
         
-        playPause = control.addToggle("playToggle")
+        playPause = new NewToggle(control, "playToggle")
             .setCaptionLabel("")
             .setPosition(10, 10)
             .setSize(30, 30)
@@ -82,8 +82,7 @@ public class slideShow {
             .setImages(
                 parent.loadImage("data/img/playbutton.png"),
                 null,
-                parent.loadImage("data/img/pausebutton.png"),
-                null
+                parent.loadImage("data/img/pausebutton.png")
             ).setLock(true);
 
         stopButton = control.addButton("stopButton")
@@ -557,5 +556,23 @@ public class slideShow {
 			stopButton();
 			break;
 		}
+	}
+	
+	/**
+	 * An extension of the ControlP5 Toggle class that does not react in 
+	 *   response to mouse onEnter events.  
+	 * @author Kay Choi
+	 */
+	private class NewToggle extends Toggle {
+		/**
+		 * Class constructor.
+		 * @param control the instantiating ControlP5 object
+		 * @param label the label for the NewToggle
+		 */
+		private NewToggle(ControlP5 control, String label) {
+			super(control, label);
+		}
+		
+		public void onEnter() {}		
 	}
 }

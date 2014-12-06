@@ -38,7 +38,7 @@ public class controlbuttonUI {
 
 	private String songTitleString = "Song: ";
 	private String indexString = "0 of 0";
-	private String timeLineIndexString = "0:00 - 0:00";
+	private static final String timeLineDefaultString = "0:00 - 0:00";
 	private String slideShowTime = "Total Time: 0:00";
 	
 	/**
@@ -152,7 +152,7 @@ public class controlbuttonUI {
 		timeLineIndex = buttonUI.addButton("timeLineIndex")
 			.setPosition(722, 580)
 			.setSize(75, 15)
-			.setCaptionLabel(timeLineIndexString)
+			.setCaptionLabel(timeLineDefaultString)
 			.lock()
 			.setGroup(mainUIGroup);
 		timeLineIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
@@ -217,9 +217,8 @@ public class controlbuttonUI {
 	    }
         
 	    build.append(String.format(" - %d:%02d", min, sec));
-        
-        timeLineIndexString = build.toString();
-        timeLineIndex.setCaptionLabel(timeLineIndexString);
+
+        timeLineIndex.setCaptionLabel(build.toString());
 	}
 	
 	/**

@@ -18,6 +18,7 @@ import controlP5.Group;
 import controlP5.Slider;
 import controlP5.Textfield;
 
+@SuppressWarnings("rawtypes")
 public class PopupDialogue {
     private boolean debug;
 
@@ -31,7 +32,7 @@ public class PopupDialogue {
     private Slider imgDisplaySlider;
     private Button popupAccept, popupCancel;
     private Textfield tagField, tagStartField, tagEndField;
-    private Controller[] popupLock;
+	private Controller[] popupLock;
     private int offset;
 
     /**

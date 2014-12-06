@@ -8,6 +8,8 @@ package quickshow;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+
+import processing.core.PConstants;
 import quickshow.datatypes.AudioItem;
 import ddf.minim.*;
 import ddf.minim.analysis.FFT;
@@ -19,17 +21,14 @@ public class audioTimeline {
 	private boolean debug;
 	
 	//Generate the wave form image
-	private float leftSpectra[][];
+	private ArrayList<float[][]> spectraList;
 	private AudioSample audioClip;
 	private static final int timeLineWidth = 840;
 	private static final int timeLineHeight = 65;
 	private ArrayList <AudioItem> selectedSongs;
 	private int index;
-	private int num_items;
-	private static final int[] bounds = {30, 420, 870, 485};
-
-	private int num_pages = 0;
-	private int curr_index = 0;
+	private int num_pages;
+	static final int[] bounds = {30, 420, 870, 485};
 	
 	/**
 	 * Class constructor.
@@ -42,14 +41,16 @@ public class audioTimeline {
 	    debug = parent.getDebugFlag();
 
 	    selectedSongs = new ArrayList<AudioItem>();
+	    
+	    spectraList = new ArrayList<float[][]>();
 	}
 	
 	/**
 	 * Callback method from drawing the timeline background.
 	 */
 	public void drawBackgroundCanvas(){
-		parent.rectMode(parent.CORNER);
-    	parent.imageMode(parent.CENTER);
+		parent.rectMode(PConstants.CORNER);
+    	parent.imageMode(PConstants.CENTER);
     	
 		parent.fill(90,90,90);
 		parent.stroke(0);
@@ -68,61 +69,72 @@ public class audioTimeline {
 	/*
 	 * Referenced from processing forums. Modified function to suit 
 	 * the needs of the application
-	 * 
 	 */
-    public void generateWaveForm(){	
-		if(selectedSongs.size() == 0) return;
-		
+	/**
+	 * TODO add method header
+	 */
+	private void generateWaveForms() {
+		int i,j,k;
 		float leftChannel[];
 		float leftSample[];
 		int fftSize = 1024;
-		int leftChunk = 0;
+		int leftChunk;
+		int leftchunkSize;
 		int chunkStartIndex = 0;
-		//Will have to generate for all songs, but choose at index 0 for now
-		audioClip = selectedSongs.get(index).getAudioSample();
+		FFT fft;
+		float leftSpectra[][];
 		
-		FFT fft = new FFT( fftSize, audioClip.sampleRate());
-
-		//Get audio sample from both channels
-		//if(!(audioClip.getChannel(AudioSample.LEFT) == null))
-		leftChannel = audioClip.getChannel(AudioSample.LEFT);
-
-		//Allocate array for both channel sample
-		leftSample = new float[fftSize];
-
-		//Calculate chunks for both channel
-		leftChunk = (leftChannel.length/fftSize + 1);
-		//Allocate the spectra for both channels
+		spectraList.clear();
 		
-		leftSpectra = new float[leftChunk][fftSize/2];
-
-		//generate waveform data for both channels
-		for(int i = 0; i < leftChunk; ++i) {
-			chunkStartIndex = i * fftSize;
+		for(k = 0; k < selectedSongs.size(); k++) {
+			//Will have to generate for all songs, but choose at index 0 for now
+			audioClip = selectedSongs.get(k).getAudioSample();
 			
-			// the chunk size will always be fftSize, except for the 
-			// last chunk, which will be however many samples are left in source
-			int leftchunkSize = Math.min(leftChannel.length - chunkStartIndex, fftSize);
-			// copy first chunk into our analysis array
-			System.arraycopy( leftChannel, // source of the copy
-					chunkStartIndex, // index to start in the source
-					leftSample, // destination of the copy
-					0, // index to copy to
-					leftchunkSize // how many samples to copy
-					);
+			fft = new FFT( fftSize, audioClip.sampleRate());
+	
+			//Get audio sample from both channels
+			//if(!(audioClip.getChannel(AudioSample.LEFT) == null))
+			leftChannel = audioClip.getChannel(AudioSample.LEFT);
+	
+			//Allocate array for both channel sample
+			leftSample = new float[fftSize];
+	
+			//Calculate chunks for both channel
+			leftChunk = (leftChannel.length/fftSize + 1);
+			//Allocate the spectra for both channels
 			
-			// if the chunk was smaller than the fftSize, we need to pad the analysis buffer with zeroes        
-			if ( leftchunkSize < fftSize ){
-				// we use a system call for this
-				Arrays.fill( leftSample, leftchunkSize, leftSample.length - 1, 0.0f );
+			leftSpectra = new float[leftChunk][fftSize/2];
+	
+			//generate waveform data for both channels
+			for(i = 0; i < leftChunk; ++i) {
+				chunkStartIndex = i * fftSize;
+				
+				// the chunk size will always be fftSize, except for the 
+				// last chunk, which will be however many samples are left in source
+				leftchunkSize = Math.min(leftChannel.length - chunkStartIndex, fftSize);
+				// copy first chunk into our analysis array
+				System.arraycopy( leftChannel, // source of the copy
+						chunkStartIndex, // index to start in the source
+						leftSample, // destination of the copy
+						0, // index to copy to
+						leftchunkSize // how many samples to copy
+						);
+				
+				// if the chunk was smaller than the fftSize, we need to pad the analysis buffer with zeroes        
+				if ( leftchunkSize < fftSize ){
+					// we use a system call for this
+					Arrays.fill( leftSample, leftchunkSize, leftSample.length - 1, 0.0f );
+				}
+				
+				// now analyze this buffer
+				fft.forward(leftSample);
+				// and copy the resulting spectrum into our spectra array
+				for(j = 0; j < 512; ++j) {
+					leftSpectra[i][j] = fft.getBand(j);
+				}
 			}
 			
-			// now analyze this buffer
-			fft.forward(leftSample);
-			// and copy the resulting spectrum into our spectra array
-			for(int j = 0; j < 512; ++j) {
-				leftSpectra[i][j] = fft.getBand(j);
-			}
+			spectraList.add(leftSpectra);
 		}
 	}
 	
@@ -130,9 +142,13 @@ public class audioTimeline {
 	 * Callback method for drawing the waveforms.
 	 */
 	public void drawWaveform(){
-		parent.stroke(0);
+		if(!spectraList.isEmpty()) {
+			parent.stroke(0);
+			
+			//int startIndex = 
+			
+			float[][] leftSpectra = spectraList.get(index); 
 		
-		if(!selectedSongs.isEmpty()) {
 			float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
 			
 			for(int s = 0; s < leftSpectra.length; s++) {
@@ -142,8 +158,8 @@ public class audioTimeline {
 			        total += leftSpectra[s][i];
 			    }
 			    total = total / 120;
-			    parent.line((s*scaleMod) + 30,total+(bounds[1]+bounds[3])/2,
-			    			(s*scaleMod) + 30,-total+(bounds[1]+bounds[3])/2);
+			    parent.line((s*scaleMod) + 30,(bounds[1]+bounds[3])/2 + total,
+			    			(s*scaleMod) + 30,(bounds[1]+bounds[3])/2 - total);
 			}
 		}
 	}
@@ -154,8 +170,9 @@ public class audioTimeline {
 	 */
 	public void receiveSelectedSongs(ArrayList <AudioItem> songList){
 		selectedSongs = songList;
-		num_items = songList.size();
+		num_pages = songList.size();
 		index = 0;
+		generateWaveForms();
 	}
 	
 	/**
@@ -189,52 +206,40 @@ public class audioTimeline {
 	/**
 	 * TODO add method header
 	 */
-	public void nextSong(){
-		if(selectedSongs.size() == 0) return;
-		index = ((index+1) % num_items);
+	public void nextPage(){
+		if(!selectedSongs.isEmpty()) {
+			index = ((index+1) % num_pages);
+		}
 	}
 
 	/**
 	 * TODO add method header
 	 */
-	public void prevSong(){
-		if(selectedSongs.size() == 0) return;
-		index--;
-		if (index < 0) index = selectedSongs.size()-1;
-	}
-	
+	public void prevPage(){
+		if(!selectedSongs.isEmpty()) {
+			index = ((--index) < 0 ? selectedSongs.size()-1 : index);
+		}
+	}	
 
 	/**
 	 * TODO add method header
 	 */
 	public int getIndex(){
-		if(selectedSongs.size() == 0) return 0;
-		else return index+1;
+		return (selectedSongs.isEmpty() ? 0 : index+1);
 	}
 
 	/**
-	 * Retrieves the number of selected songs.
+	 * Retrieves the number of pages.
 	 * @return integer
 	 */
-	public int getNumSelectedSongs(){
-		if(selectedSongs.size() == 0) return 0;
-		else return num_items;
+	public int getNumPages(){
+		return (selectedSongs.isEmpty() ? 0 : num_pages);
 	}
 	
 	/**
 	 * TODO add method header
 	 */
 	public AudioItem getCurrSong(){
-		if(selectedSongs.size() == 0) return null;
-		else return selectedSongs.get(index);
-	}
-
-	/**
-	 * Returns the boundaries of the thumbnail window.
-	 * @return an integer array with the mapping:
-	 *   {left border, top border, right border, bottom border}
-	 */
-	public int[] getBounds() {
-		return bounds;
+		return (selectedSongs.isEmpty() ? null : selectedSongs.get(index));
 	}
 }

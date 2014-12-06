@@ -61,7 +61,6 @@ public class Quickshow extends PApplet {
 		
 		//Test purposes delete/modify this after
 		aT = new audioTimeline(this, minim);
-		aT.generateWaveForm();
 		
 		vTimeline = new visualTimeline(this);
 		thumbnails = new visualthumbnailUI(this);
@@ -207,24 +206,16 @@ public class Quickshow extends PApplet {
 	        	break;
 	        
 	        case "Next":
-            /* TODO next audio timeline page
-                aT.nextSong();
-                cbU.setSongTitle(aT.getCurrSong());
-                aT.generateWaveForm();
-            */
-	            
+                aT.nextPage();
+                
 	            vTimeline.showNextOnTimeline();
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	        	
 	        	break;
 	        
 	        case "Previous":
-            /* TODO previous audio timeline page
-                aT.prevSong();
-                cbU.setSongTitle(aT.getCurrSong());
-                aT.generateWaveForm();
-            */
-	            
+                aT.prevPage();
+               
 	        	vTimeline.showPrevOnTimeline();
 	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
 	        	
@@ -265,7 +256,6 @@ public class Quickshow extends PApplet {
     	    	audioListbox.addToSelectedSongs((int) value);
     	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
             	cbU.setSongTitle(aT.getCurrSong());
-        	    aT.generateWaveForm();
 	        }
 	    	break;
 	    	
@@ -284,8 +274,9 @@ public class Quickshow extends PApplet {
 	        }
 	    }
 
-	    else if(!popup.isEnabled()){
+	    else if(!popup.isEnabled()) {
 	    	selectedItem = null;
+	    	vTimeline.setSelectedIndex(-1);
 	    	
 	    	//thumbnail window
 	    	int[] bounds = thumbnails.getBounds(); 
@@ -300,7 +291,7 @@ public class Quickshow extends PApplet {
 	    	
 	    	else {
 		    	//visual timeline
-		    	bounds = vTimeline.getBounds();
+		    	bounds = visualTimeline.bounds;
 		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
 	    	        mouseY > bounds[1] && mouseY < bounds[3])
 		    	{
@@ -344,7 +335,7 @@ public class Quickshow extends PApplet {
     public void mouseOver() {
     	if(!browse.isEnabled() && !popup.isEnabled()) {
     		//audio timeline
-    		int[] bounds = aT.getBounds();
+    		int[] bounds = audioTimeline.bounds;
 	    	if(mouseX > bounds[0] && mouseX < bounds[2] + 1 && 
     	        mouseY > bounds[1] && mouseY < bounds[3])
 	    	{
@@ -353,7 +344,7 @@ public class Quickshow extends PApplet {
 	    	
 	    	else {
 	    		//visual timeline
-	    		bounds = vTimeline.getBounds();
+	    		bounds = visualTimeline.bounds;
 		    	if(mouseX > bounds[0] && mouseX < bounds[2] && 
 	    	        mouseY > bounds[1] && mouseY < bounds[3])
 		    	{

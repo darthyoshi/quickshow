@@ -49,7 +49,7 @@ public class FileBrowser {
     private int[] selectBox = {0, 0, 0, 0};
     private boolean isSelecting = false;
     
-    private long clickTime;
+    private long clickTime = 0;
     private boolean dblClick = false;
     
     private Group group;
@@ -588,6 +588,10 @@ public class FileBrowser {
      * Callback method for drawing the FileBrowser UI.
      */
     public void draw() {
+    	if(dblClick && System.currentTimeMillis() - 500 > clickTime) {
+    		dblClick = false;
+    	}
+    	
         if(movie != null) {
             if(movie.available()) {
                 movie.read();
@@ -1063,11 +1067,7 @@ public class FileBrowser {
             }
             
             else {
-                dblClick = false;
-                
-                if(System.currentTimeMillis() - clickTime < 500) {
-                    openButton();
-                }
+                openButton();
             }
                     
             if(debug) {

@@ -33,7 +33,7 @@ public class visualTimeline {
     private ArrayList<Integer[]> timeStamps;
     private ArrayList<Integer[]> timeLineBounds;
     private PImage image;
-    private final static int[] bounds = {30, 512, 870, 577};
+    final static int[] bounds = {30, 512, 870, 577};
     
     private ArrayList <VisualItem> itemsForDisplay;
    
@@ -241,6 +241,9 @@ public class visualTimeline {
 		if(start_index > itemsForDisplay.size()) start_index = 0;
 		prev_items_displayed = curr_items_displayed;
 		calculateTimeLineBounds(start_index);
+		
+		//wrap page index
+		curr_index = (++curr_index) > num_pages ? 1 : curr_index;
 	}
 	
 	/**
@@ -254,6 +257,9 @@ public class visualTimeline {
 			//start_index = itemsForDisplay.size() - 1;
 		}
 		calculateTimeLineBounds(start_index);
+		
+		//wrap page index
+		curr_index = (--curr_index) < 1 ? num_pages : curr_index;
 	}
 	
 	/**
@@ -296,23 +302,7 @@ public class visualTimeline {
      * @param index 
      */
     public VisualItem getItemAt(int index) {
-		VisualItem result = null;
-		
-		//If in legal index return the visual item
-		if(index > -1) {
-			result = itemsForDisplay.get(index);
-		}
-
-    	return result;
-	}
-
-	/**
-	 * Returns the boundaries of the timeline window.
-	 * @return an integer array with the mapping:
-	 *   {left border, top border, right border, bottom border}
-	 */
-	public int[] getBounds() {
-		return bounds;
+    	return index < 0 ? null : itemsForDisplay.get(index);
 	}
 
 	/**
@@ -321,13 +311,7 @@ public class visualTimeline {
 	 * @return
 	 */
 	public Integer[] getItemTimeStamps(int index) {
-		Integer[] result = null;
-		
-		if(index >= 0) {
-			result = timeStamps.get(index);
-		}
-		
-		return result;
+		return index < 0 ? null : timeStamps.get(index);
 	}
 	
 	/**
