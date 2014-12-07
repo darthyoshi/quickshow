@@ -34,8 +34,8 @@ public class AudioItem extends MediaItem {
         
         AudioMetaData meta = audio.getMetaData();
         
-        title = meta.title();
-        author = meta.author();
+        title = (meta.title().trim().equals("") ? "N/A" : meta.title());
+        author = (meta.author().trim().equals("") ? "N/A" : meta.author());
         length = meta.length()/1000;
         
         int minutes = length/60;

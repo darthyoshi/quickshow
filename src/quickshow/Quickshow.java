@@ -153,10 +153,10 @@ public class Quickshow extends PApplet {
 	        	vTimeline.clearSelectedSlides();
 	        	audioListbox.clearSelectedSongs();
 	        	vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
-	        	cbU.setSongTitle(null);
+	        	cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 	        	cbU.setSlideShowTime(vTimeline.getTotalTime());
-	            break;
+	  
+	        	break;
 	        
 	        case "Shuffle Slides":
 	            if(debug) {
@@ -172,20 +172,21 @@ public class Quickshow extends PApplet {
 	        
 	        case "Clear selected songs": 
 	        	audioListbox.clearSelectedSongs();
-	        	cbU.setSongTitle(null);
+	        	aT.clear();
+	 
 	        	break;
 	        
 	        case "Select All Pictures": 
 	            thumbnails.selectAllImages();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	            cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 	            cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
 	        
 	        case "Select All Clips": 
 	            thumbnails.selectAllClips();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	            cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 	            cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
 	        
@@ -193,7 +194,7 @@ public class Quickshow extends PApplet {
 	        	vTimeline.clearSelectedSlides();
 	            thumbnails.clearSelectedItems();
 	            vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-	            cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	            cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 	            cbU.setSlideShowTime(vTimeline.getTotalTime());
 	            break;
 	        
@@ -213,7 +214,7 @@ public class Quickshow extends PApplet {
                 aT.nextSong();
                 
 	            vTimeline.showNextOnTimeline();
-	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	        	cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 	        	
 	        	break;
 	        
@@ -221,7 +222,7 @@ public class Quickshow extends PApplet {
                 aT.prevSong();
                
 	        	vTimeline.showPrevOnTimeline();
-	        	cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	        	cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 	        	
 	        	break;
 	        
@@ -259,7 +260,7 @@ public class Quickshow extends PApplet {
     	    	float value = theEvent.getGroup().getValue();
     	    	audioListbox.addToSelectedSongs((int) value);
     	    	aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
-            	cbU.setSongTitle(aT.getCurrSong());
+        //    	cbU.setSongTitle(aT.getCurrSong());
 	        }
 	    	break;
 	    	
@@ -289,7 +290,7 @@ public class Quickshow extends PApplet {
 	    	{
 	    		thumbnails.selectImage(mouseX, mouseY);
 	    		vTimeline.receiveSelectedItems(thumbnails.returnSelectedItems());
-	    		cbU.setTimeLinePageIndex(vTimeline.getNumPages(), vTimeline.getCurrIndexPages());
+	    		cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 	    		cbU.setSlideShowTime(vTimeline.getTotalTime());
 	    	}
 	    	

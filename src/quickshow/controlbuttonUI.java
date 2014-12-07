@@ -6,7 +6,6 @@
 
 package quickshow;
 
-import quickshow.datatypes.AudioItem;
 import controlP5.Button;
 import controlP5.ControlP5;
 import controlP5.ControlP5Constants;
@@ -32,11 +31,8 @@ public class controlbuttonUI {
 	private Controller[] lockControllers;
 	private Button pageIndex;
 	private Button timeLineIndex;
-	private Button songTitle;
-	private Button songIndex;
 	private Button totalTime;
 
-	private String songTitleString = "Song: ";
 	private String indexString = "0 of 0";
 	private static final String timeLineDefaultString = "0:00 - 0:00";
 	private String slideShowTime = "Total Time: 0:00";
@@ -115,16 +111,32 @@ public class controlbuttonUI {
 		
 		//To control the visual timeline thumbnail
 		lockControllers[8] = nextSlides = buttonUI.addButton("Next")
-		    .setPosition(802, 580)
+		    .setPosition(497, 580)
 		    .setSize(69, 15)
 		    .setGroup(mainUIGroup);
 		nextSlides.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		lockControllers[9] = prevSlides = buttonUI.addButton("Previous")
-		    .setPosition(648, 580)
+		    .setPosition(337, 580)
 		    .setSize(69, 15)
 		    .setGroup(mainUIGroup);
 		prevSlides.getCaptionLabel().alignX(ControlP5Constants.CENTER);
+		
+		timeLineIndex = buttonUI.addButton("timeLineIndex")
+			.setPosition(413, 580)
+			.setSize(76, 15)
+			.setCaptionLabel(timeLineDefaultString)
+			.lock()
+			.setGroup(mainUIGroup);
+		timeLineIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
+
+		totalTime = buttonUI.addButton("totalTime")
+			.setPosition(740, 580)
+			.setSize(130, 15)
+			.setCaptionLabel(slideShowTime)
+			.lock()
+			.setGroup(mainUIGroup);
+		totalTime.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		//Load media
 		lockControllers[10] = loadMedia = buttonUI.addButton("Load Media")
@@ -148,31 +160,6 @@ public class controlbuttonUI {
 			.lock()
 			.setGroup(mainUIGroup);
 		pageIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
-		
-		timeLineIndex = buttonUI.addButton("timeLineIndex")
-			.setPosition(722, 580)
-			.setSize(75, 15)
-			.setCaptionLabel(timeLineDefaultString)
-			.lock()
-			.setGroup(mainUIGroup);
-		timeLineIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
-		
-		//For audio timeline control
-		songTitle = buttonUI.addButton("songTitle")
-			.setPosition(30, 490)
-			.setSize(350, 15)
-			.setCaptionLabel(songTitleString)
-			.lock()
-			.setGroup(mainUIGroup);
-		timeLineIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
-		
-		totalTime = buttonUI.addButton("totalTime")
-			.setPosition(400, 580)
-			.setSize(130, 15)
-			.setCaptionLabel(slideShowTime)
-			.lock()
-			.setGroup(mainUIGroup);
-		totalTime.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 	}
 	
 	/**
@@ -197,42 +184,29 @@ public class controlbuttonUI {
 	
 	/**
 	 * Sets the page indexing string for the visual timeline label.
-	 * @param pages the total number of pages
-	 * @param index the current page number
+	 * @param stamps the start and end timestamps of the current timeline page
 	 */
-	public void setTimeLinePageIndex(int pages, int index) {
+	public void setTimeLinePageIndex(int[] stamps) {
 	    int min = 0, sec = 0;
 	    
-	    if(pages > 0) {
-	        min = (index-1)*30/60;
-	        sec = (index-1)*30%60;
+	    boolean okay = stamps[1] > 0;
+	    
+	    if(okay) {
+	        min = stamps[0]/60;
+	        sec = stamps[0]%60;
 	    }
 	    
 	    StringBuilder build = new StringBuilder(
             String.format("%d:%02d", min, sec));
 	    
-	    if(pages > 0) {
-    	    min = index*30/60;
-            sec = index*30%60;
+	    if(okay) {
+    	    min = stamps[1]/60;
+            sec = stamps[1]%60;
 	    }
         
 	    build.append(String.format(" - %d:%02d", min, sec));
 
         timeLineIndex.setCaptionLabel(build.toString());
-	}
-	
-	/**
-	 * Sets the title of the song currently displayed in the audio timeline.  
-	 * @param a the AudioItem
-	 */
-	public void setSongTitle(AudioItem a){
-		songTitleString = "Song: " + 
-			(
-				a == null ?
-				"" :
-				a.getTitle() + " - "+ a.getAuthor() + " - " +a.getTime()
-			);
-		songTitle.setCaptionLabel(songTitleString);
 	}
 
 	/**

@@ -14,15 +14,14 @@ import quickshow.datatypes.VisualItem;
 
 public class visualTimeline {
 	private final static int timeLineWidth = 840;
-	private final static int timeLineHeight = 65;
+	private final static int timeLineHeight = 78;
 	private final static int MAX_THUMBNAIL_DISPLAY = 8;
 	private int start_index = 0;
 	private float scaleFactor;
 	private Quickshow parent;
-    private int oldListSize;
     private boolean debug;
     private int num_pages = 0;
-    private int curr_index = 0;
+    private int curr_page_index = 0;
     private int curr_items_displayed = 0;
     private int prev_items_displayed = 0;
     private int totalTime = 0;
@@ -33,7 +32,7 @@ public class visualTimeline {
     private ArrayList<Integer[]> timeStamps;
     private ArrayList<Integer[]> timeLineBounds;
     private PImage image;
-    final static int[] bounds = {30, 512, 870, 577};
+    final static int[] bounds = {30, 499, 870, 577};
     
     private ArrayList <VisualItem> itemsForDisplay;
    
@@ -58,7 +57,7 @@ public class visualTimeline {
     	
     	parent.fill(90,90,90);
 		parent.stroke(0);
-		parent.rect(30, 512, timeLineWidth, timeLineHeight);
+		parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
 		
 		parent.stroke(0xffffffff);
 		short x;
@@ -78,7 +77,10 @@ public class visualTimeline {
 		if(!itemsForDisplay.isEmpty()) {
 			parent.imageMode(PConstants.CORNER);
     	
-    		int drawIndex = bounds[0] + 5;
+    		int drawIndex = bounds[0];
+    		int y, duration;
+    		float new_height, new_width;
+    		float timeScaleFactor, time_scaled_width;
     		
     		for (int j = start_index; j < itemsForDisplay.size(); j++){
     				
@@ -89,30 +91,27 @@ public class visualTimeline {
 					scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
     			}
     			
-    			float new_height = scaleFactor * image.height;
-    			float new_width = scaleFactor * image.width;
+    			new_height = scaleFactor * image.height;
+    			new_width = scaleFactor * image.width;
     			
-    			int duration = itemsForDisplay.get(j).getDisplayTime();
-    			float timeScaleFactor = (float) duration/5.0f;
-    			float time_scaled_width = timeScaleFactor * new_width;
+    			y = (bounds[3]+bounds[1]-(int)Math.ceil(new_height))/2;
+    			
+    			duration = itemsForDisplay.get(j).getDisplayTime();
+    			timeScaleFactor = (float) duration/5.0f;
+    			time_scaled_width = timeScaleFactor * new_width;
     			
     			//Draw the image and a box around it
-    			parent.image(image, drawIndex, 520, time_scaled_width , new_height);
+    			parent.image(image, drawIndex, y, time_scaled_width , new_height);
     			
     			if(selectedIndex == j) {
     			    parent.fill(0x55ff3210);
+	    			parent.stroke(0xffff2233);
+	    			parent.rectMode(PConstants.CORNER);
+	    			parent.rect(drawIndex, y, time_scaled_width, new_height);
     			}
-    			
-    			else {
-    			    parent.noFill();
-    			}
-    			
-    			parent.stroke(0xffff2233);
-    			parent.rectMode(PConstants.CORNER);
-    			parent.rect(drawIndex, 520, time_scaled_width, new_height);
-    			
+
     			//Increment the x index
-    			drawIndex += time_scaled_width;
+    			drawIndex += time_scaled_width+1;
     			curr_img_length = drawIndex;
     			
     			//Get the current duration of the current images that are drawn
@@ -130,28 +129,29 @@ public class visualTimeline {
 	 * @param selectedList an ArrayList containing the selected VisualItems
 	 */
 	public void receiveSelectedItems(ArrayList<VisualItem> selectedList){
-		if(selectedList.isEmpty()) {
-			oldListSize = 0;
-		}
+		itemsForDisplay.clear();
+		timeStamps.clear();
+		timeLineBounds.clear();
+		totalTime = 0;
 		
-		else {
-			int tmp;
-			for(int i = oldListSize; i < selectedList.size(); i++){
-				itemsForDisplay.add(selectedList.get(i));
+		int tmp;
+		Integer[] times;
+		for(VisualItem item : selectedList) {
+			itemsForDisplay.add(item);
 
-				tmp = itemsForDisplay.get(i).getDisplayTime();
-				totalTime += tmp;
-				Integer[] times = {totalTime - tmp, totalTime};
-				timeStamps.add(times);
-			}
-
-			curr_Time = 0;
-			calculateTimeLineBounds(oldListSize);
-			oldListSize = selectedList.size();
-			
-			num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
-			curr_index = 1;
+			tmp = item.getDisplayTime();
+			totalTime += tmp;
+			times = new Integer[2];
+			times[0] = totalTime - tmp;
+			times[1] = totalTime;
+			timeStamps.add(times);
 		}
+
+		curr_Time = 0;
+		calculateTimeLineBounds(0);
+		
+		num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
+		curr_page_index = 1;
 	}
 	
 	/**
@@ -162,8 +162,13 @@ public class visualTimeline {
 		//Get initial draw index
 		if(start >= itemsForDisplay.size()) return;
 		
-		int drawIndex = bounds[0] + 5;
+		int drawIndex = bounds[0];
 		curr_items_displayed = 0;
+		
+		float new_width, timeScaleFactor, time_scaled_width;
+		int duration;
+		
+		Integer[] tbBounds; 
 		
 		//Go through the list and calculate placements along the time line
    		for (int j = start; j < itemsForDisplay.size(); j++){
@@ -175,15 +180,17 @@ public class visualTimeline {
 				scaleFactor = 1.0f/((float) image.height/ (float) (timeLineHeight-15));
 			}
 			
-			float new_width = scaleFactor * image.width;
-			int duration = itemsForDisplay.get(j).getDisplayTime();
-			float timeScaleFactor = (float) duration/5.0f;
-			float time_scaled_width = timeScaleFactor * new_width;
+			new_width = scaleFactor * image.width;
+			duration = itemsForDisplay.get(j).getDisplayTime();
+			timeScaleFactor = (float) duration/5.0f;
+			time_scaled_width = timeScaleFactor * new_width;
 			
-			drawIndex += time_scaled_width;
+			drawIndex += time_scaled_width+1;
 			curr_img_length = drawIndex;
 			
-			Integer [] tbBounds = {(int) (drawIndex - time_scaled_width), drawIndex};
+			tbBounds = new Integer[2];
+			tbBounds[0] = (int) (drawIndex - time_scaled_width);
+			tbBounds[1] = drawIndex;
 			
 			try{
 				timeLineBounds.get(j)[0] = tbBounds[0];
@@ -228,7 +235,7 @@ public class visualTimeline {
 		
 		//Reset the display index
 		start_index = 0;
-		curr_index = 0;
+		curr_page_index = 0;
 		num_pages = 0;
 		totalTime = 0;
 		curr_items_displayed = 0;
@@ -244,7 +251,7 @@ public class visualTimeline {
 		calculateTimeLineBounds(start_index);
 		
 		//wrap page index
-		curr_index = (++curr_index) > num_pages ? 1 : curr_index;
+		curr_page_index = (++curr_page_index) > num_pages ? 1 : curr_page_index;
 	}
 	
 	/**
@@ -260,7 +267,7 @@ public class visualTimeline {
 		calculateTimeLineBounds(start_index);
 		
 		//wrap page index
-		curr_index = (--curr_index) < 1 ? num_pages : curr_index;
+		curr_page_index = (--curr_page_index) < 1 ? num_pages : curr_page_index;
 	}
 	
 	/**
@@ -268,16 +275,6 @@ public class visualTimeline {
 	 */
 	public int getTotalTime(){
 		return totalTime;
-	}
-	
-	/**
-	 * Getters for num_pages and curr_index
-	 */
-	public int getNumPages(){
-		return num_pages;
-	}
-	public int getCurrIndexPages(){
-		return curr_index;
 	}
 	
 	/**
@@ -292,19 +289,23 @@ public class visualTimeline {
 		//If legal index was found then generate the marker and preview thumbnail
 		if(index > -1) {
 			PImage prevThumbnail = itemsForDisplay.get(index).getThumbnail();
+			
+			parent.fill(0xff555555);
+			parent.stroke(0);
+			parent.rectMode(PConstants.CORNER);
+			parent.rect(x, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
+			
 			parent.image(prevThumbnail, x, bounds[1]-60);
 			parent.stroke(0xffff0000);
 			parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
 			
-			parent.rectMode(PConstants.CORNER);
-			parent.rect(x, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
 			
 			Integer[] stamp = timeStamps.get(index);
 			int min = stamp[0]/60;
 			int sec = stamp[0]%60;
 			String text = String.format("%d:%02d", min, sec);
 			
-			parent.fill(0xffffffff);
+			parent.fill(0xffff0055);
 			parent.textAlign(PConstants.RIGHT);
 			parent.text(text, x-5, bounds[1]);
 			
@@ -406,10 +407,25 @@ public class visualTimeline {
 	}
 	
 	/**
-	 * TODO add method header
+	 * Retrieves the index of the first visible item on the timeline.
 	 * @return integer
 	 */
 	public int getStartIndex(){
 		return start_index;
+	}
+	
+	/**
+	 * Retrieves the timestamps of the currently displayed timeline items. 
+	 * @return integer array
+	 */
+	public int[] getCurPageStamps() {
+		int[] result = {0, 0};
+		
+		if(!timeStamps.isEmpty()) {
+			result[0] = timeStamps.get(start_index)[0];
+			result[1] = timeStamps.get(curr_items_displayed+start_index-1)[1];
+		}
+		
+		return result;
 	}
 }

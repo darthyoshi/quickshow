@@ -24,11 +24,11 @@ public class audioTimeline {
 	private ArrayList<float[][]> spectraList;
 	private AudioSample audioClip;
 	private static final int timeLineWidth = 840;
-	private static final int timeLineHeight = 65;
+	private static final int timeLineHeight = 78;
 	private ArrayList <AudioItem> selectedSongs;
 	private int index;
 	private int num_pages;
-	static final int[] bounds = {30, 420, 870, 485};
+	static final int[] bounds = {30, 420, 870, 498};
 	
 	/**
 	 * Class constructor.
@@ -149,9 +149,12 @@ public class audioTimeline {
 		
 			float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
 			
+			int i;
+			float total;
+			
 			for(int s = 0; s < leftSpectra.length; s++) {
-			    int i = 0;
-			    float total = 0; 
+			    i = 0;
+			    total = 0; 
 			    for(i = 0; i < leftSpectra[s].length-1; i++){
 			        total += leftSpectra[s][i];
 			    }
@@ -174,30 +177,31 @@ public class audioTimeline {
 	}
 	
 	/**
-	 * For the audiotimeline marker
-	 * @return Nothing
+	 * Draws the timeline marker.
+	 * @param mouseX the x-coordinates of the mouse
+	 * @param mouseY the y-coordinates of the mouse
 	 */
-	public void displayTimeMarkers(int x, int y){
+	public void displayTimeMarkers(int mouseX, int mouseY){
 		if(!selectedSongs.isEmpty()) {
 			
-			//To offset from the left hand side
-			x -= 30;
-			
-			int currSongLength = getCurrSong().getLength();
+			AudioItem tmp = getCurrSong();
+			int currSongLength = tmp.getLength();
 			
 			//See where in the song to show time stamp
-			float scaleFactor = (float) x/ (float) timeLineWidth;
+			float scaleFactor = (float) mouseX/ (float) timeLineWidth;
 			
 			float timeMarker = scaleFactor * currSongLength;
 			
 			int min = (int) timeMarker/60;
 			int sec = (int) timeMarker%60;
 			
-			//Do we want a box or just the text?
 			parent.fill(0xffffffff);
-			parent.text(String.format("%d:%02d", min, sec), x, y);
+			parent.textAlign(PConstants.LEFT);
+			parent.text(String.format("%d:%02d", min, sec), mouseX + 5, mouseY - 10);
+			parent.text(tmp.getAuthor() + " - " + tmp.getTitle(), mouseX + 5, mouseY + 10);
+
 			parent.stroke(0xffff0000);
-			parent.line(x + 28, bounds[1] + 2 , x + 28, bounds[3] - 2);
+			parent.line(mouseX, bounds[1] + 2 , mouseX, bounds[3] - 2);
 		}
 	}
 
@@ -236,9 +240,17 @@ public class audioTimeline {
 	}
 	
 	/**
-	 * Retrieves the current Song
+	 * Retrieves the current song.
 	 */
 	public AudioItem getCurrSong(){
 		return (selectedSongs.isEmpty() ? null : selectedSongs.get(index));
+	}
+
+	/**
+	 * Removes all songs from the timeline.
+	 */
+	public void clear() {
+		selectedSongs.clear(); 
+		spectraList.clear();
 	}
 }

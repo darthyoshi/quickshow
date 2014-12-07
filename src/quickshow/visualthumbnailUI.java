@@ -90,6 +90,13 @@ public class visualthumbnailUI {
 					parent.rectMode(PConstants.CENTER);
 					parent.rect(xStartIndex, yStartIndex,
 						MAX_THUMBNAIL_WIDTH - 2, MAX_THUMBNAIL_HEIGHT - 4);
+					
+					parent.fill(0);
+					parent.text(
+						selectedIndex.indexOf(j)+1,
+						10 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+						15 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
+					);
 				}
 
 				//Move up the next index whether its video or image
@@ -113,7 +120,22 @@ public class visualthumbnailUI {
 			Quickshow.println("Receiving items size: " + vItems.size());
 		}
 
-		items.addAll(vItems);
+		int i;
+		VisualItem item;
+		for(VisualItem vItem : vItems) {
+			for(i = 0; i < items.size(); i++) {
+				item = items.get(i);
+				
+				if(vItem.getFileName().equalsIgnoreCase(item.getFileName())) {
+					break;
+				}
+			}
+			
+			if(i == items.size()) {
+				items.add(vItem);
+			}
+		}
+		
 		num_pages = (int)Math.ceil(1f*items.size()/MAX_NUM_DISPLAY);
 		curr_index = 1;
 	}
@@ -148,6 +170,20 @@ public class visualthumbnailUI {
         		    Quickshow.println(items.get(mainIndex).checkType() +
         	    		" added to timeline");
         		}
+			}
+			
+			else {
+				selectedIndex.remove(selectedIndex.indexOf(mainIndex));
+				
+				if(items.get(mainIndex).checkType().equalsIgnoreCase("image")) {
+					((quickshow.datatypes.ImageItem)items.get(mainIndex))
+						.setDisplayTime(5);
+				}
+				
+				if(debug) {
+					Quickshow.println(items.get(mainIndex).checkType() +
+						" removed from timeline");
+				}
 			}
 		}
 	}
