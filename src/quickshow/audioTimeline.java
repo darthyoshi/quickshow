@@ -55,7 +55,7 @@ public class audioTimeline {
 		parent.fill(90,90,90);
 		parent.stroke(0);
 		parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
-
+/*
 		parent.stroke(0xffffffff);
 		short x;
 		for(short i = 1; i < 30; i++) {
@@ -63,7 +63,7 @@ public class audioTimeline {
 
             parent.stroke((i%5 == 0 ? 0xff55aaff : 0xffffffff));
             parent.line(x, bounds[1]+2, x, bounds[3]-2);
-		}
+		}*/
 	}
 	
 	/*
