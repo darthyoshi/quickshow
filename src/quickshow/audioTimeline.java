@@ -54,15 +54,6 @@ public class audioTimeline {
         parent.fill(90,90,90);
         parent.stroke(0);
         parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
-/*
-        parent.stroke(0xffffffff);
-        short x;
-        for(short i = 1; i < 30; i++) {
-            x = (short)(i*28 + 30);
-
-            parent.stroke((i%5 == 0 ? 0xff55aaff : 0xffffffff));
-            parent.line(x, bounds[1]+2, x, bounds[3]-2);
-        }*/
     }
     
     /*
@@ -198,8 +189,9 @@ public class audioTimeline {
             
             parent.fill(0xffffffff);
             parent.textAlign(PConstants.LEFT);
-            parent.text(String.format("%d:%02d", min, sec), mouseX + 5, mouseY - 10);
-            parent.text(tmp.getAuthor() + " - " + tmp.getTitle(), mouseX + 5, mouseY + 10);
+            int x_coord = mouseX < 450 ? mouseX + 5 : mouseX - 200;
+            parent.text(String.format("%d:%02d", min, sec), x_coord, mouseY - 10);
+            parent.text(tmp.getAuthor() + " - " + tmp.getTitle(), x_coord, mouseY + 10);
 
             parent.stroke(0xffff0000);
             parent.line(mouseX, bounds[1] + 2 , mouseX, bounds[3] - 2);

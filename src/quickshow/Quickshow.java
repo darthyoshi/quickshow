@@ -211,16 +211,12 @@ public class Quickshow extends PApplet {
                 break;
 
             case "Next":
-                aT.nextSong();
-
                 vTimeline.showNextOnTimeline();
                 cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 
                 break;
 
             case "Previous":
-                aT.prevSong();
-
                 vTimeline.showPrevOnTimeline();
                 cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
 
@@ -231,7 +227,15 @@ public class Quickshow extends PApplet {
                 toggleMain(false);
 
                 break;
-
+                
+            case "nextSong":
+            	aT.nextSong();
+            	break;
+            	
+            case "prevSong" :
+            	aT.prevSong();
+            	break;
+            	
             case "Visual Item Properties":
                 popup.togglePopup(true, selectedItem, visualOffset);
 
@@ -375,7 +379,6 @@ public class Quickshow extends PApplet {
                 for(MediaItem item : results) {
                     audios.add((AudioItem)item);
                 }
-
                 audioListbox.receiveSongs(audios);
             }
 

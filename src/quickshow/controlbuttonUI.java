@@ -26,6 +26,8 @@ public class controlbuttonUI {
     private Toggle shuffleToggle;
     private Button nextSlides;
 	private Button prevSlides;
+    private Button nextSong;
+	private Button prevSong;
 	private Button loadMedia;
 	private Button editVisualItem;
 	private Controller[] lockControllers;
@@ -152,6 +154,26 @@ public class controlbuttonUI {
 	        .setVisible(false)
 	        .setGroup(mainUIGroup);
 		editVisualItem.getCaptionLabel().alignX(ControlP5Constants.CENTER);
+		lockControllers[11] = editVisualItem = buttonUI
+				.addButton("Visual Item Properties")
+		        .setPosition(30, 580)
+		        .setSize(175, 15)
+		        .setVisible(false)
+		        .setGroup(mainUIGroup);
+		
+		nextSong = buttonUI.addButton("nextSong")
+			    .setPosition(870, 421)
+			    .setSize(20, 77)
+			    .setCaptionLabel(">")
+			    .setGroup(mainUIGroup);
+		nextSong.getCaptionLabel().alignX(ControlP5Constants.CENTER);
+		
+		prevSong = buttonUI.addButton("prevSong")
+			    .setPosition(10, 421)
+			    .setSize(20, 77)
+			    .setCaptionLabel("<")
+			    .setGroup(mainUIGroup);
+		prevSong.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
 		pageIndex = buttonUI.addButton("pageIndex")
 			.setPosition(520, 402)
