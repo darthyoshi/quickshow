@@ -455,8 +455,8 @@ public class FileBrowser {
 
             ListIterator<PImage> thumbIter = thumbs.listIterator(displayIndex);
             String fileName;
-            for(int i = displayIndex; i < fileNames.size()
-        		&& i < displayIndex + 20; i++)
+            for(int i = displayIndex; i < fileNames.size() &&
+                i < displayIndex + 20; i++)
             {
                 thumb = thumbIter.next();
                 fileName = fileNames.get(i);
@@ -676,7 +676,7 @@ public class FileBrowser {
         for(imgIndex = 0, row = 0; row < 4; row++) {
             //draw thumbnail rows
             for(col = 0; col < 5 && i < fileNames.size();
-                col++, imgIndex++)
+                col++, imgIndex++, i++)
             {
                 thumb = thumbIter.next();
 
