@@ -1,7 +1,7 @@
 /**
  * @file AudioItem.java
  * @author Kay Choi
- * @description A wrapper class for audio media items. 
+ * @description A wrapper class for audio media items.
  */
 
 package quickshow.datatypes;
@@ -18,7 +18,7 @@ public class AudioItem extends MediaItem {
     private int length;
     private AudioSample sample;
     private String time;
-    
+
     /**
      * Class constructor.
      * @param minim the Minim object controlling the audio
@@ -26,18 +26,18 @@ public class AudioItem extends MediaItem {
      */
     public AudioItem(Minim minim, String fileName) {
         super(fileName);
-        
+
         audio = minim.loadFile(fileName);
-        
+
         //Need this to generate waveform in the UI
         sample = minim.loadSample(fileName);
-        
+
         AudioMetaData meta = audio.getMetaData();
-        
+
         title = (meta.title().trim().equals("") ? "N/A" : meta.title());
         author = (meta.author().trim().equals("") ? "N/A" : meta.author());
         length = meta.length()/1000;
-        
+
         int minutes = length/60;
         int seconds = length%60;
         time = String.format("%d:%02d", minutes, seconds);
@@ -50,7 +50,7 @@ public class AudioItem extends MediaItem {
     public AudioPlayer getAudio() {
         return audio;
     }
-    
+
     /**
      * Retrieves the author of the audio file.
      * @return the author as a String
@@ -58,7 +58,7 @@ public class AudioItem extends MediaItem {
     public String getAuthor() {
         return author;
     }
-    
+
     /**
      * Retrieves the title of the audio file.
      * @return the title as a String
@@ -66,7 +66,7 @@ public class AudioItem extends MediaItem {
     public String getTitle() {
         return title;
     }
-    
+
     /**
      * Retrieves the length of the audio file.
      * @return the length in seconds
@@ -74,7 +74,7 @@ public class AudioItem extends MediaItem {
     public int getLength() {
         return length;
     }
-    
+
     /**
      * Retrieves the time of the audio file.
      * @return the length in MM:SS format
@@ -82,12 +82,12 @@ public class AudioItem extends MediaItem {
     public String getTime() {
         return time;
     }
-    
+
     /**
      * Retrieves the AudioSample object associated with the audio file.
      * @return an AudioSample object
      */
     public AudioSample getAudioSample(){
-    	return sample;
+        return sample;
     }
 }

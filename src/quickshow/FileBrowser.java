@@ -1,7 +1,7 @@
 /**
  * @file FileBrowser.java
  * @author Kay Choi
- * @description The Quickshow file browser class. 
+ * @description The Quickshow file browser class.
  */
 
 package quickshow;
@@ -30,10 +30,10 @@ import controlP5.Textfield;
 
 public class FileBrowser {
     private boolean debug;
-    
+
     private Quickshow parent;
     private String curDir;
-    
+
     private ArrayList<String> fileNames;
     private ArrayList<PImage> thumbs;
 
@@ -43,46 +43,46 @@ public class FileBrowser {
     private Movie movie = null;
 
     private ArrayList<Integer> selectedIndex;
-    
+
     private ArrayList<MediaItem> results;
-    
+
     private int[] selectBox = {0, 0, 0, 0};
     private boolean isSelecting = false;
-    
+
     private long clickTime = 0;
     private boolean dblClick = false;
-    
+
     private Group group;
     private Button[] lockButtons;
     private Textfield pathField;
     private Button pageLabel;
     private DropdownList mediaTypeList;
-    
+
     private ddf.minim.Minim minim;
-    
+
     private int curDisplayIndex = 0;
-    
+
     private boolean isAudioMode = false;
-    
+
     private static final int thumbWidth = 136, thumbHeight = 102;
-    
+
     /**
      * Class constructor.
-     * @param parent the instantiating Quickshow object 
+     * @param parent the instantiating Quickshow object
      * @param minim the Minim object handling the audio files
      * @param control the ControlP5 object handling UI elements
      * @param curDir the initial FileBrowser directory
      */
-	public FileBrowser(Quickshow parent, ddf.minim.Minim minim,
+    public FileBrowser(Quickshow parent, ddf.minim.Minim minim,
         ControlP5 control, String curDir)
     {
         this.parent = parent;
-        
+
         debug = parent.getDebugFlag();
-        
+
         String[] pathParts = (new File(curDir)).getAbsolutePath().split("\\/");
         StringBuilder path = new StringBuilder();
-        
+
         if(debug) {
             PApplet.print("curDir: ");
             for(String part:pathParts) {
@@ -90,30 +90,30 @@ public class FileBrowser {
             }
             Quickshow.println("\ncurDir depth: " + pathParts.length);
         }
-        
+
         for(short i = 0; i < pathParts.length - 1; i++) {
             path.append(pathParts[i] + '/');
         }
-        
+
         path.deleteCharAt(path.length()-1);
-        
+
         this.curDir = path.toString();
-        
+
         this.minim = minim;
-   
+
         fileNames = new ArrayList<String>();
         thumbs = new ArrayList<PImage>();
         q = new ArrayList<QItem>();
-        qIter = q.listIterator(); 
-        
+        qIter = q.listIterator();
+
         selectedIndex = new ArrayList<Integer>(20);
-        
+
         results = new ArrayList<MediaItem>();
-        
+
         group = control.addGroup("fileBrowser").setLabel("").setVisible(false);
-        
+
         lockButtons = new Button[7];
-        
+
         pathField = control.addTextfield("pathField")
             .setCaptionLabel("")
             .setText(this.curDir)
@@ -155,7 +155,7 @@ public class FileBrowser {
             .setCaptionLabel("^\n^")
             .setGroup(group);
         lockButtons[3].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
-        
+
         lockButtons[4] = control.addButton("scrollDownButton")
             .setSize(30, 75)
             .setLock(true)
@@ -190,7 +190,7 @@ public class FileBrowser {
         mediaTypeList.getCaptionLabel().align(ControlP5Constants.LEFT, ControlP5Constants.CENTER);
         mediaTypeList.addItem(label, 0);
         mediaTypeList.addItem("Audio (mp3, wav, aiff, au, snd)", 1);
-        
+
         pageLabel = control.addButton("pageLabel")
             .setLock(true)
             .setPosition(840, 225)
@@ -198,10 +198,10 @@ public class FileBrowser {
             .setCaptionLabel("")
             .setGroup(group);
         pageLabel.getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.TOP);
-        
+
         changeDir(this.curDir);
     }
-    
+
     /**
      * Callback method for handling ControlP5 UI events.
      * @param e the ControlEvent to handle
@@ -211,64 +211,64 @@ public class FileBrowser {
         case "scrollUpButton":
             scrollUpButton();
             break;
-            
+
         case "scrollDownButton":
             scrollDownButton();
             break;
-            
+
         case "parentDirButton":
             parentDirButton();
             break;
-            
+
         case "scrollTopButton":
             scrollTopButton();
             break;
-            
+
         case "scrollBottomButton":
             scrollBottomButton();
             break;
-            
+
         case "pathField":
             String path = pathField.getText().trim();
             if(!path.equals("")) {
                 File file = new File(path);
-                
+
                 if(file.exists()) {
                     if(file.isDirectory()) {
                         changeDir(path);
                     }
-                    
+
                     else {
                         loadFile(file);
-                        
+
                         if(!results.isEmpty()) {
                             toggle(false);
                         }
                     }
                 }
             }
-            
+
             pathField.setFocus(false).setText(curDir);
-            
+
             break;
-            
+
         case "openButton":
             openButton();
 
             break;
-            
+
         case "cancelButton":
             cancelButton();
             break;
-            
+
         case "mediaTypeList":
             mediaTypeList(e);
             break;
         }
     }
-    
+
     /**
-     * Loads a single file. 
+     * Loads a single file.
      * @param file a Java File object representing the file to load
      */
     private void loadFile(File file) {
@@ -276,67 +276,67 @@ public class FileBrowser {
 
         try {
             path = file.getCanonicalPath();
-            
+
             if(debug) {
                 Quickshow.println("loading file: " + path);
             }
         }
-        
+
         catch (IOException e1) {
             if(debug) {
                 e1.printStackTrace();
             }
-            
+
             return;
         }
-        
+
         String[] fileNameParts = path.split("\\.");
-        
+
         int i;
         for(i = 0; i < FileExtensions.AUDIO_EXT.length; i++) {
             if(fileNameParts[fileNameParts.length-1]
                 .equalsIgnoreCase(FileExtensions.AUDIO_EXT[i]))
             {
                 results.add(new AudioItem(minim, path));
-                
+
                 break;
             }
         }
-        
+
         if(i == FileExtensions.AUDIO_EXT.length) {
             for(i = 0; i < FileExtensions.VIDEO_EXT.length; i++) {
                 if(fileNameParts[fileNameParts.length-1]
                     .equalsIgnoreCase(FileExtensions.VIDEO_EXT[i]))
                 {
                     qIter.add(new QItem(-1, path));
-                    
+
                     getNextQItem();
-                    
+
                     break;
                 }
             }
-            
+
             if(i == FileExtensions.VIDEO_EXT.length) {
                 PImage thumb;
                 int[] thumbDims;
-                
+
                 for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
                     if(fileNameParts[fileNameParts.length-1]
                         .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
                     {
                         thumb = parent.loadImage(path);
-                        
+
                         thumbDims = newImageDims(thumb);
                         thumb.resize(thumbDims[0], thumbDims[1]);
-                        
+
                         results.add(new ImageItem(parent, path, thumb));
-                        
+
                         break;
                     }
                 }
             }
         }
-        
+
         if(debug) {
             Quickshow.println("Files loaded: " + results.size());
         }
@@ -349,42 +349,42 @@ public class FileBrowser {
         if(qIter.hasPrevious()) {
             if(curQItem == null || curQItem.isHandled) {
                 curQItem = qIter.previous();
-                
+
                 qIter.remove();
-                
+
                 movie = new Movie(parent, curQItem.name);
                 movie.play();
             }
         }
-        
+
         else {
             curQItem = null;
         }
     }
-    
+
     /**
      * ControlP5 UI handler. Changes to parent directory if applicable.
      */
     private void parentDirButton() {
         File file = (new File(curDir)).getParentFile();
         String parentName = "";
-        
+
         if(file != null) {
             parentName = file.getAbsolutePath();
             changeDir(parentName);
         }
     }
-    
+
     /**
      * ControlP5 UI handler. Closes the FileBrowser without loading any items.
      */
     private void cancelButton() {
         selectedIndex.clear();
         results.clear();
-        
+
         toggle(false);
     }
-    
+
     /**
      * ControlP5 UI handler. Enters selected directory or loads selected files.
      */
@@ -392,231 +392,247 @@ public class FileBrowser {
         switch(selectedIndex.size()) {
         case 0:
             loadAll();
-            
+
             break;
-            
+
         case 1:
-            File file = new File(curDir + '/' + 
+            File file = new File(curDir + '/' +
                 fileNames.get(selectedIndex.get(0)));
-            
+
             if(file.isDirectory()) {
                 changeDir(file.getAbsolutePath());
-                
+
                 return;
             }
-            
+
         default:
             if(isAudioMode) {
                 loadAudio();
             }
-            
+
             else {
                 loadVisual();
             }
-        
+
             selectedIndex.clear();
         }
-            
+
         if(!results.isEmpty()) {
-        	toggle(false);
+            toggle(false);
         }
     }
-    
+
     /**
      * Generates thumbnails when paginating through a directory if necessary.
      */
     private void updateThumbs(int displayIndex) {
-    	String fullPath;
-    	String[] fileNameParts;
-    	PImage thumb;
-    	PImage thumb1 = parent.loadImage("data/img/folderThumbNail.png");
-    	PImage thumb2 = parent.loadImage("data/img/audioThumbNail.png");
-        int[] thumbDims = newImageDims(thumb1);
-    	
-        thumb1.resize(thumbDims[0], thumbDims[1]);
-        thumb2.resize(thumbDims[0], thumbDims[1]);
-    	
-        short j;
-        
-    	for(
-	        int i = displayIndex;
-	        i < displayIndex + 20 && i < fileNames.size();
-	        i++
-        ) {
-    		if(thumbs.get(i) == null) {
-	    		fullPath = curDir + '/' + fileNames.get(i);
-	    		
-	    		//directory thumbnail
-	    		thumb = thumb1;
-	    		
-	    		//non-directory thumbnail
-	    		if(!(new File(fullPath)).isDirectory()) {
-	    			if(isAudioMode) {		//audio thumbnail
-		    			thumb = thumb2;
-		    		}
-		    		
-		    		else {
-		    			fileNameParts = fileNames.get(i).split("\\.");
-		    			
-		    			//image thumbnail
-		    			for(j = 0; j < FileExtensions.IMG_EXT.length; j++) {
-		    				if(fileNameParts[fileNameParts.length-1].
-	    				        equalsIgnoreCase(FileExtensions.IMG_EXT[j]))
-		    				{
-		    					thumb = parent.loadImage(fullPath);
+        if(displayIndex < fileNames.size()) {
+            ListIterator<String> fileNameIter = fileNames.listIterator(displayIndex);
+            
+            if(fileNameIter.hasNext()) {
+                String fullPath;
+                String[] fileNameParts;
+                PImage thumb;
+                PImage thumb1 = parent
+                    .loadImage("data/img/folderThumbNail.png");
+                PImage thumb2 = parent
+                    .loadImage("data/img/audioThumbNail.png");
+                int[] thumbDims = newImageDims(thumb1);
 
-	                            thumbDims = newImageDims(thumb);
-	                            thumb.resize(thumbDims[0], thumbDims[1]);
-	                            //thumbs.add(thumb);
-		    					
-		    					break;
-		    				}
-		    			}
-	
-		    			//queue video for thumbnail generation
-		    			if(j == FileExtensions.IMG_EXT.length) {
-		    			    qIter.add(new QItem(i, fullPath));
-		                    
-		                    thumb = null;
-		    			}
-		    		}
-	    		}
-	    		
-	    		//set new thumbnail
-	    		thumbs.set(i, thumb);
-    		}
-    	}
-    	
-    	getNextQItem();
+                thumb1.resize(thumbDims[0], thumbDims[1]);
+                thumb2.resize(thumbDims[0], thumbDims[1]);
+
+                short j;
+                int i = displayIndex;
+
+                ListIterator<PImage> thumbIter = thumbs.listIterator(i);
+                String fileName;
+                do {
+                    thumb = thumbIter.next();
+                    fileName = fileNameIter.next();
+                    
+                    if(thumb == null) {
+                        fullPath = curDir + '/' + fileName;
+
+                        //directory thumbnail
+                        thumb = thumb1;
+
+                        //non-directory thumbnail
+                        if(!(new File(fullPath)).isDirectory()) {
+                            if(isAudioMode) {       //audio thumbnail
+                                thumb = thumb2;
+                            }
+
+                            else {
+                                fileNameParts = fileName.split("\\.");
+
+                                //image thumbnail
+                                for(j = 0; j < FileExtensions.IMG_EXT.length;
+                                    j++)
+                                {
+                                    if(
+                                        fileNameParts[fileNameParts.length-1].
+                                        equalsIgnoreCase(FileExtensions
+                                            .IMG_EXT[j])
+                                    ) {
+                                        thumb = parent.loadImage(fullPath);
+
+                                        thumbDims = newImageDims(thumb);
+                                        thumb.resize(thumbDims[0],
+                                            thumbDims[1]);
+
+                                        break;
+                                    }
+                                }
+
+                                //queue video for thumbnail generation
+                                if(j == FileExtensions.IMG_EXT.length) {
+                                    qIter.add(new QItem(i, fullPath));
+
+                                    thumb = null;
+                                }
+                            }
+                        }
+
+                        //set new thumbnail
+                        thumbs.set(i, thumb);
+                    }
+
+                    i++;
+                } while(i < displayIndex + 20 && fileNameIter.hasNext());
+
+                getNextQItem();
+            }
+        }
     }
-    
+
     /**
      * ControlP5 UI handler. Displays the previous page.
      */
     private void scrollUpButton() {
         selectedIndex.clear();
-        
+
         if(curDisplayIndex > 0) {
             curDisplayIndex -= 20;
 
             updateThumbs(curDisplayIndex);
-            
+
             int lastPage = (int)(Math.ceil(fileNames.size()/20.));
-            
+
             pageLabel.setCaptionLabel("\n\n\n" + ((curDisplayIndex/20) + 1) +
                 "\n\nof\n\n" + lastPage);
         }
-        
+
         if(debug) {
             Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
-    
+
     /**
      * ControlP5 UI handler. Displays the first page.
      */
     private void scrollTopButton() {
         selectedIndex.clear();
-        
+
         curDisplayIndex = 0;
-        
+
         updateThumbs(curDisplayIndex);
-            
+
         int lastPage = (int)(Math.ceil(fileNames.size()/20.));
-        
+
         pageLabel.setCaptionLabel("\n\n\n1\n\nof\n\n" +
             lastPage);
-        
+
         if(debug) {
             Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
-    
+
     /**
      * ControlP5 UI handler. Displays the next page.
      */
     private void scrollDownButton() {
         selectedIndex.clear();
-        
+
         if(curDisplayIndex + 20 < fileNames.size()) {
             curDisplayIndex += 20;
-            
+
             updateThumbs(curDisplayIndex);
-            
+
             int lastPage = (int)(Math.ceil(fileNames.size()/20.));
-            
+
             pageLabel.setCaptionLabel("\n\n\n" + ((curDisplayIndex/20) + 1) +
                 "\n\nof\n\n" + lastPage);
         }
-        
+
         if(debug) {
             Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
-    
+
     /**
      * ControlP5 UI handler. Displays the last page.
      */
     private void scrollBottomButton() {
         selectedIndex.clear();
-        
+
         int lastPage = (int)(Math.ceil(fileNames.size()/20.));
-        
+
         curDisplayIndex = (lastPage - 1) * 20;
-        
+
         updateThumbs(curDisplayIndex);
-        
-        pageLabel.setCaptionLabel("\n\n\n" + lastPage + 
+
+        pageLabel.setCaptionLabel("\n\n\n" + lastPage +
             "\n\nof\n\n" + lastPage);
-        
+
         if(debug) {
             Quickshow.println("curDisplayIndex: " + curDisplayIndex);
         }
     }
-    
+
     /**
      * ControlP5 UI handler. Switches the media file type being scanned for.
      * @param e the initiating ControlEvent
      */
     private void mediaTypeList(ControlEvent e) {
-        isAudioMode = e.getValue() != 0; 
-    
+        isAudioMode = e.getValue() != 0;
+
         changeDir(curDir);
     }
-    
+
     /**
      * Callback method for drawing the FileBrowser UI.
      */
     public void draw() {
-    	if(dblClick && System.currentTimeMillis() - 500 > clickTime) {
-    		dblClick = false;
-    	}
-    	
+        if(dblClick && System.currentTimeMillis() - 500 > clickTime) {
+            dblClick = false;
+        }
+
         if(movie != null) {
             if(movie.available()) {
                 movie.read();
-            
+
                 int[] thumbDims = newImageDims(movie);
-                
+
                 PImage thumb = movie.get();
-                
+
                 movie.stop();
                 movie = null;
-                
+
                 thumb.resize(thumbDims[0], thumbDims[1]);
-                
+
                 if(curQItem.index >= 0) {
                     thumbs.set(curQItem.index, thumb);
                 }
-                
+
                 else {
                     results.add(new MovieItem(parent, curQItem.name, thumb));
-                    
+
                     toggle(false);
                 }
-                
+
                 curQItem.isHandled = true;
-                
+
                 getNextQItem();
             }
         }
@@ -627,53 +643,55 @@ public class FileBrowser {
         parent.rectMode(PConstants.CORNERS);
         parent.rect(30, 70, 840, 530);
         parent.line(869, 70, 869, 530);
-        
+
         //thumbnail pic
         parent.imageMode(PConstants.CENTER);
-        
+
         //filename
         parent.textAlign(PConstants.CENTER, PConstants.CENTER);
         parent.textSize(15);
         parent.fill(0);
-        
+
         //selected highlight
         parent.noFill();
         parent.rectMode(PConstants.CENTER);
         parent.stroke(0xff5522ff);
-        
+
         short row, col, imgIndex;
         String fileName;
+        ListIterator<String> fileNameIter = fileNames.listIterator(curDisplayIndex);
+        ListIterator<PImage> thumbIter = thumbs.listIterator(curDisplayIndex);
+        PImage thumb;
         for(imgIndex = 0, row = 0; row < 4; row++) {
             //draw thumbnail rows
-            for(col = 0; col < 5 && curDisplayIndex+col+5*row < fileNames.size();
+            for(col = 0; col < 5 && fileNameIter.hasNext();
                 col++, imgIndex++)
             {
+                thumb = thumbIter.next();
+
                 //draw thumbnail columns
-                if(thumbs.get(curDisplayIndex+col+5*row) != null) {
-                    parent.image(
-                        thumbs.get(curDisplayIndex+col+5*row),
-                        109 + col*162, 125 + row*115
-                    );
+                if(thumb != null) {
+                    parent.image(thumb, 109 + col*162, 125 + row*115);
                 }
-                
-                fileName = fileNames.get(curDisplayIndex+col+5*row);
-                
+
+                fileName = fileNameIter.next();
+
                 if(fileName.length() >= 15) {
                     fileName = fileName.substring(0, 14) + "..";
                 }
-                
+
                 parent.fill(0xffffffff);
                 parent.text(fileName, 111 + col*162, 173 + row*115);
-                
+
                 parent.noFill();
-                if(!selectedIndex.isEmpty() && 
-                    selectedIndex.contains((int)imgIndex+curDisplayIndex)) 
+                if(!selectedIndex.isEmpty() &&
+                    selectedIndex.contains((int)imgIndex+curDisplayIndex))
                 {
                     parent.rect(109 + col*162, 128 + row*115, thumbWidth + 10, thumbHeight + 10);
                 }
             }
         }
-        
+
         //draw selection box
         if(isSelecting) {
             parent.rectMode(PConstants.CORNERS);
@@ -681,7 +699,7 @@ public class FileBrowser {
             parent.rect(selectBox[0], selectBox[1], selectBox[2], selectBox[3]);
         }
     }
-    
+
     /**
      * Determines the thumbnail dimensions of an image.
      * @param image the image to scale
@@ -689,29 +707,29 @@ public class FileBrowser {
      */
     private int[] newImageDims(PImage image) {
         int[] results = new int[2];
-        
+
         float aspect = 1f * image.width / image.height;
-        
+
         if(aspect > 1f) {
-        	results[0] = thumbWidth;
-        	results[1] = (int)(results[0] / aspect);
+            results[0] = thumbWidth;
+            results[1] = (int)(results[0] / aspect);
         }
-        
+
         else {
-    	    results[1] = thumbHeight;
+            results[1] = thumbHeight;
             results[0] = (int)(results[1] * aspect);
         }
-        
+
         return results;
     }
- 
+
     /**
      * Changes the FileBrowser directory.
      * @param newDir the new directory path
      */
     private void changeDir(String newDir) {
         File file = new File(newDir);
-        
+
         if(file.exists()) {
             try {
                 curDir = file.getCanonicalPath();
@@ -719,86 +737,86 @@ public class FileBrowser {
             catch (IOException e) {
                 return;
             }
-    
+
             thumbs.clear();
             fileNames.clear();
             selectedIndex.clear();
-        
+
             curDisplayIndex = 0;
-            
+
             if(debug) {
                 Quickshow.println("cd " + curDir + "\nls");
             }
-            
+
             ArrayList<File> files =
                 new ArrayList<File>(java.util.Arrays.asList(file.listFiles()));
             ListIterator<File> fileIter = files.listIterator();
-            
+
             String fileName, fullPath;
             String[] fileNameParts;
             short i, j;
             int[] thumbDims;
-           
+
             PImage thumb = parent.loadImage("data/img/folderThumbNail.png");
             thumb.resize(thumbWidth, thumbHeight);
-            
+
             pathField.setText(file.getAbsolutePath());
-    
+
             //directories listed first
             j = 0;
             while(fileIter.hasNext()) {
                 file = fileIter.next();
-                
+
                 if(file.isDirectory()) {
                     fileNames.add(file.getName());
-                    
+
                     if(j < 20) {
-                    	thumbs.add(thumb);
-                    	j++;
+                        thumbs.add(thumb);
+                        j++;
                     }
-                    
+
                     else {
-                    	thumbs.add(null);
+                        thumbs.add(null);
                     }
-                    
+
                     fileIter.remove();
                 }
             }
-            
+
             //list audio files
             if(isAudioMode) {
                 thumb = parent.loadImage("data/img/audioThumbNail.png");
                 thumb.resize(thumbWidth, thumbHeight);
-                
+
                 fileIter = files.listIterator();
                 while(fileIter.hasNext()) {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
-                    
+
                     if(debug) {
                         Quickshow.println(curDir + '/' + fileName);
                     }
-                    
+
                     for(i = 0; i < FileExtensions.AUDIO_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(FileExtensions.AUDIO_EXT[i]))
                         {
                             fileNames.add(fileName);
-                          
+
                             if(j < 20) {
-    	                        thumbs.add(thumb);
-    	                        
-    	                        j++;
+                                thumbs.add(thumb);
+
+                                j++;
                             }
-                            
+
                             else {
-                            	thumbs.add(null);
+                                thumbs.add(null);
                             }
                         }
                     }
                 }
             }
-    
+
             else {
                 //list images
                 fileIter = files.listIterator();
@@ -806,104 +824,104 @@ public class FileBrowser {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
                     fullPath = curDir + '/' + fileName;
-                    
+
                     if(debug) {
                         Quickshow.println(fullPath);
                     }
-    
+
                     //create image thumbnail
                     for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
                         {
-                        	if(j < 20) {
-    	                        thumb = parent.loadImage(fullPath);
-    	                        
-    	                        thumbDims = newImageDims(thumb);
-    	                        thumb.resize(thumbDims[0], thumbDims[1]);
-    	                        thumbs.add(thumb);
-    	                        
-    	                        if(debug) {
-    	                            Quickshow.println("" + thumbDims[0] + ' ' +
-	                                    thumbDims[1]);
-    	                        }
-    	                        
-    	                        j++;
-                        	}
-                        	
-                        	else {
-                        		thumbs.add(null);
-                        	}
-                   
+                            if(j < 20) {
+                                thumb = parent.loadImage(fullPath);
+
+                                thumbDims = newImageDims(thumb);
+                                thumb.resize(thumbDims[0], thumbDims[1]);
+                                thumbs.add(thumb);
+
+                                if(debug) {
+                                    Quickshow.println("" + thumbDims[0] + ' ' +
+                                        thumbDims[1]);
+                                }
+
+                                j++;
+                            }
+
+                            else {
+                                thumbs.add(null);
+                            }
+
                             fileNames.add(fileName);
-                            
+
                             fileIter.remove();
-    
+
                             break;
                         }
                     }
                 }
-                
+
                 //list videos
                 fileIter = files.listIterator();
                 while(fileIter.hasNext()) {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
                     fullPath = curDir + '/' + fileName;
-        
+
                     //queue video for thumbnail generation
                     for(i = 0; i < FileExtensions.VIDEO_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(FileExtensions.VIDEO_EXT[i]))
-                        {    
+                        {
                             qIter.add(new QItem(thumbs.size(), fullPath));
-                            
+
                             thumbs.add(null);
-                            
-                        	if(j < 20) {
+
+                            if(j < 20) {
                                 j++;
                             }
-                            
-                        	fileNames.add(fileName);
-    
+
+                            fileNames.add(fileName);
+
                             break;
                         }
                     }
                 }
             }
-            
+
             pageLabel.setCaptionLabel("\n\n\n1\n\nof\n\n" +
                 ((int)Math.ceil(fileNames.size()/20.)));
-            
+
             pathField.setText(curDir);
-            
+
             if(dblClick) {
                 if(System.currentTimeMillis() - clickTime > 500) {
                     dblClick = false;
                 }
             }
-            
+
             if(debug) {
-                Quickshow.println("#valid items in directory: " + 
+                Quickshow.println("#valid items in directory: " +
                     fileNames.size());
             }
         }
-        
+
         getNextQItem();
     }
-    
+
     /**
      * Loads the selected audio files.
      */
     private void loadAudio() {
         File file;
         String fileName;
-        
+
         for(Integer index : selectedIndex) {
             if(index < fileNames.size()) {
                 fileName = fileNames.get(index);
                 file = new File(curDir + '/' + fileName);
-                
+
                 if(file.isFile()) {
                     results.add(new AudioItem(minim,
                         curDir + '/' + fileNames.get(index)));
@@ -911,7 +929,7 @@ public class FileBrowser {
             }
         }
     }
-    
+
     /**
      * Loads the selected visual media files.
      */
@@ -920,7 +938,7 @@ public class FileBrowser {
         String fileName;
         short i;
         File file;
-        
+
         for(Integer index : selectedIndex) {
             if(index < fileNames.size()) {
                 fileName = fileNames.get(index);
@@ -928,7 +946,7 @@ public class FileBrowser {
 
                 if(file.isFile()) {
                     fileNameParts = fileName.split("\\.");
-                    
+
                     //file is image
                     for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
                         if(fileNameParts[fileNameParts.length-1]
@@ -941,11 +959,11 @@ public class FileBrowser {
                                     thumbs.get(index)
                                 )
                             );
-        
+
                             break;
                         }
                     }
-                    
+
                     //file is video
                     if(i == FileExtensions.IMG_EXT.length) {
                         if(debug) {
@@ -954,8 +972,8 @@ public class FileBrowser {
 
                         results.add(
                             new MovieItem(
-                                parent, 
-                                curDir + '/' + fileName, 
+                                parent,
+                                curDir + '/' + fileName,
                                 thumbs.get(index)
                             )
                         );
@@ -964,73 +982,81 @@ public class FileBrowser {
             }
         }
     }
-    
+
     /**
      * Loads all applicable media files in the current directory.
      */
     private void loadAll() {
         File file;
-        
+
         if(isAudioMode) {
             for(String fileName : fileNames) {
                 file = new File(curDir + '/' + fileName);
-                
+
                 if(file.isFile()) {
                     results.add(new AudioItem(minim, file.getAbsolutePath()));
                 }
             }
         }
-        
+
         else {
-        	String[] fileNameParts;
-            String fileName;
-            short i;
-            int j;
-            
             //ensure all thumbnails actually loaded
-            for(j = 0; j < fileNames.size(); j += 20) {
-            	updateThumbs(j);
+            for(int j = 0; j < fileNames.size(); j += 20) {
+                updateThumbs(j);
             }
+
+            ListIterator<String> fileNameIter = fileNames.listIterator();
             
-            for(j = 0; j < fileNames.size(); j++) {
-                fileName = fileNames.get(j);
-                file = new File(curDir + '/' + fileName);
+            if(fileNameIter.hasNext()) {
+                String[] fileNameParts;
+                String fileName;
+                short i;
+
+                ListIterator<PImage> thumbIter = thumbs.listIterator();
+                PImage thumb;
                 
-                if(file.isFile()) {
-                    fileNameParts = fileName.split("\\.");
-                    
-                    //file is image
-                    for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
-                        if(fileNameParts[fileNameParts.length-1]
-                            .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
-                        {
+                do {
+                    fileName = fileNameIter.next();
+                    thumb = thumbIter.next();
+
+                    file = new File(curDir + '/' + fileName);
+
+                    if(file.isFile()) {
+                        fileNameParts = fileName.split("\\.");
+
+                        //file is image
+                        for(i = 0; i < FileExtensions.IMG_EXT.length; i++) {
+                            if(fileNameParts[fileNameParts.length-1]
+                                .equalsIgnoreCase(FileExtensions.IMG_EXT[i]))
+                            {
+                                results.add(
+                                    new ImageItem(
+                                        parent,
+                                        curDir + '/' + fileName,
+                                        thumb
+                                    )
+                                );
+
+                                break;
+                            }
+                        }
+
+                        //file is video
+                        if(i == FileExtensions.IMG_EXT.length) {
                             results.add(
-                                new ImageItem(
+                                new MovieItem(
                                     parent,
                                     curDir + '/' + fileName,
-                                    thumbs.get(j)
+                                    thumb
                                 )
                             );
-
-                            break;
                         }
                     }
-                    
-                    //file is video
-                    if(i == FileExtensions.IMG_EXT.length) {
-                        results.add(
-                            new MovieItem(
-                                parent, 
-                                curDir + '/' + fileName,
-                                thumbs.get(j)
-                            )
-                        );
-                    }
-                }
+                } while(fileNameIter.hasNext());
             }
         }
     }
-    
+
     /**
      * Returns the current FileBrowser directory.
      * @return the current FileBrowser directory path
@@ -1038,7 +1064,7 @@ public class FileBrowser {
     public String getCurDir() {
         return curDir;
     }
-    
+
     /**
      * Handler for mouse click. Selects a single file if applicable.
      * @param mouseX the x-coordinate of the mouse
@@ -1046,30 +1072,30 @@ public class FileBrowser {
      */
     public void mouseClicked(int mouseX, int mouseY) {
         if(mouseX >= 30 && mouseX <= 840  && mouseY >= 70 && mouseY <= 530) {
-        	selectedIndex.clear();
-        	
+            selectedIndex.clear();
+
             short row = (short)((mouseY - 68)/115);
             short col = (short)((mouseX - 61)/162);
-            
+
             boolean rowSelect = row*115 + 130 - 50 <= mouseY &&
                 row*115 + 130 + 50 >= mouseY;
             boolean colSelect = col*162 + 111 - 62 <= mouseX &&
                 col*162 + 111 + 62 >= mouseX;
-            
+
             if(rowSelect && colSelect) {
                 selectedIndex.add(curDisplayIndex+5*row+col);
             }
-            
+
             if(!dblClick) {
                 dblClick = true;
-                
+
                 clickTime = System.currentTimeMillis();
             }
-            
+
             else {
                 openButton();
             }
-                    
+
             if(debug) {
                 Quickshow.println(
                     "mouse clicked: " + mouseX + ',' + mouseY +
@@ -1082,7 +1108,7 @@ public class FileBrowser {
             }
         }
     }
-    
+
     /**
      * Constrains the mouse coordinates within the item window.
      * @param mouseX the x-coordinate of the mouse
@@ -1091,34 +1117,34 @@ public class FileBrowser {
      */
     private int[] constrainMouse(int mouseX, int mouseY) {
         int[] result = new int[2];
-        
+
         if(mouseX < 30) {
             result[0] = 30;
         }
-        
+
         else if(mouseX > 840) {
             result[0] = 840;
         }
-        
+
         else {
             result[0] = mouseX;
         }
-        
+
         if(mouseY < 70) {
             result[1] = 70;
         }
-        
+
         else if(mouseY > 530) {
             result[1] = 530;
         }
-        
+
         else {
             result[1] = mouseY;
         }
-        
+
         return result;
     }
-    
+
     /**
      * Handler for mouse dragging. Updates the corners of the selection box if
      *   applicable.
@@ -1128,16 +1154,16 @@ public class FileBrowser {
     public void mouseDragged(int mouseX, int mouseY) {
         if(isSelecting) {
             int tmp[] = constrainMouse(mouseX, mouseY);
-            
+
             selectBox[2] = tmp[0];
             selectBox[3] = tmp[1];
-            
+
             if(debug) {
                 Quickshow.println("mouse dragged: " + tmp[0] + ' ' + tmp[1]);
             }
         }
     }
-    
+
     /**
      * Handler for mouse release. Selects all items within the selection box if
      *   applicable.
@@ -1148,61 +1174,61 @@ public class FileBrowser {
         if(isSelecting) {
             int minSelX = (selectBox[0] > selectBox[2] ?
                 selectBox[2] : selectBox[0]);
-            int maxSelX = (selectBox[0] < selectBox[2] ? 
+            int maxSelX = (selectBox[0] < selectBox[2] ?
                 selectBox[2] : selectBox[0]);
             int minSelY = (selectBox[1] > selectBox[3] ?
                 selectBox[3] : selectBox[1]);
             int maxSelY = (selectBox[1] < selectBox[3] ?
                 selectBox[3] : selectBox[1]);
-            
+
             short maxRow = (short)((maxSelY - 68)/115);
             short minRow = (short)((minSelY - 68)/115);
             short maxCol = (short)((maxSelX - 61)/162);
             short minCol = (short)((minSelX - 61)/162);
-            
+
             boolean rowSelect, colSelect;
             short i, j;
             for(i = minRow; i <= maxRow; i++) {
                 rowSelect = true;
-                
+
                 if(i == minRow) {
                     rowSelect = i*115 + 130 > minSelY;
                 }
-                
+
                 else if(i == maxRow) {
                     rowSelect = i*115 + 130 < maxSelY;
                 }
-                
+
                 for(j = minCol; j <= maxCol; j++) {
                     colSelect = true;
-                    
+
                     if(j == minCol) {
                         colSelect = j*162 + 111 > minSelX;
                     }
-                    
+
                     else if(j == maxCol) {
                         colSelect = j*162 + 111 < maxSelX;
                     }
-                    
+
                     if(rowSelect && colSelect) {
                         selectedIndex.add(curDisplayIndex+i*5+j);
                     }
                 }
             }
-            
+
             if(debug) {
                 Quickshow.println(
-                    "mouse released: " + mouseX + ' ' + mouseY + 
-                    "\nminSel: " + minRow + ' ' + minCol + 
+                    "mouse released: " + mouseX + ' ' + mouseY +
+                    "\nminSel: " + minRow + ' ' + minCol +
                     "\nmaxSel: " + maxRow + ' ' + maxCol +
                     "\n#items selected: " + selectedIndex.size()
                 );
             }
-            
+
             isSelecting = false;
         }
     }
-    
+
     /**
      * Handler for mouse press. Initializes the selection box if applicable.
      * @param mouseX the x-coordinate of the mouse
@@ -1211,40 +1237,40 @@ public class FileBrowser {
     public void mousePressed(int mouseX, int mouseY) {
         if(mouseX >= 30 && mouseX <= 840  && mouseY >= 70 && mouseY <= 530) {
             selectedIndex.clear();
-            
+
             selectBox[0] = selectBox[2] = mouseX;
             selectBox[1] = selectBox[3] = mouseY;
-            
+
             isSelecting = true;
         }
-        
+
         if(debug) {
             Quickshow.println("mouse pressed: " + mouseX + ' ' + mouseY);
         }
     }
-    
+
     /**
      * Toggles display of the FileBrowser.
      * @param visible whether the FileBrowser should be visible
      */
     public void toggle(boolean visible) {
         group.setVisible(visible);
-        
+
         pathField.setLock(!visible);
-        
+
         for(Button button : lockButtons) {
             button.setLock(!visible);
         }
     }
-    
+
     /**
      * Returns the status of the FileBrowser.
-     * @return true if the FileBrowser is visible   
+     * @return true if the FileBrowser is visible
      */
     public boolean isEnabled() {
         return pathField.isVisible();
     }
-    
+
     /**
      * Retrieves the loaded media items. The loaded items are then cleared from
      *   the FileBrowser.
@@ -1252,15 +1278,15 @@ public class FileBrowser {
      */
     public ArrayList<MediaItem> getResults() {
         @SuppressWarnings("unchecked")
-		ArrayList<MediaItem> tmp = (ArrayList<MediaItem>) results.clone();
-        
+        ArrayList<MediaItem> tmp = (ArrayList<MediaItem>) results.clone();
+
         results.clear();
-        
+
         tmp.trimToSize();
-        
+
         return tmp;
     }
-    
+
     /**
      * Checks if MediaItems have been loaded.
      * @return true if MediaItems have been loaded
@@ -1268,23 +1294,29 @@ public class FileBrowser {
     public boolean isReady() {
         return !results.isEmpty();
     }
-    
+
     /**
      * Checks the file type being scanned for.
-     * @return true if the FIleBrowser is scanning for audio files 
+     * @return true if the FIleBrowser is scanning for audio files
      */
     public boolean isAudioMode() {
         return isAudioMode;
     }
-    
+
     /**
      * Private class for queueing video files for thumbnail generation.
+     * @author Kay Choi
      */
     private class QItem {
         private int index;
         private String name;
         private boolean isHandled = false;
-        
+
+        /**
+         * Class constructor.
+         * @param i the thumbnail index
+         * @param name filename to load
+         */
         private QItem(int i, String name) {
             this.index = i;
             this.name = name;

@@ -1,7 +1,7 @@
 /**
  * @file MovieItem.java
  * @author Kay Choi
- * @description A wrapper class for video media items. 
+ * @description A wrapper class for video media items.
  */
 
 package quickshow.datatypes;
@@ -10,7 +10,7 @@ import processing.video.Movie;
 
 public class MovieItem extends VisualItem {
     Movie movie;
-    
+
     /**
      * Class constructor.
      * @param parent the Quickshow object
@@ -18,17 +18,17 @@ public class MovieItem extends VisualItem {
      * @param thumb the MediaItem thumbnail
      */
     public MovieItem(quickshow.Quickshow parent, String fileName,
-		processing.core.PImage thumb)
+        processing.core.PImage thumb)
     {
         super(fileName, thumb);
-        
+
         movie = new Movie(parent, fileName);
-        
+
         movie.play();
         displayTime = (int)Math.ceil(movie.duration());
         movie.stop();
     }
-    
+
     /**
      * Retrieves the video.
      * @return a Movie object

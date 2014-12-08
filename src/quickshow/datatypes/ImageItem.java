@@ -1,7 +1,7 @@
 /**
  * @file ImageItem.java
  * @author Kay Choi
- * @description A wrapper class for image media items. 
+ * @description A wrapper class for image media items.
  */
 
 package quickshow.datatypes;
@@ -17,15 +17,15 @@ public class ImageItem extends VisualItem {
      * @param filename the file name of the image to load
      */
     public ImageItem(quickshow.Quickshow parent, String fileName,
-		PImage thumb)
+        PImage thumb)
     {
         super(fileName, thumb);
 
         displayTime = 5;
-        
+
         image = parent.loadImage(fileName);
     }
-    
+
     /**
      * Retrieves the image.
      * @return a PImage object
@@ -33,12 +33,12 @@ public class ImageItem extends VisualItem {
     public PImage getImage() {
         return image;
     }
-    
+
     /**
-     * Changes the time that the ImageItem is displayed. 
+     * Changes the time that the ImageItem is displayed.
      * @param time the new display time in seconds
      */
-	public void setDisplayTime(int time) {
-		displayTime = time;
-	}
+    public void setDisplayTime(int time) {
+        displayTime = time;
+    }
 }

@@ -32,7 +32,7 @@ public class PopupDialogue {
     private Slider imgDisplaySlider;
     private Button popupAccept, popupCancel;
     private Textfield tagField, tagStartField, tagEndField;
-	private Controller[] popupLock;
+    private Controller[] popupLock;
     private int offset;
 
     /**
