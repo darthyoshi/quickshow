@@ -94,11 +94,29 @@ public class audiolistUI {
      * @param fileList an ArrayList containing the AudioItems to be added
      */
     public void receiveSongs(ArrayList <AudioItem> fileList) {
-        songList.addAll(fileList);
-
         if(debug) {
             Quickshow.println("Size of fileList: " + fileList.size());
         }
+        
+        //only add if items are not already in list
+        AudioItem item;
+        ListIterator<AudioItem> itemIter;
+        for(AudioItem vItem : fileList) {
+            itemIter = songList.listIterator();
+
+            while(itemIter.hasNext()) {
+                item = itemIter.next();
+
+                if(vItem.getFileName().equalsIgnoreCase(item.getFileName())) {
+                    break;
+                }
+            }
+
+            if(!itemIter.hasNext()) {
+                songList.add(vItem);
+            }
+        }
+        
         //Display the songs on the list
         ListIterator<AudioItem> songIter = songList.listIterator(oldListSize);
         while(songIter.hasNext()){

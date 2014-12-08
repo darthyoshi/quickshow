@@ -132,6 +132,7 @@ public class visualthumbnailUI {
             Quickshow.println("Receiving items size: " + vItems.size());
         }
 
+        //only add if items are not already in list
         VisualItem item;
         ListIterator<VisualItem> itemIter;
         for(VisualItem vItem : vItems) {
