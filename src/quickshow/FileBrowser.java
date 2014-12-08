@@ -507,8 +507,6 @@ public class FileBrowser {
                     //set new thumbnail
                     thumbs.set(i, thumb);
                 }
-
-                i++;
             }
 
             getNextQItem();

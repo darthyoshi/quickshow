@@ -82,7 +82,7 @@ public class visualTimeline {
                 parent.imageMode(PConstants.CORNER);
                 PImage image;
 
-                int drawIndex = bounds[0];
+                int drawIndex = bounds[0] + 5;
                 int y, duration;
                 float new_height;
                 float time_scaled_width = 0f;
@@ -311,9 +311,12 @@ public class visualTimeline {
             parent.fill(0xff555555);
             parent.stroke(0);
             parent.rectMode(PConstants.CORNER);
-            parent.rect(x, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
+            
+            int x_coord = x < 450 ? x : x-prevThumbnail.width;
+            
+            parent.rect(x_coord, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
 
-            parent.image(prevThumbnail, x, bounds[1]-60);
+            parent.image(prevThumbnail, x_coord, bounds[1]-60);
             parent.stroke(0xffff0000);
             parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
 
@@ -325,14 +328,14 @@ public class visualTimeline {
 
             parent.fill(0xffff0055);
             parent.textAlign(PConstants.RIGHT);
-            parent.text(text, x-5, bounds[1]);
+            parent.text(text, x_coord-5, bounds[1]);
 
             min = stamp[1]/60;
             sec = stamp[1]%60;
             text = String.format("%d:%02d", min, sec);
 
             parent.textAlign(PConstants.LEFT);
-            parent.text(text, x+prevThumbnail.width+5, bounds[1]);
+            parent.text(text, x_coord+prevThumbnail.width+5, bounds[1]);
         }
     }
 
