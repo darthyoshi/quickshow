@@ -11,6 +11,7 @@ import java.util.ListIterator;
 
 import processing.core.PConstants;
 import processing.core.PImage;
+import processing.data.IntList;
 import quickshow.datatypes.VisualItem;
 
 public class visualthumbnailUI {
@@ -19,7 +20,7 @@ public class visualthumbnailUI {
     private boolean debug = true;
 
     private ArrayList <VisualItem> items;
-    private ArrayList<Integer> selectedIndex;
+    private IntList selectedIndex;
 
     static final private int MAX_THUMBNAIL_HEIGHT = 124;
     static final private int MAX_THUMBNAIL_WIDTH = 123;
@@ -45,7 +46,7 @@ public class visualthumbnailUI {
         debug = parent.getDebugFlag();
         items = new ArrayList<VisualItem>();
 
-        selectedIndex = new ArrayList<Integer>();
+        selectedIndex = new IntList();
     }
 
     /**
@@ -91,7 +92,7 @@ public class visualthumbnailUI {
                     parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
 
                     //selected highlight
-                    if(!selectedIndex.isEmpty() && selectedIndex.contains(j)) {
+                    if(selectedIndex.hasValue(j)) {
                         parent.stroke(0xff5522ff);
                         parent.noFill();
                         parent.rectMode(PConstants.CENTER);
@@ -100,7 +101,7 @@ public class visualthumbnailUI {
 
                         parent.fill(0);
                         parent.text(
-                            selectedIndex.indexOf(j)+1,
+                            selectedIndex.index(j)+1,
                             10 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
                             15 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
@@ -176,8 +177,8 @@ public class visualthumbnailUI {
 
         //Make sure we are in legal range
         if(mainIndex < items.size()) {
-            if(!selectedIndex.contains(mainIndex)) {
-                selectedIndex.add(mainIndex);
+            if(!selectedIndex.hasValue(mainIndex)) {
+                selectedIndex.append(mainIndex);
 
                 if(debug) {
                     Quickshow.println(items.get(mainIndex).checkType() +
@@ -186,7 +187,7 @@ public class visualthumbnailUI {
             }
 
             else {
-                selectedIndex.remove(selectedIndex.indexOf(mainIndex));
+                selectedIndex.remove(selectedIndex.index(mainIndex));
 
                 if(items.get(mainIndex).checkType().equalsIgnoreCase("image")) {
                     ((quickshow.datatypes.ImageItem)items.get(mainIndex))
@@ -228,9 +229,9 @@ public class visualthumbnailUI {
                 v = itemIter.next();
 
                 if(v.checkType().equals("image") &&
-                    !selectedIndex.contains(i))
+                    !selectedIndex.hasValue(i))
                 {
-                    selectedIndex.add(i);
+                    selectedIndex.append(i);
                 }
 
                 i++;
@@ -252,9 +253,9 @@ public class visualthumbnailUI {
                 v = itemIter.next();
 
                 if(v.checkType().equals("video") &&
-                    !selectedIndex.contains(i))
+                    !selectedIndex.hasValue(i))
                 {
-                    selectedIndex.add(i);
+                    selectedIndex.append(i);
                 }
 
                 i++;

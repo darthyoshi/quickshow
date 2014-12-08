@@ -9,11 +9,14 @@ package quickshow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.ListIterator;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
+import processing.data.IntList;
+import processing.data.StringList;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
 import quickshow.datatypes.FileExtensions;
@@ -34,7 +37,7 @@ public class FileBrowser {
     private Quickshow parent;
     private String curDir;
 
-    private ArrayList<String> fileNames;
+    private StringList fileNames;
     private ArrayList<PImage> thumbs;
 
     private ArrayList<QItem> q;
@@ -42,7 +45,7 @@ public class FileBrowser {
     private QItem curQItem = null;
     private Movie movie = null;
 
-    private ArrayList<Integer> selectedIndex;
+    private IntList selectedIndex;
 
     private ArrayList<MediaItem> results;
 
@@ -101,12 +104,12 @@ public class FileBrowser {
 
         this.minim = minim;
 
-        fileNames = new ArrayList<String>();
+        fileNames = new StringList();
         thumbs = new ArrayList<PImage>();
         q = new ArrayList<QItem>();
         qIter = q.listIterator();
 
-        selectedIndex = new ArrayList<Integer>(20);
+        selectedIndex = new IntList(20);
 
         results = new ArrayList<MediaItem>();
 
@@ -130,7 +133,8 @@ public class FileBrowser {
             .setSize(55, 30)
             .setLock(true)
             .setGroup(group);
-        lockButtons[0].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
+        lockButtons[0].getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.CENTER);
 
         lockButtons[1] = control.addButton("cancelButton")
             .setCaptionLabel("Cancel")
@@ -138,7 +142,8 @@ public class FileBrowser {
             .setSize(55, 30)
             .setPosition(815, 540)
             .setGroup(group);
-        lockButtons[1].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
+        lockButtons[1].getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.CENTER);
 
         lockButtons[2] = control.addButton("scrollUpButton")
             .setSize(30, 75)
@@ -146,7 +151,8 @@ public class FileBrowser {
             .setPosition(840, 145)
             .setCaptionLabel("^")
             .setGroup(group);
-        lockButtons[2].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
+        lockButtons[2].getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.CENTER);
 
         lockButtons[3] = control.addButton("scrollTopButton")
             .setSize(30, 75)
@@ -154,7 +160,8 @@ public class FileBrowser {
             .setPosition(840, 70)
             .setCaptionLabel("^\n^")
             .setGroup(group);
-        lockButtons[3].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
+        lockButtons[3].getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.CENTER);
 
         lockButtons[4] = control.addButton("scrollDownButton")
             .setSize(30, 75)
@@ -162,7 +169,8 @@ public class FileBrowser {
             .setPosition(840, 380)
             .setCaptionLabel("v")
             .setGroup(group);
-        lockButtons[4].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
+        lockButtons[4].getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.CENTER);
 
         lockButtons[5] = control.addButton("scrollBottomButton")
             .setSize(30, 75)
@@ -170,7 +178,8 @@ public class FileBrowser {
             .setPosition(840, 455)
             .setCaptionLabel("v\nv")
             .setGroup(group);
-        lockButtons[5].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
+        lockButtons[5].getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.CENTER);
 
         lockButtons[6] = control.addButton("parentDirButton")
             .setCaptionLabel("..")
@@ -178,7 +187,8 @@ public class FileBrowser {
             .setGroup(group)
             .setPosition(815, 30)
             .setSize(55, 30);
-        lockButtons[6].getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.CENTER);
+        lockButtons[6].getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.CENTER);
 
         String label = "Visual (bmp, jpg, png, gif, mov, avi, mpg, mp4)";
         mediaTypeList = control.addDropdownList("mediaTypeList")
@@ -187,7 +197,8 @@ public class FileBrowser {
             .setSize(710, 30)
             .setBarHeight(30)
             .setGroup(group);
-        mediaTypeList.getCaptionLabel().align(ControlP5Constants.LEFT, ControlP5Constants.CENTER);
+        mediaTypeList.getCaptionLabel().align(ControlP5Constants.LEFT,
+    		ControlP5Constants.CENTER);
         mediaTypeList.addItem(label, 0);
         mediaTypeList.addItem("Audio (mp3, wav, aiff, au, snd)", 1);
 
@@ -197,7 +208,8 @@ public class FileBrowser {
             .setSize(30, 150)
             .setCaptionLabel("")
             .setGroup(group);
-        pageLabel.getCaptionLabel().align(ControlP5Constants.CENTER, ControlP5Constants.TOP);
+        pageLabel.getCaptionLabel().align(ControlP5Constants.CENTER,
+    		ControlP5Constants.TOP);
 
         changeDir(this.curDir);
     }
@@ -427,83 +439,81 @@ public class FileBrowser {
      */
     private void updateThumbs(int displayIndex) {
         if(displayIndex < fileNames.size()) {
-            ListIterator<String> fileNameIter = fileNames.listIterator(displayIndex);
-            
-            if(fileNameIter.hasNext()) {
-                String fullPath;
-                String[] fileNameParts;
-                PImage thumb;
-                PImage thumb1 = parent
-                    .loadImage("data/img/folderThumbNail.png");
-                PImage thumb2 = parent
-                    .loadImage("data/img/audioThumbNail.png");
-                int[] thumbDims = newImageDims(thumb1);
+            String fullPath;
+            String[] fileNameParts;
+            PImage thumb;
+            PImage thumb1 = parent
+                .loadImage("data/img/folderThumbNail.png");
+            PImage thumb2 = parent
+                .loadImage("data/img/audioThumbNail.png");
+            int[] thumbDims = newImageDims(thumb1);
 
-                thumb1.resize(thumbDims[0], thumbDims[1]);
-                thumb2.resize(thumbDims[0], thumbDims[1]);
+            thumb1.resize(thumbDims[0], thumbDims[1]);
+            thumb2.resize(thumbDims[0], thumbDims[1]);
 
-                short j;
-                int i = displayIndex;
+            short j;
 
-                ListIterator<PImage> thumbIter = thumbs.listIterator(i);
-                String fileName;
-                do {
-                    thumb = thumbIter.next();
-                    fileName = fileNameIter.next();
-                    
-                    if(thumb == null) {
-                        fullPath = curDir + '/' + fileName;
+            ListIterator<PImage> thumbIter = thumbs.listIterator(displayIndex);
+            String fileName;
+            for(int i = displayIndex; i < fileNames.size()
+        		&& i < displayIndex + 20; i++)
+            {
+                thumb = thumbIter.next();
+                fileName = fileNames.get(i);
+                
+                if(thumb == null) {
+                    fullPath = curDir + '/' + fileName;
 
-                        //directory thumbnail
-                        thumb = thumb1;
+                    //directory thumbnail
+                    thumb = thumb1;
 
-                        //non-directory thumbnail
-                        if(!(new File(fullPath)).isDirectory()) {
-                            if(isAudioMode) {       //audio thumbnail
-                                thumb = thumb2;
-                            }
-
-                            else {
-                                fileNameParts = fileName.split("\\.");
-
-                                //image thumbnail
-                                for(j = 0; j < FileExtensions.IMG_EXT.length;
-                                    j++)
-                                {
-                                    if(
-                                        fileNameParts[fileNameParts.length-1].
-                                        equalsIgnoreCase(FileExtensions
-                                            .IMG_EXT[j])
-                                    ) {
-                                        thumb = parent.loadImage(fullPath);
-
-                                        thumbDims = newImageDims(thumb);
-                                        thumb.resize(thumbDims[0],
-                                            thumbDims[1]);
-
-                                        break;
-                                    }
-                                }
-
-                                //queue video for thumbnail generation
-                                if(j == FileExtensions.IMG_EXT.length) {
-                                    qIter.add(new QItem(i, fullPath));
-
-                                    thumb = null;
-                                }
-                            }
+                    //non-directory thumbnail
+                    if(!(new File(fullPath)).isDirectory()) {
+                        if(isAudioMode) {       //audio thumbnail
+                            thumb = thumb2;
                         }
 
-                        //set new thumbnail
-                        thumbs.set(i, thumb);
+                        else {
+                            fileNameParts = fileName.split("\\.");
+
+                            //image thumbnail
+                            for(j = 0; j < FileExtensions.IMG_EXT.length;
+                                j++)
+                            {
+                                if(
+                                    fileNameParts[fileNameParts.length-1].
+                                    equalsIgnoreCase(FileExtensions
+                                        .IMG_EXT[j])
+                                ) {
+                                    thumb = parent.loadImage(fullPath);
+
+                                    thumbDims = newImageDims(thumb);
+                                    thumb.resize(thumbDims[0],
+                                        thumbDims[1]);
+
+                                    break;
+                                }
+                            }
+
+                            //queue video for thumbnail generation
+                            if(j == FileExtensions.IMG_EXT.length) {
+                                qIter.add(new QItem(i, fullPath));
+
+                                thumb = null;
+                            }
+                        }
                     }
 
-                    i++;
-                } while(i < displayIndex + 20 && fileNameIter.hasNext());
+                    //set new thumbnail
+                    thumbs.set(i, thumb);
+                }
 
-                getNextQItem();
+                i++;
             }
+
+            getNextQItem();
         }
+    
     }
 
     /**
@@ -659,12 +669,13 @@ public class FileBrowser {
 
         short row, col, imgIndex;
         String fileName;
-        ListIterator<String> fileNameIter = fileNames.listIterator(curDisplayIndex);
+        int i = curDisplayIndex;
+        
         ListIterator<PImage> thumbIter = thumbs.listIterator(curDisplayIndex);
         PImage thumb;
         for(imgIndex = 0, row = 0; row < 4; row++) {
             //draw thumbnail rows
-            for(col = 0; col < 5 && fileNameIter.hasNext();
+            for(col = 0; col < 5 && i < fileNames.size();
                 col++, imgIndex++)
             {
                 thumb = thumbIter.next();
@@ -674,7 +685,7 @@ public class FileBrowser {
                     parent.image(thumb, 109 + col*162, 125 + row*115);
                 }
 
-                fileName = fileNameIter.next();
+                fileName = fileNames.get(i);
 
                 if(fileName.length() >= 15) {
                     fileName = fileName.substring(0, 14) + "..";
@@ -684,8 +695,8 @@ public class FileBrowser {
                 parent.text(fileName, 111 + col*162, 173 + row*115);
 
                 parent.noFill();
-                if(!selectedIndex.isEmpty() &&
-                    selectedIndex.contains((int)imgIndex+curDisplayIndex))
+                if(selectedIndex.size() > 0 &&
+                    selectedIndex.hasValue((int)imgIndex+curDisplayIndex))
                 {
                     parent.rect(109 + col*162, 128 + row*115, thumbWidth + 10, thumbHeight + 10);
                 }
@@ -768,7 +779,7 @@ public class FileBrowser {
                 file = fileIter.next();
 
                 if(file.isDirectory()) {
-                    fileNames.add(file.getName());
+                    fileNames.append(file.getName());
 
                     if(j < 20) {
                         thumbs.add(thumb);
@@ -801,7 +812,7 @@ public class FileBrowser {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(FileExtensions.AUDIO_EXT[i]))
                         {
-                            fileNames.add(fileName);
+                            fileNames.append(fileName);
 
                             if(j < 20) {
                                 thumbs.add(thumb);
@@ -853,7 +864,7 @@ public class FileBrowser {
                                 thumbs.add(null);
                             }
 
-                            fileNames.add(fileName);
+                            fileNames.append(fileName);
 
                             fileIter.remove();
 
@@ -882,7 +893,7 @@ public class FileBrowser {
                                 j++;
                             }
 
-                            fileNames.add(fileName);
+                            fileNames.append(fileName);
 
                             break;
                         }
@@ -1005,7 +1016,7 @@ public class FileBrowser {
                 updateThumbs(j);
             }
 
-            ListIterator<String> fileNameIter = fileNames.listIterator();
+            Iterator<String> fileNameIter = fileNames.iterator();
             
             if(fileNameIter.hasNext()) {
                 String[] fileNameParts;
@@ -1083,7 +1094,7 @@ public class FileBrowser {
                 col*162 + 111 + 62 >= mouseX;
 
             if(rowSelect && colSelect) {
-                selectedIndex.add(curDisplayIndex+5*row+col);
+                selectedIndex.append(curDisplayIndex+5*row+col);
             }
 
             if(!dblClick) {
@@ -1102,8 +1113,8 @@ public class FileBrowser {
                     "\nthumbnail: " + row + ' ' + col +
                     "\nrowSelect: " + rowSelect +
                     "\ncolSelect: " + colSelect +
-                    (selectedIndex.isEmpty() ?
-                        "" : ", selectedIndex: " + selectedIndex.get(0))
+                    (selectedIndex.size() > 0 ?
+                        ", selectedIndex: " + selectedIndex.get(0) : "")
                 );
             }
         }
@@ -1211,7 +1222,7 @@ public class FileBrowser {
                     }
 
                     if(rowSelect && colSelect) {
-                        selectedIndex.add(curDisplayIndex+i*5+j);
+                        selectedIndex.append(curDisplayIndex+i*5+j);
                     }
                 }
             }

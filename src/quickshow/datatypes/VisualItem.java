@@ -9,9 +9,10 @@ package quickshow.datatypes;
 import java.util.ArrayList;
 
 import processing.core.PImage;
+import processing.data.StringList;
 
 public abstract class VisualItem extends MediaItem {
-    private ArrayList<String> tagTexts;
+    private StringList tagTexts;
     private ArrayList<Float[]> tagTimes;
     private PImage thumb;
     protected int displayTime = 0;
@@ -26,7 +27,7 @@ public abstract class VisualItem extends MediaItem {
 
         this.thumb = thumb;
 
-        tagTexts = new ArrayList<String>();
+        tagTexts = new StringList();
         tagTimes = new ArrayList<Float[]>();
 
         //debug tag
@@ -59,7 +60,7 @@ public abstract class VisualItem extends MediaItem {
      * @param stopTime the time when the annotation should disappear
      */
     public void addTag(String text, float startTime, float stopTime) {
-        tagTexts.add(text);
+        tagTexts.append(text);
 
         Float[] times = new Float[2];
         times[0] = startTime;
@@ -94,9 +95,9 @@ public abstract class VisualItem extends MediaItem {
 
     /**
      * Retrieves all annotations associated with the VisualItem.
-     * @return an ArrayList of Strings
+     * @return StringList
      */
-    public ArrayList<String> getTagTexts() {
+    public StringList getTagTexts() {
         return tagTexts;
     }
 

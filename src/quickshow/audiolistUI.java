@@ -9,15 +9,15 @@ package quickshow;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import processing.data.IntList;
 import quickshow.datatypes.AudioItem;
+import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.Group;
 import controlP5.ListBox;
 import controlP5.ListBoxItem;
 
 public class audiolistUI {
-    private Quickshow parent;
-
     private boolean debug;
 
     private Group group;
@@ -28,24 +28,22 @@ public class audiolistUI {
     private final static int height = 350;
     private final static int MAX_SONGS = 3;
     private final static String title = "Songs/Audio";
-    private ArrayList <AudioItem> selectedSongList;
-    private ArrayList <AudioItem> songList;
+    private ArrayList<AudioItem> songList;
+    private IntList selectedIndex;
 
     private int oldListSize;
 
     /**
      * Class constructor.
      * @param parent the instantiating Quickshow object
-     * @param audioList the ControlP5 object handling UI elements
+     * @param control the ControlP5 object handling UI elements
      */
-    public audiolistUI(Quickshow parent, ControlP5 audioList){
-        this.parent = parent;
-
+    public audiolistUI(Quickshow parent, ControlP5 control){
         debug = parent.getDebugFlag();
 
-        group = audioList.addGroup("AudioList").setLabel("");
-        audioList.setFont(audioList.getFont().getFont(), 15);
-        list = audioList.addListBox(title)
+        group = control.addGroup("AudioList").setLabel("");
+        control.setFont(control.getFont().getFont(), 15);
+        list = control.addListBox(title)
             .setSize(width, height)
             .setPosition(675, 50)
             .disableCollapse()
@@ -53,9 +51,9 @@ public class audiolistUI {
         list.setGroup(group);
 
         //Vectors to store information about the Listbox
-        selectedSongList = new ArrayList<AudioItem>();
         songList = new ArrayList<AudioItem>();
-
+        selectedIndex = new IntList();
+        
         //Need to find a way to display the list without initializing
         ListBoxItem lbi;
         for (int i=0;i<25;i++) {
@@ -67,50 +65,14 @@ public class audiolistUI {
 
     }
 
-    //Class method for audio list
-
-
-    /**
-     * Remove a song from the list.
-     * @param itemToRemove the song label
-     */
-    public void removeFromList(String itemToRemove){
-        //Remove song
-        list.removeItem(itemToRemove);
-
-        //Add a place holder
-        ListBoxItem placeHolder = list.addItem("empty", num_items+1);
-        placeHolder.setColorBackground(0xffff0000);
-    }
-
     /**
      * Clear songs in the selectedSongList.
      */
-    public void clearSelectedSongs(){
-        selectedSongList.clear();
-    }
-
-    /**
-     * Add the song to selected song list.
-     * @param index the index of the selected song
-     */
-    public void addToSelectedSongs(int index){
-        AudioItem selectedSong;
-        if(MAX_SONGS > selectedSongList.size() && num_items > 0 && index < num_items){
-
-            selectedSong = songList.get(index);
-
-            selectedSongList.add(selectedSong);
-        }
-    }
-
-    /**
-     * Check if a song is selected.
-     * @param songName the song label
-     * @return true if the selected songs list contains a song matching songName
-     */
-    public boolean isSongSelected(String songName){
-        return selectedSongList.contains(songName);
+    public void clearSelectedSongs() {
+    	for(Integer val : selectedIndex) {
+    		list.getItem(val).setColorBackground(0xffff0000);
+    	}
+        selectedIndex.clear();
     }
 
     /**
@@ -118,14 +80,20 @@ public class audiolistUI {
      * @return an ArrayList containing the selected AudioItems
      */
     public ArrayList<AudioItem> returnSelectedSongList(){
-        return selectedSongList;
+    	ArrayList<AudioItem> result = new ArrayList<AudioItem>();
+    	
+    	for(Integer index : selectedIndex) {
+    		result.add(songList.get(index));
+    	}
+
+        return result;
     }
 
     /**
      * Adds the loaded songs to the available song list.
      * @param fileList an ArrayList containing the AudioItems to be added
      */
-    public void receiveSongs(ArrayList <AudioItem> fileList){
+    public void receiveSongs(ArrayList <AudioItem> fileList) {
         songList.addAll(fileList);
 
         if(debug) {
@@ -156,26 +124,50 @@ public class audiolistUI {
      * Adds an item to the audio list.
      * @param audio the AudioItem to add
      */
-    protected void addToList(AudioItem audio){
+    private void addToList(AudioItem audio){
+        StringBuilder builder = new StringBuilder(audio.getAuthor() + " - "
+    		+ audio.getTitle() + " - " + audio.getLength());
 
-        String songDisplay = audio.getAuthor() + " - " + audio.getTitle() + " - "+ audio.getLength();
+        //Generate the Label for the listBoxItem
+        String songDisplay = (builder.length() >= 26 ?
+    		builder.substring(0, 25) + ".." : builder.toString());
 
         if(debug) {
-            Quickshow.println("Song being added " + songDisplay);
+            Quickshow.println("Song being added: " + songDisplay);
         }
-
-        ListBoxItem songToAdd;
 
         if(num_items > 25) {
             list.addItem(songDisplay, num_items);
         }
+
         else {
-            songToAdd = list.getItem(num_items);
-            songToAdd.setText(songDisplay);
+            list.getItem(num_items).setText(songDisplay);
         }
-        //Generate the Label for the listBoxItem
         //Adds the actual song
         num_items++;
     }
+
+    /**
+     * Callback method for handling ControlP5 UI events.
+     * @param theEvent the ControlEvent to handle
+     */
+	public void controlEvent(ControlEvent theEvent) {
+		int val = (int)theEvent.getGroup().getValue();
+ 
+		if(MAX_SONGS > selectedIndex.size() && num_items > 0 && val < num_items) {
+            if(selectedIndex.hasValue(val)) {
+            	selectedIndex.remove(selectedIndex.index(val));
+
+            	list.getItem(val).setColorBackground(0xffff0000);
+            }
+            
+            else {
+	            selectedIndex.append(val);
+
+	            list.getItem(val).setColorBackground(0xff2299ff);
+            }
+        }
+		
+	}
 
 }

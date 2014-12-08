@@ -257,11 +257,10 @@ public class Quickshow extends PApplet {
 
         case "AudioList":
             if(!popup.isEnabled()) {
-                float value = theEvent.getGroup().getValue();
-                audioListbox.addToSelectedSongs((int) value);
+            	audioListbox.controlEvent(theEvent);
                 aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
-        //      cbU.setSongTitle(aT.getCurrSong());
             }
+
             break;
 
         case "slideShow":

@@ -11,6 +11,7 @@ import java.util.Iterator;
 
 import processing.core.PConstants;
 import processing.core.PImage;
+import processing.data.StringList;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
 import quickshow.datatypes.ImageItem;
@@ -32,7 +33,7 @@ public class slideShow {
     private Toggle playPause;
 
     private PImage curFrame, transitFrame;
-    private int[] transDelta = {0, 0}, transDir = {1, 1};
+    private int[] transitDelta = {0, 0}, transitDirection = {1, 1};
     private boolean transit = false;
     private Movie movie;
 
@@ -45,7 +46,7 @@ public class slideShow {
     private AudioItem curAudioItem = null;
     private VisualItem curVisualItem = null;
 
-    private ArrayList<String> curTagTexts;
+    private StringList curTagTexts;
     private ArrayList<Float[]> curTagTimes;
     private String tagText = null;
     private Float[] tagTime = null;
@@ -67,7 +68,7 @@ public class slideShow {
         audios = new ArrayList<AudioItem>();
         visuals = new ArrayList<VisualItem>();
 
-        curTagTexts = new ArrayList<String>();
+        curTagTexts = new StringList();
         curTagTimes = new ArrayList<Float[]>();
 
         group = control.addGroup("slideShow")
@@ -207,18 +208,18 @@ public class slideShow {
 
                         //set horizontal transition direction
                         double rand = Math.random();
-                        transDir[0] = (rand < 0.33 ? 1 :
+                        transitDirection[0] = (rand < 0.33 ? 1 :
                             (rand < 0.66 ? 0 : -1));
 
                         //set vertical transition direction
                         rand = Math.random();
-                        if(transDir[0] != 0) {
-                            transDir[1] = (rand < 0.33 ? 1 :
+                        if(transitDirection[0] != 0) {
+                            transitDirection[1] = (rand < 0.33 ? 1 :
                                 (rand < 0.66 ? 0 : -1));
                         }
 
                         else {
-                            transDir[1] = (rand < 0.5 ? 1 : -1);
+                            transitDirection[1] = (rand < 0.5 ? 1 : -1);
                         }
 
                         nextVisualItem();
@@ -271,21 +272,23 @@ public class slideShow {
         else {
             parent.image(
                 transitFrame,
-                parent.width/2 + transDelta[0],
-                parent.height/2 + transDelta[1]
+                parent.width/2 + transitDelta[0],
+                parent.height/2 + transitDelta[1]
             );
 
             if(isPlaying) {
-                transDelta[0] += (int)(1f/25f*parent.width) * transDir[0];
-                transDelta[1] += (int)(1f/25f*parent.height) * transDir[1];
+                transitDelta[0] += (int)(1f / 25f * parent.width) *
+            		transitDirection[0];
+                transitDelta[1] += (int)(1f / 25f * parent.height) *
+            		transitDirection[1];
 
                 if(
-                    (int)(1.5f*parent.width) <= transDelta[0] ||
-                    (int)(-1.5f*parent.width) >= transDelta[0] ||
-                    (int)(1.5f*parent.height) <= transDelta[1] ||
-                    (int)(-1.5f*parent.height) >= transDelta[1]
+                    (int)(1.5f*parent.width) <= transitDelta[0] ||
+                    (int)(-1.5f*parent.width) >= transitDelta[0] ||
+                    (int)(1.5f*parent.height) <= transitDelta[1] ||
+                    (int)(-1.5f*parent.height) >= transitDelta[1]
                 ) {
-                    transDelta[0] = transDelta[1] = 0;
+                    transitDelta[0] = transitDelta[1] = 0;
 
                     transit = false;
 
@@ -425,7 +428,7 @@ public class slideShow {
         }
 
         if(curVisualItem != null) {
-            curTagTexts.addAll(curVisualItem.getTagTexts());
+        	curTagTexts.append(curVisualItem.getTagTexts());
             curTagTimes.addAll(curVisualItem.getTagTimes());
 
             nextTag();

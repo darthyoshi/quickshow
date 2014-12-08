@@ -21,8 +21,6 @@ import controlP5.Textfield;
 @SuppressWarnings("rawtypes")
 public class PopupDialogue {
     private boolean debug;
-
-    private ControlP5 controlp5;
     private Quickshow parent;
 
     private VisualItem item = null;
@@ -38,26 +36,25 @@ public class PopupDialogue {
     /**
      * Class constructor.
      * @param parent the instantiating Quickshow object
-     * @param control
+     * @param control the ControlP5 object handling UI elements
      */
     public PopupDialogue(Quickshow parent, ControlP5 control) {
         this.parent = parent;
-        this.controlp5 = control;
 
         debug = parent.getDebugFlag();
 
-        popupGroup = controlp5.addGroup("popupUI")
+        popupGroup = control.addGroup("popupUI")
             .setLabel("")
             .setVisible(false);
 
         popupLock = new Controller[6];
 
-        controlp5.addTextarea("tagFieldLabel")
+        control.addTextarea("tagFieldLabel")
             .setPosition(popupOrigin[0], popupOrigin[1]+20)
             .setText("SET CAPTION TEXT")
             .setGroup(popupGroup);
 
-        controlp5.addTextarea("tagLabel")
+        control.addTextarea("tagLabel")
             .setPosition(popupOrigin[0], popupOrigin[1]+42)
             .setText("CAPTION TIME")
             .setGroup(popupGroup);
@@ -66,12 +63,12 @@ public class PopupDialogue {
 
         lblOffset[0] = 130;
         lblOffset[1] = 40;
-        controlp5.addTextarea("tagStartLabel")
+        control.addTextarea("tagStartLabel")
             .setPosition(popupOrigin[0] + lblOffset[0] - 41,
                 popupOrigin[1] + lblOffset[1] + 2)
             .setText("START")
             .setGroup(popupGroup);
-        popupLock[0] = tagStartField = controlp5.addTextfield("tagStartField")
+        popupLock[0] = tagStartField = control.addTextfield("tagStartField")
             .setPosition(popupOrigin[0] + lblOffset[0],
                 popupOrigin[1] + lblOffset[1])
             .setSize(40, 20)
@@ -81,12 +78,12 @@ public class PopupDialogue {
             .setGroup(popupGroup);
 
         lblOffset[0] = 210;
-        controlp5.addTextarea("tagEndLabel")
+        control.addTextarea("tagEndLabel")
             .setPosition(popupOrigin[0] + lblOffset[0] - 28,
                 popupOrigin[1] + lblOffset[1] + 2)
             .setText("END")
             .setGroup(popupGroup);
-        popupLock[1] = tagEndField = controlp5.addTextfield("tagEndField")
+        popupLock[1] = tagEndField = control.addTextfield("tagEndField")
             .setPosition(popupOrigin[0] + lblOffset[0],
                 popupOrigin[1] + lblOffset[1])
             .setSize(40, 20)
@@ -95,7 +92,7 @@ public class PopupDialogue {
             .lock()
             .setGroup(popupGroup);
 
-        popupLock[2] = tagField = controlp5.addTextfield("tagText")
+        popupLock[2] = tagField = control.addTextfield("tagText")
             .setPosition(popupOrigin[0], popupOrigin[1])
             .setSize(250, 20)
             .setCaptionLabel("")
@@ -103,7 +100,7 @@ public class PopupDialogue {
             .lock()
             .setGroup(popupGroup);
 
-        popupLock[3] = imgDisplaySlider = controlp5.addSlider("Image Display Time")
+        popupLock[3] = imgDisplaySlider = control.addSlider("Image Display Time")
             .setNumberOfTickMarks(9)
             .setSize(250, 10)
             .setPosition(popupOrigin[0], popupOrigin[1] + 70)
@@ -114,14 +111,14 @@ public class PopupDialogue {
         imgDisplaySlider.getCaptionLabel()
             .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
 
-        popupLock[4] = popupAccept = controlp5.addButton("Accept")
+        popupLock[4] = popupAccept = control.addButton("Accept")
             .lock()
             .setSize(70, 15)
             .setPosition(popupOrigin[0] + 105, popupOrigin[1] + 105)
             .setGroup(popupGroup);
         popupAccept.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
-        popupLock[5] = popupCancel = controlp5.addButton("Cancel")
+        popupLock[5] = popupCancel = control.addButton("Cancel")
             .lock()
             .setSize(70, 15)
             .setPosition(popupOrigin[0] + 180, popupOrigin[1] + 105)
