@@ -114,7 +114,7 @@ public class visualTimeline {
                     }
                     
                     parent.rectMode(PConstants.CORNER);
-                    parent.fill(0xff40E0D0);
+                    parent.fill(0x6f40E0D0);
                     parent.stroke(0x00000000);
                     parent.rect(drawIndex, bounds[1], width_by_sec, timeLineHeight);
                     
