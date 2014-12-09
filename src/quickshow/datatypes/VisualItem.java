@@ -13,7 +13,7 @@ import processing.data.StringList;
 
 public abstract class VisualItem extends MediaItem {
     private StringList tagTexts;
-    private ArrayList<Float[]> tagTimes;
+    private ArrayList<int[]> tagTimes;
     private PImage thumb;
     protected int displayTime = 0;
 
@@ -28,7 +28,7 @@ public abstract class VisualItem extends MediaItem {
         this.thumb = thumb;
 
         tagTexts = new StringList();
-        tagTimes = new ArrayList<Float[]>();
+        tagTimes = new ArrayList<int[]>();
 
         //debug tag
 /*        Float[] f = new Float[2];
@@ -54,46 +54,6 @@ public abstract class VisualItem extends MediaItem {
     }
 
     /**
-     * Adds a text annotation to the VisualItem.
-     * @param text the annotation
-     * @param startTime the time when the annotation should appear
-     * @param stopTime the time when the annotation should disappear
-     */
-    public void addTag(String text, float startTime, float stopTime) {
-        tagTexts.append(text);
-
-        Float[] times = new Float[2];
-        times[0] = startTime;
-        times[1] = stopTime;
-        tagTimes.add(times);
-    }
-
-    /**
-     * Modifies an existing annotation, or adds a new annotation of the target
-     * annotation does not already exist.
-     * @param index the annotation index
-     * @param text the annotation
-     * @param startTime the time when the annotation should appear
-     * @param stopTime the time when the annotation should disappear
-     */
-    public void setTag(int index, String text,
-        float startTime, float stopTime)
-    {
-        if(index < tagTexts.size()) {
-            tagTexts.set(index, text);
-
-            Float[] times = new Float[2];
-            times[0] = startTime;
-            times[1] = stopTime;
-            tagTimes.set(index, times);
-        }
-
-        else {
-            addTag(text, startTime, stopTime);
-        }
-    }
-
-    /**
      * Retrieves all annotations associated with the VisualItem.
      * @return StringList
      */
@@ -113,17 +73,8 @@ public abstract class VisualItem extends MediaItem {
      * Retrieves all timestamps associated with the VisualItem.
      * @return an ArrayList of arrays of Floats
      */
-    public ArrayList<Float[]> getTagTimes() {
+    public ArrayList<int[]> getTagTimes() {
         return tagTimes;
-    }
-
-    /**
-     * Removes a text annotation from the VisualItem.
-     * @param index the index of the annotation to remove
-     */
-    public void removeTag(int index) {
-        tagTexts.remove(index);
-        tagTimes.remove(index);
     }
 
     /**
@@ -132,5 +83,17 @@ public abstract class VisualItem extends MediaItem {
      */
     public int getDisplayTime() {
         return displayTime;
+    }
+
+    /**
+     * TODO add method header
+     * @param tags
+     * @param tagTimes
+     */
+    public void setTags(StringList tags, ArrayList<int[]> tagTimes) {
+        clearTags();
+        
+        tagTexts = tags.copy();
+        this.tagTimes.addAll(tagTimes);
     }
 }
