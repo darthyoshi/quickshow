@@ -23,7 +23,7 @@ public class controlbuttonUI {
     private Button selectAllImages;
     private Button upButton;
     private Button downButton;
-    private Toggle shuffleToggle;
+    private Toggle shuffleToggle, transitionToggle;
     private Button nextSlides;
 	private Button prevSlides;
     private Button nextSong;
@@ -46,7 +46,7 @@ public class controlbuttonUI {
 	public controlbuttonUI(ControlP5 buttonUI){
 	    mainUIGroup = buttonUI.addGroup("buttonUI").setLabel("");
 		
-        lockControllers = new Controller[13];
+        lockControllers = new Controller[14];
 		
 		//For the entire slideshow
 		lockControllers[0] = playButton = buttonUI.addButton("Play")
@@ -61,7 +61,8 @@ public class controlbuttonUI {
 	        .setGroup(mainUIGroup);
         resetShowButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[12] = shuffleToggle = buttonUI.addToggle("Shuffle Slides")
+		lockControllers[12] = shuffleToggle = buttonUI
+	        .addToggle("Shuffle Slides")
 	        .setPosition(530, 10)
 	        .setSize(15, 15)
 	        .setCaptionLabel(" Shuffle Slides")
@@ -154,25 +155,19 @@ public class controlbuttonUI {
 	        .setVisible(false)
 	        .setGroup(mainUIGroup);
 		editVisualItem.getCaptionLabel().alignX(ControlP5Constants.CENTER);
-		lockControllers[11] = editVisualItem = buttonUI
-				.addButton("Visual Item Properties")
-		        .setPosition(30, 580)
-		        .setSize(175, 15)
-		        .setVisible(false)
-		        .setGroup(mainUIGroup);
 		
 		nextSong = buttonUI.addButton("nextSong")
-			    .setPosition(870, 421)
-			    .setSize(20, 77)
-			    .setCaptionLabel(">")
-			    .setGroup(mainUIGroup);
+		    .setPosition(870, 421)
+		    .setSize(20, 77)
+		    .setCaptionLabel(">")
+		    .setGroup(mainUIGroup);
 		nextSong.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		prevSong = buttonUI.addButton("prevSong")
-			    .setPosition(10, 421)
-			    .setSize(20, 77)
-			    .setCaptionLabel("<")
-			    .setGroup(mainUIGroup);
+		    .setPosition(10, 421)
+		    .setSize(20, 77)
+		    .setCaptionLabel("<")
+		    .setGroup(mainUIGroup);
 		prevSong.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
 		pageIndex = buttonUI.addButton("pageIndex")
@@ -182,6 +177,15 @@ public class controlbuttonUI {
 			.lock()
 			.setGroup(mainUIGroup);
 		pageIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
+		
+		lockControllers[13] = transitionToggle = buttonUI
+	        .addToggle("transitionToggle")
+	        .setGroup(mainUIGroup)
+	        .setPosition(400, 10)
+	        .setSize(15, 15)
+	        .setCaptionLabel(" Fade Transition");
+		transitionToggle.getCaptionLabel()
+            .align(ControlP5Constants.RIGHT_OUTSIDE, ControlP5Constants.CENTER);
 	}
 	
 	/**
