@@ -17,6 +17,7 @@ public class visualTimeline {
     private final static int timeLineWidth = 840;
     private final static int timeLineHeight = 78;
     private final static int MAX_THUMBNAIL_DISPLAY = 8;
+    private final static int WIDTH_PER_SEC = 15;
     private int start_index = 0;
     private float scaleFactor;
     private Quickshow parent;
@@ -82,10 +83,10 @@ public class visualTimeline {
                 parent.imageMode(PConstants.CORNER);
                 PImage image;
 
-                int drawIndex = bounds[0] + 5;
+                int drawIndex = bounds[0] + 2;
                 int y, duration;
-                float new_height;
-                float time_scaled_width = 0f;
+                float new_height, new_width;
+                int width_by_sec;
                 int j = start_index;
                 VisualItem item;
 
@@ -100,27 +101,36 @@ public class visualTimeline {
                     }
 
                    new_height = scaleFactor * image.height;
+                   new_width = scaleFactor * image.width;
 
                     y = (bounds[3]+bounds[1]-(int)Math.ceil(new_height))/2;
 
                     duration = item.getDisplayTime();
-                    time_scaled_width = (float) duration/5.f *
-                        scaleFactor * image.width;
-
-                    //Draw the image and a box around it
-                    parent.image(image, drawIndex, y, time_scaled_width,
+                    
+                    width_by_sec = item.getDisplayTime() * WIDTH_PER_SEC;
+                    
+                    if(new_width > width_by_sec) {
+                    	new_width = width_by_sec - 1; 
+                    }
+                    
+                    parent.rectMode(PConstants.CORNER);
+                    parent.fill(0xff40E0D0);
+                    parent.stroke(0x00000000);
+                    parent.rect(drawIndex, bounds[1], width_by_sec, timeLineHeight);
+                    
+                    parent.image(image, drawIndex+1, y, new_width,
                         new_height);
 
                     if(selectedIndex == j) {
                         parent.fill(0x55ff3210);
                         parent.stroke(0xffff2233);
                         parent.rectMode(PConstants.CORNER);
-                        parent.rect(drawIndex, y, time_scaled_width,
-                            new_height);
+                        parent.rect(drawIndex, bounds[1], width_by_sec,
+                            timeLineHeight);
                     }
 
                     //Increment the x index
-                    drawIndex += time_scaled_width+1;
+                    drawIndex += width_by_sec+1;
                     curr_img_length = drawIndex;
 
                     //Get the duration of the currently drawn images
@@ -128,7 +138,7 @@ public class visualTimeline {
 
                     j++;
                 } while(itemIter.hasNext() &&
-                    drawIndex + time_scaled_width <= timeLineWidth);
+                    drawIndex + width_by_sec <= timeLineWidth);
             }
         }
     }
@@ -180,6 +190,7 @@ public class visualTimeline {
                 curr_items_displayed = 0;
 
                 float time_scaled_width;
+                float width_by_sec;
 
                 Integer[] tbBounds, curBounds;
                 ListIterator<Integer[]> boundIter = timeLineBounds
@@ -196,14 +207,17 @@ public class visualTimeline {
                             (float) (timeLineHeight-15));
                     }
 
-                    time_scaled_width = (float) item.getDisplayTime()/5f *
-                        scaleFactor * image.width;
-
-                    drawIndex += time_scaled_width+1;
+                    time_scaled_width = scaleFactor * image.width;
+                    width_by_sec = item.getDisplayTime() * WIDTH_PER_SEC;
+                    
+                    if(time_scaled_width > width_by_sec) {
+                    	time_scaled_width = width_by_sec; 
+                    }
+                    drawIndex += width_by_sec+1;
                     curr_img_length = drawIndex;
 
                     tbBounds = new Integer[2];
-                    tbBounds[0] = (int) (drawIndex - time_scaled_width);
+                    tbBounds[0] = (int) (drawIndex - width_by_sec);
                     tbBounds[1] = drawIndex;
 
                     if(boundIter.hasNext()) {
@@ -217,7 +231,7 @@ public class visualTimeline {
                     }
 
                     //Check to see if the image can be drawn in timeline
-                    if(drawIndex + time_scaled_width > timeLineWidth) break;
+                    if(drawIndex + width_by_sec > timeLineWidth) break;
 
                     //track of how many items are on the visualtimeline
                     curr_items_displayed++;
@@ -264,7 +278,7 @@ public class visualTimeline {
      */
     public void showNextOnTimeline(){
         start_index = start_index + curr_items_displayed + 1;
-        if(start_index > itemsForDisplay.size()) start_index = 0;
+        if(start_index >= itemsForDisplay.size()) start_index = 0;
         prev_items_displayed = curr_items_displayed;
         calculateTimeLineBounds(start_index);
 
@@ -462,7 +476,6 @@ public class visualTimeline {
      */
     public int[] getCurPageStamps() {
         int[] result = {0, 0};
-
         if(!timeStamps.isEmpty()) {
             result[0] = timeStamps.get(start_index)[0];
             result[1] = timeStamps.get(curr_items_displayed+start_index-1)[1];
