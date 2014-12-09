@@ -40,6 +40,8 @@ public class Quickshow extends PApplet {
     private int selectedItemIndex = -1;
     private int visualOffset;
 
+    private boolean ignoreNextMouseEvent = false;
+
     //These variables are for the Visual Thumbnail UI to bound where the mouse responds
 
     public void setup() {
@@ -159,15 +161,9 @@ public class Quickshow extends PApplet {
                 break;
 
             case "Shuffle Slides":
-                if(debug) {
-                    println("shuffle: " +
-                        ((controlP5.Toggle)theEvent.
-                            getController()).getState());
-                }
-
-                show.toggleShuffle(
-                    ((controlP5.Toggle)theEvent.getController()).getState());
-
+            case "transitionToggle":
+                show.controlEvent(theEvent);
+                
                 break;
 
             case "Clear selected songs":
@@ -255,6 +251,8 @@ public class Quickshow extends PApplet {
 
                 vTimeline.updateTimeStamps(selectedItemIndex);
                 vTimeline.calculateTimeLineBounds(vTimeline.getStartIndex());
+            
+                ignoreNextMouseEvent  = true;
             }
 
             break;
@@ -281,8 +279,12 @@ public class Quickshow extends PApplet {
                 closeFBActions();
             }
         }
+        
+        else if(ignoreNextMouseEvent) {
+            ignoreNextMouseEvent = false;
+        }
 
-        else if(!popup.isEnabled()) {
+        else if(!popup.isEnabled() && !ignoreNextMouseEvent) {
             selectedItem = null;
             vTimeline.setSelectedIndex(-1);
 
