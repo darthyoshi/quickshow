@@ -93,13 +93,13 @@ public class visualthumbnailUI {
 
                     //selected highlight
                     if(selectedIndex.hasValue(j)) {
-                        parent.stroke(0xff5522ff);
+                        parent.stroke(0xff22aaff);
                         parent.noFill();
                         parent.rectMode(PConstants.CENTER);
                         parent.rect(xStartIndex, yStartIndex,
                             MAX_THUMBNAIL_WIDTH - 2, MAX_THUMBNAIL_HEIGHT - 4);
 
-                        parent.fill(0);
+                        parent.fill(0xff22aaff);
                         parent.text(
                             selectedIndex.index(j)+1,
                             10 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
