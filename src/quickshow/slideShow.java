@@ -11,7 +11,6 @@ import java.util.Iterator;
 
 import processing.core.PConstants;
 import processing.core.PImage;
-import processing.data.StringList;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
 import quickshow.datatypes.ImageItem;
@@ -47,7 +46,7 @@ public class slideShow {
     private AudioItem curAudioItem = null;
     private VisualItem curVisualItem = null;
 
-    private StringList curTagTexts;
+    private ArrayList<String> curTagTexts;
     private ArrayList<int[]> curTagTimes;
     private String tagText = null;
     private int[] tagTime = null;
@@ -69,7 +68,7 @@ public class slideShow {
         audios = new ArrayList<AudioItem>();
         visuals = new ArrayList<VisualItem>();
 
-        curTagTexts = new StringList();
+        curTagTexts = new ArrayList<String>();
         curTagTimes = new ArrayList<int[]>();
 
         group = control.addGroup("slideShow")
@@ -469,7 +468,7 @@ public class slideShow {
         }
 
         if(curVisualItem != null) {
-        	curTagTexts.append(curVisualItem.getTagTexts());
+        	curTagTexts.addAll(curVisualItem.getTagTexts());
             curTagTimes.addAll(curVisualItem.getTagTimes());
 
             nextTag();

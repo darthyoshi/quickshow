@@ -9,7 +9,6 @@ package quickshow;
 
 import java.util.ArrayList;
 
-import processing.data.StringList;
 import quickshow.datatypes.ImageItem;
 import quickshow.datatypes.VisualItem;
 import controlP5.Button;
@@ -31,7 +30,7 @@ public class PopupDialogue {
     private VisualItem item = null;
     private int tagIndex = -1;
     
-    private StringList tags;
+    private ArrayList<String> tags;
     private ArrayList<int[]> tagTimes;
     
     private Group popupGroup;
@@ -55,7 +54,7 @@ public class PopupDialogue {
 
         debug = parent.getDebugFlag();
         
-        tags = new StringList();
+        tags = new ArrayList<String>();
         tagTimes = new ArrayList<int[]>();
 
         popupGroup = control.addGroup("popupUI")
@@ -211,7 +210,7 @@ public class PopupDialogue {
             
             tagStartField.setText("");
             tagEndField.setText("");
-            tagField.setTab("");
+            tagField.setText("");
         }
     }
 
@@ -219,7 +218,7 @@ public class PopupDialogue {
      * TODO add method header
      */
     private void populateTags() {
-        tags = item.getTagTexts().copy();
+        tags.addAll(item.getTagTexts());
         tagTimes.addAll(item.getTagTimes());
         
         String tmp;
@@ -422,7 +421,7 @@ public class PopupDialogue {
                 }
                 
                 else {
-                    tags.append(text);
+                    tags.add(text);
                     tagTimes.add(time);
                 }
     
@@ -435,7 +434,7 @@ public class PopupDialogue {
                 }
     
                 if(tagIndex >= 0) {
-                    tagList.getItem(tagIndex).setText(text);
+                    tagList.getItem(tagIndex+1).setText(text);
                 }
                 
                 else {

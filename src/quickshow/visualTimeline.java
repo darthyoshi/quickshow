@@ -31,8 +31,8 @@ public class visualTimeline {
     private int curr_img_length = 0;
     private int overall_img_length = 0;
     private int selectedIndex = -1;
-    private ArrayList<Integer[]> timeStamps;
-    private ArrayList<Integer[]> timeLineBounds;
+    private ArrayList<int[]> timeStamps;
+    private ArrayList<int[]> timeLineBounds;
     final static int[] bounds = {30, 499, 870, 577};
 
     private ArrayList <VisualItem> itemsForDisplay;
@@ -44,8 +44,8 @@ public class visualTimeline {
     public visualTimeline(Quickshow parent){
         this.parent = parent;
         itemsForDisplay = new ArrayList<VisualItem>();
-        timeStamps = new ArrayList<Integer[]>();
-        timeLineBounds = new ArrayList<Integer[]>();
+        timeStamps = new ArrayList<int[]>();
+        timeLineBounds = new ArrayList<int[]>();
         debug = parent.getDebugFlag();
     }
 
@@ -154,13 +154,13 @@ public class visualTimeline {
         totalTime = 0;
 
         int tmp;
-        Integer[] times;
+        int[] times;
         for(VisualItem item : selectedList) {
             itemsForDisplay.add(item);
 
             tmp = item.getDisplayTime();
             totalTime += tmp;
-            times = new Integer[2];
+            times = new int[2];
             times[0] = totalTime - tmp;
             times[1] = totalTime;
             timeStamps.add(times);
@@ -192,8 +192,8 @@ public class visualTimeline {
                 float time_scaled_width;
                 float width_by_sec;
 
-                Integer[] tbBounds, curBounds;
-                ListIterator<Integer[]> boundIter = timeLineBounds
+                int[] tbBounds, curBounds;
+                ListIterator<int[]> boundIter = timeLineBounds
                     .listIterator(start);
 
                 //Go through the list and calculate placements along the time line
@@ -216,7 +216,7 @@ public class visualTimeline {
                     drawIndex += width_by_sec+1;
                     curr_img_length = drawIndex;
 
-                    tbBounds = new Integer[2];
+                    tbBounds = new int[2];
                     tbBounds[0] = (int) (drawIndex - width_by_sec);
                     tbBounds[1] = drawIndex;
 
@@ -335,7 +335,7 @@ public class visualTimeline {
             parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
 
 
-            Integer[] stamp = timeStamps.get(index);
+            int[] stamp = timeStamps.get(index);
             int min = stamp[0]/60;
             int sec = stamp[0]%60;
             String text = String.format("%d:%02d", min, sec);
@@ -367,10 +367,10 @@ public class visualTimeline {
     /**
      * Retieves the timestamps of the VisualItem at the specified index.
      * @param index the index of the VisualItem
-     * @return Integer array containing the start and stop times
+     * @return int array containing the start and stop times
      * @return null if index is out of bounds
      */
-    public Integer[] getItemTimeStamps(int index) {
+    public int[] getItemTimeStamps(int index) {
         return (index < 0 || index >= timeStamps.size()) ?
             null : timeStamps.get(index);
     }
@@ -385,10 +385,10 @@ public class visualTimeline {
         int index = -1;
 
         if(start_index < timeLineBounds.size()) {
-            ListIterator<Integer[]> boundIter = timeLineBounds
+            ListIterator<int[]> boundIter = timeLineBounds
                 .listIterator(start_index);
             
-            Integer[] tBound;
+            int[] tBound;
 
             if(boundIter.hasNext()) {
                 //Get relative to current pixel length
@@ -430,7 +430,7 @@ public class visualTimeline {
 
             if(itemIter.hasNext()) {
                 int i = 0, tmp;
-                Integer[] stamps;
+                int[] stamps;
 
                 totalTime = 0;
 
@@ -439,7 +439,7 @@ public class visualTimeline {
                     i++;
                 } while(itemIter.hasNext() && i < index);
 
-                ListIterator<Integer[]> stampIter = timeStamps.listIterator(i);
+                ListIterator<int[]> stampIter = timeStamps.listIterator(i);
                 while(itemIter.hasNext()) {
                     tmp = itemIter.next().getDisplayTime();
 

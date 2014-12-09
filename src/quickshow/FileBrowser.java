@@ -9,14 +9,12 @@ package quickshow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.ListIterator;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
 import processing.data.IntList;
-import processing.data.StringList;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
 import quickshow.datatypes.FileExtensions;
@@ -37,7 +35,7 @@ public class FileBrowser {
     private Quickshow parent;
     private String curDir;
 
-    private StringList fileNames;
+    private ArrayList<String> fileNames;
     private ArrayList<PImage> thumbs;
 
     private ArrayList<QItem> q;
@@ -104,7 +102,7 @@ public class FileBrowser {
 
         this.minim = minim;
 
-        fileNames = new StringList();
+        fileNames = new ArrayList<String>();
         thumbs = new ArrayList<PImage>();
         q = new ArrayList<QItem>();
         qIter = q.listIterator();
@@ -439,77 +437,85 @@ public class FileBrowser {
      */
     private void updateThumbs(int displayIndex) {
         if(displayIndex < fileNames.size()) {
-            String fullPath;
-            String[] fileNameParts;
-            PImage thumb;
-            PImage thumb1 = parent
-                .loadImage("data/img/folderThumbNail.png");
-            PImage thumb2 = parent
-                .loadImage("data/img/audioThumbNail.png");
-            int[] thumbDims = newImageDims(thumb1);
-
-            thumb1.resize(thumbDims[0], thumbDims[1]);
-            thumb2.resize(thumbDims[0], thumbDims[1]);
-
-            short j;
-
-            ListIterator<PImage> thumbIter = thumbs.listIterator(displayIndex);
-            String fileName;
-            for(int i = displayIndex; i < fileNames.size() &&
-                i < displayIndex + 20; i++)
-            {
-                thumb = thumbIter.next();
-                fileName = fileNames.get(i);
+            ListIterator<String> fileIter = fileNames
+                .listIterator(displayIndex);
+            
+            if(fileIter.hasNext()) {
+                String fullPath;
+                String[] fileNameParts;
+                PImage thumb;
+                PImage thumb1 = parent
+                    .loadImage("data/img/folderThumbNail.png");
+                PImage thumb2 = parent
+                    .loadImage("data/img/audioThumbNail.png");
+                int[] thumbDims = newImageDims(thumb1);
+    
+                thumb1.resize(thumbDims[0], thumbDims[1]);
+                thumb2.resize(thumbDims[0], thumbDims[1]);
+    
+                short j;
+                int i = displayIndex;
+    
+                ListIterator<PImage> thumbIter = thumbs
+                    .listIterator(displayIndex);
+                String fileName;
                 
-                if(thumb == null) {
-                    fullPath = curDir + '/' + fileName;
-
-                    //directory thumbnail
-                    thumb = thumb1;
-
-                    //non-directory thumbnail
-                    if(!(new File(fullPath)).isDirectory()) {
-                        if(isAudioMode) {       //audio thumbnail
-                            thumb = thumb2;
-                        }
-
-                        else {
-                            fileNameParts = fileName.split("\\.");
-
-                            //image thumbnail
-                            for(j = 0; j < FileExtensions.IMG_EXT.length;
-                                j++)
-                            {
-                                if(
-                                    fileNameParts[fileNameParts.length-1].
-                                    equalsIgnoreCase(FileExtensions
-                                        .IMG_EXT[j])
-                                ) {
-                                    thumb = parent.loadImage(fullPath);
-
-                                    thumbDims = newImageDims(thumb);
-                                    thumb.resize(thumbDims[0],
-                                        thumbDims[1]);
-
-                                    break;
+                do {
+                    thumb = thumbIter.next();
+                    fileName = fileIter.next();
+                    
+                    if(thumb == null) {
+                        fullPath = curDir + '/' + fileName;
+    
+                        //directory thumbnail
+                        thumb = thumb1;
+    
+                        //non-directory thumbnail
+                        if(!(new File(fullPath)).isDirectory()) {
+                            if(isAudioMode) {       //audio thumbnail
+                                thumb = thumb2;
+                            }
+    
+                            else {
+                                fileNameParts = fileName.split("\\.");
+    
+                                //image thumbnail
+                                for(j = 0; j < FileExtensions.IMG_EXT.length;
+                                    j++)
+                                {
+                                    if(
+                                        fileNameParts[fileNameParts.length-1].
+                                        equalsIgnoreCase(FileExtensions
+                                            .IMG_EXT[j])
+                                    ) {
+                                        thumb = parent.loadImage(fullPath);
+    
+                                        thumbDims = newImageDims(thumb);
+                                        thumb.resize(thumbDims[0],
+                                            thumbDims[1]);
+    
+                                        break;
+                                    }
+                                }
+    
+                                //queue video for thumbnail generation
+                                if(j == FileExtensions.IMG_EXT.length) {
+                                    qIter.add(new QItem(i, fullPath));
+    
+                                    thumb = null;
                                 }
                             }
-
-                            //queue video for thumbnail generation
-                            if(j == FileExtensions.IMG_EXT.length) {
-                                qIter.add(new QItem(i, fullPath));
-
-                                thumb = null;
-                            }
                         }
+    
+                        //set new thumbnail
+                        thumbs.set(i, thumb);
                     }
-
-                    //set new thumbnail
-                    thumbs.set(i, thumb);
-                }
+                    
+                    i++;
+                } while(fileIter.hasNext() && i < displayIndex + 20);
+    
+                getNextQItem();
             }
-
-            getNextQItem();
         }
     
     }
@@ -776,7 +782,7 @@ public class FileBrowser {
                 file = fileIter.next();
 
                 if(file.isDirectory()) {
-                    fileNames.append(file.getName());
+                    fileNames.add(file.getName());
 
                     if(j < 20) {
                         thumbs.add(thumb);
@@ -809,7 +815,7 @@ public class FileBrowser {
                         if(fileNameParts[fileNameParts.length-1]
                             .equalsIgnoreCase(FileExtensions.AUDIO_EXT[i]))
                         {
-                            fileNames.append(fileName);
+                            fileNames.add(fileName);
 
                             if(j < 20) {
                                 thumbs.add(thumb);
@@ -861,7 +867,7 @@ public class FileBrowser {
                                 thumbs.add(null);
                             }
 
-                            fileNames.append(fileName);
+                            fileNames.add(fileName);
 
                             fileIter.remove();
 
@@ -890,7 +896,7 @@ public class FileBrowser {
                                 j++;
                             }
 
-                            fileNames.append(fileName);
+                            fileNames.add(fileName);
 
                             break;
                         }
@@ -1013,7 +1019,7 @@ public class FileBrowser {
                 updateThumbs(j);
             }
 
-            Iterator<String> fileNameIter = fileNames.iterator();
+            ListIterator<String> fileNameIter = fileNames.listIterator();
             
             if(fileNameIter.hasNext()) {
                 String[] fileNameParts;

@@ -9,10 +9,9 @@ package quickshow.datatypes;
 import java.util.ArrayList;
 
 import processing.core.PImage;
-import processing.data.StringList;
 
 public abstract class VisualItem extends MediaItem {
-    private StringList tagTexts;
+    private ArrayList<String> tagTexts;
     private ArrayList<int[]> tagTimes;
     private PImage thumb;
     protected int displayTime = 0;
@@ -27,22 +26,8 @@ public abstract class VisualItem extends MediaItem {
 
         this.thumb = thumb;
 
-        tagTexts = new StringList();
+        tagTexts = new ArrayList<String>();
         tagTimes = new ArrayList<int[]>();
-
-        //debug tag
-/*        Float[] f = new Float[2];
-        f[0] = 0f;
-        f[1] = 2f;
-        tagTimes.add(f);
-        tagTexts.add("test: " + fileName);
-
-        f = new Float[2];
-        f[0] = 3f;
-        f[1] = 4f;
-        tagTimes.add(f);
-        tagTexts.add("test2");
-*/
     }
 
     /**
@@ -57,7 +42,7 @@ public abstract class VisualItem extends MediaItem {
      * Retrieves all annotations associated with the VisualItem.
      * @return StringList
      */
-    public StringList getTagTexts() {
+    public ArrayList<String> getTagTexts() {
         return tagTexts;
     }
 
@@ -90,10 +75,10 @@ public abstract class VisualItem extends MediaItem {
      * @param tags
      * @param tagTimes
      */
-    public void setTags(StringList tags, ArrayList<int[]> tagTimes) {
+    public void setTags(ArrayList<String> tags, ArrayList<int[]> tagTimes) {
         clearTags();
         
-        tagTexts = tags.copy();
+        tagTexts.addAll(tags);
         this.tagTimes.addAll(tagTimes);
     }
 }
