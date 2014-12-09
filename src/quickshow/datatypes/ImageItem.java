@@ -14,7 +14,8 @@ public class ImageItem extends VisualItem {
     /**
      * Class constructor.
      * @param parent the Quickshow object
-     * @param filename the file name of the image to load
+     * @param fileName the file name of the image to load
+     * @param thumb the media item thumbnail
      */
     public ImageItem(quickshow.Quickshow parent, String fileName,
         PImage thumb)

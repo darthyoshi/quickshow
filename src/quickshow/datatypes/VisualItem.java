@@ -72,9 +72,9 @@ public abstract class VisualItem extends MediaItem {
     }
 
     /**
-     * TODO add method header
-     * @param tags
-     * @param tagTimes
+     * Sets the VisualItem captions.
+     * @param tags ArrayList containing caption text
+     * @param tagTimes ArrayList containing caption timestamps
      */
     public void setTags(ArrayList<String> tags, ArrayList<int[]> tagTimes) {
         clearTags();

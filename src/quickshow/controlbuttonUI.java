@@ -43,25 +43,25 @@ public class controlbuttonUI {
 	 * Class constructor.
      * @param control the ControlP5 object handling UI elements
 	 */
-	public controlbuttonUI(ControlP5 buttonUI){
-	    mainUIGroup = buttonUI.addGroup("buttonUI").setLabel("");
+	public controlbuttonUI(ControlP5 control){
+	    mainUIGroup = control.addGroup("buttonUI").setLabel("");
 		
         lockControllers = new Controller[14];
 		
 		//For the entire slideshow
-		lockControllers[0] = playButton = buttonUI.addButton("Play")
+		lockControllers[0] = playButton = control.addButton("Play")
 	        .setPosition(30, 10)
 	        .setSize(70, 15)
 	        .setGroup(mainUIGroup);
 		playButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
-		lockControllers[1] = resetShowButton = buttonUI.addButton("Reset")
+		lockControllers[1] = resetShowButton = control.addButton("Reset")
 	        .setPosition(110, 10)
 	        .setSize(70, 15)
 	        .setGroup(mainUIGroup);
         resetShowButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[12] = shuffleToggle = buttonUI
+		lockControllers[12] = shuffleToggle = control
 	        .addToggle("Shuffle Slides")
 	        .setPosition(530, 10)
 	        .setSize(15, 15)
@@ -71,7 +71,7 @@ public class controlbuttonUI {
 		    .align(ControlP5Constants.RIGHT_OUTSIDE, ControlP5Constants.CENTER);
 		
 		//For audioList
-		lockControllers[2] = clearSongsButton = buttonUI
+		lockControllers[2] = clearSongsButton = control
 	        .addButton("Clear selected songs")
 	        .setPosition(675, 402)
 	        .setSize(200, 15)
@@ -79,53 +79,53 @@ public class controlbuttonUI {
 		clearSongsButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		//For the Thumbnail selector
-		lockControllers[3] = selectAllImages = buttonUI
+		lockControllers[3] = selectAllImages = control
 			.addButton("Select All Pictures")
 		    .setPosition(140, 402)
 		    .setSize(140,15)
 		    .setGroup(mainUIGroup);
 		selectAllImages.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[4] = selectAllVideos = buttonUI
+		lockControllers[4] = selectAllVideos = control
 			.addButton("Select All Clips")
 		    .setPosition(290, 402)
 		    .setSize(115, 15)
 		    .setGroup(mainUIGroup);
 		selectAllVideos.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[5] = clearVisualTimeline = buttonUI
+		lockControllers[5] = clearVisualTimeline = control
 	        .addButton("Clear slides")
 		    .setPosition(30, 402)
 		    .setSize(100,15)
 		    .setGroup(mainUIGroup);
 		clearVisualTimeline.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[6] = upButton = buttonUI.addButton("Up")
+		lockControllers[6] = upButton = control.addButton("Up")
 		    .setPosition(465, 402)
 		    .setSize(50,15)
 		    .setGroup(mainUIGroup);
 		upButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[7] = downButton = buttonUI.addButton("Down")
+		lockControllers[7] = downButton = control.addButton("Down")
 		    .setPosition(600, 402)
 		    .setSize(50,15)
 		    .setGroup(mainUIGroup);
 		downButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		//To control the visual timeline thumbnail
-		lockControllers[8] = nextSlides = buttonUI.addButton("Next")
+		lockControllers[8] = nextSlides = control.addButton("Next")
 		    .setPosition(497, 580)
 		    .setSize(69, 15)
 		    .setGroup(mainUIGroup);
 		nextSlides.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[9] = prevSlides = buttonUI.addButton("Previous")
+		lockControllers[9] = prevSlides = control.addButton("Previous")
 		    .setPosition(337, 580)
 		    .setSize(69, 15)
 		    .setGroup(mainUIGroup);
 		prevSlides.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		timeLineIndex = buttonUI.addButton("timeLineIndex")
+		timeLineIndex = control.addButton("timeLineIndex")
 			.setPosition(413, 580)
 			.setSize(76, 15)
 			.setCaptionLabel(timeLineDefaultString)
@@ -133,7 +133,7 @@ public class controlbuttonUI {
 			.setGroup(mainUIGroup);
 		timeLineIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
-		totalTime = buttonUI.addButton("totalTime")
+		totalTime = control.addButton("totalTime")
 			.setPosition(740, 580)
 			.setSize(130, 15)
 			.setCaptionLabel(slideShowTime)
@@ -142,13 +142,13 @@ public class controlbuttonUI {
 		totalTime.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		//Load media
-		lockControllers[10] = loadMedia = buttonUI.addButton("Load Media")
+		lockControllers[10] = loadMedia = control.addButton("Load Media")
 		    .setPosition(675, 10)
 		    .setSize(200, 15)
 		    .setGroup(mainUIGroup);
 		loadMedia.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[11] = editVisualItem = buttonUI
+		lockControllers[11] = editVisualItem = control
 			.addButton("Visual Item Properties")
 	        .setPosition(30, 580)
 	        .setSize(175, 15)
@@ -156,21 +156,21 @@ public class controlbuttonUI {
 	        .setGroup(mainUIGroup);
 		editVisualItem.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		nextSong = buttonUI.addButton("nextSong")
+		nextSong = control.addButton("nextSong")
 		    .setPosition(870, 421)
 		    .setSize(20, 77)
 		    .setCaptionLabel(">")
 		    .setGroup(mainUIGroup);
 		nextSong.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		prevSong = buttonUI.addButton("prevSong")
+		prevSong = control.addButton("prevSong")
 		    .setPosition(10, 421)
 		    .setSize(20, 77)
 		    .setCaptionLabel("<")
 		    .setGroup(mainUIGroup);
 		prevSong.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
-		pageIndex = buttonUI.addButton("pageIndex")
+		pageIndex = control.addButton("pageIndex")
 			.setPosition(520, 402)
 			.setSize(75, 15)
 			.setCaptionLabel(indexString)
@@ -178,7 +178,7 @@ public class controlbuttonUI {
 			.setGroup(mainUIGroup);
 		pageIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[13] = transitionToggle = buttonUI
+		lockControllers[13] = transitionToggle = control
 	        .addToggle("transitionToggle")
 	        .setGroup(mainUIGroup)
 	        .setPosition(400, 10)
@@ -237,8 +237,7 @@ public class controlbuttonUI {
 
 	/**
 	 * Sets the slideshow time display at the bottom of the screen.
-	 * @param min number of minutes in the slide show
-	 * @param sec number of seconds in the slide show
+	 * @param length the slide show play time in seconds
 	 */
 	public void setSlideShowTime(int length){
 		int min = length/60;
