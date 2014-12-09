@@ -34,7 +34,8 @@ public class slideShow {
 
     private PImage curFrame, transitFrame;
     private int[] transitDelta = {0, 0}, transitDirection = {1, 1};
-    private boolean transit = false;
+    private int fadeAlpha = 255;
+    private boolean transit = false, fade = true;
     private Movie movie;
 
     private int frameWidth, frameHeight;
@@ -47,9 +48,9 @@ public class slideShow {
     private VisualItem curVisualItem = null;
 
     private StringList curTagTexts;
-    private ArrayList<Float[]> curTagTimes;
+    private ArrayList<int[]> curTagTimes;
     private String tagText = null;
-    private Float[] tagTime = null;
+    private int[] tagTime = null;
 
     private float curImgTime;
 
@@ -69,7 +70,7 @@ public class slideShow {
         visuals = new ArrayList<VisualItem>();
 
         curTagTexts = new StringList();
-        curTagTimes = new ArrayList<Float[]>();
+        curTagTimes = new ArrayList<int[]>();
 
         group = control.addGroup("slideShow")
             .setCaptionLabel("")
@@ -148,6 +149,24 @@ public class slideShow {
             stopButton();
 
             break;
+
+        case "Shuffle Slides":
+            if(debug) {
+                Quickshow.println("shuffle: " +
+                    ((Toggle)e.getController()).getState());
+            }
+
+            toggleShuffle(((Toggle)e.getController()).getState());
+
+            break;
+            
+        case "transitionToggle":
+            if(debug) {
+                Quickshow.println("shuffle: " +
+                    ((Toggle)e.getController()).getState());
+            }
+            
+            toggleFade(((Toggle)e.getController()).getState());
         }
     }
 
@@ -156,7 +175,7 @@ public class slideShow {
      */
     public void draw() {
         parent.background(0xff555555);
-
+     
         if(isPlaying) {
             if(!transit) {
                 if(curAudioItem != null) {
@@ -205,21 +224,23 @@ public class slideShow {
                             (parent.height - curFrame.height)/2,
                             curFrame
                         );
-
-                        //set horizontal transition direction
-                        double rand = Math.random();
-                        transitDirection[0] = (rand < 0.33 ? 1 :
-                            (rand < 0.66 ? 0 : -1));
-
-                        //set vertical transition direction
-                        rand = Math.random();
-                        if(transitDirection[0] != 0) {
-                            transitDirection[1] = (rand < 0.33 ? 1 :
+                        
+                        if(!fade) {
+                            //set horizontal transition direction
+                            double rand = Math.random();
+                            transitDirection[0] = (rand < 0.33 ? 1 :
                                 (rand < 0.66 ? 0 : -1));
-                        }
-
-                        else {
-                            transitDirection[1] = (rand < 0.5 ? 1 : -1);
+    
+                            //set vertical transition direction
+                            rand = Math.random();
+                            if(transitDirection[0] != 0) {
+                                transitDirection[1] = (rand < 0.33 ? 1 :
+                                    (rand < 0.66 ? 0 : -1));
+                            }
+    
+                            else {
+                                transitDirection[1] = (rand < 0.5 ? 1 : -1);
+                            }
                         }
 
                         nextVisualItem();
@@ -245,7 +266,8 @@ public class slideShow {
                 }
             }
         }
-
+        
+        parent.tint(255, 255);
         parent.imageMode(PConstants.CENTER);
         parent.image(curFrame, parent.width/2, parent.height/2);
 
@@ -270,6 +292,9 @@ public class slideShow {
         }
 
         else {
+            if(fade) {
+                parent.tint(255, fadeAlpha);
+            }
             parent.image(
                 transitFrame,
                 parent.width/2 + transitDelta[0],
@@ -277,23 +302,39 @@ public class slideShow {
             );
 
             if(isPlaying) {
-                transitDelta[0] += (int)(1f / 25f * parent.width) *
-            		transitDirection[0];
-                transitDelta[1] += (int)(1f / 25f * parent.height) *
-            		transitDirection[1];
+                if(fade) {
+                    fadeAlpha -= 255/25;
+                    
+                    if(fadeAlpha <= 0) {
+                        fadeAlpha = 255;
+                        
+                        transit = false;
 
-                if(
-                    (int)(1.5f*parent.width) <= transitDelta[0] ||
-                    (int)(-1.5f*parent.width) >= transitDelta[0] ||
-                    (int)(1.5f*parent.height) <= transitDelta[1] ||
-                    (int)(-1.5f*parent.height) >= transitDelta[1]
-                ) {
-                    transitDelta[0] = transitDelta[1] = 0;
-
-                    transit = false;
-
-                    if(debug) {
-                        Quickshow.println("slide show transition end");
+                        if(debug) {
+                            Quickshow.println("slide show transition end");
+                        }
+                    }
+                }
+                
+                else {
+                    transitDelta[0] += (int)(1f / 25f * parent.width) *
+                		transitDirection[0];
+                    transitDelta[1] += (int)(1f / 25f * parent.height) *
+                		transitDirection[1];
+    
+                    if(
+                        (int)(1.5f*parent.width) <= transitDelta[0] ||
+                        (int)(-1.5f*parent.width) >= transitDelta[0] ||
+                        (int)(1.5f*parent.height) <= transitDelta[1] ||
+                        (int)(-1.5f*parent.height) >= transitDelta[1]
+                    ) {
+                        transitDelta[0] = transitDelta[1] = 0;
+    
+                        transit = false;
+    
+                        if(debug) {
+                            Quickshow.println("slide show transition end");
+                        }
                     }
                 }
             }
@@ -377,7 +418,7 @@ public class slideShow {
         if(!curTagTimes.isEmpty()) {
             int i = 0;
             float min = Float.MAX_VALUE;
-            Float[] times;
+            int[] times;
 
             for(int j = 0; j < curTagTimes.size(); j++) {
                 if((times = curTagTimes.get(j))[0] < min) {
@@ -535,7 +576,7 @@ public class slideShow {
      * Toggles the slide show shuffle.
      * @param shuffle whether or not to shuffle the slide show
      */
-    public void toggleShuffle(boolean shuffle) {
+    private void toggleShuffle(boolean shuffle) {
         this.shuffle = shuffle;
     }
 
@@ -559,6 +600,14 @@ public class slideShow {
             stopButton();
             break;
         }
+    }
+
+    /**
+     * Toggles the slide show fade transition.
+     * @param fade whether or not to fade transition between VisualItems
+     */
+    private void toggleFade(boolean fade) {
+        this.fade = fade;
     }
 
     /**
