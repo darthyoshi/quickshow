@@ -148,7 +148,7 @@ public class FileBrowser {
         lockButtons[2] = control.addButton("scrollUpButton")
             .setSize(30, 75)
             .setLock(true)
-            .setPosition(840, 145)
+            .setPosition(840, 146)
             .setCaptionLabel("^")
             .setGroup(group);
         lockButtons[2].getCaptionLabel().align(ControlP5Constants.CENTER,
@@ -157,7 +157,7 @@ public class FileBrowser {
         lockButtons[3] = control.addButton("scrollTopButton")
             .setSize(30, 75)
             .setLock(true)
-            .setPosition(840, 70)
+            .setPosition(840, 71)
             .setCaptionLabel("^\n^")
             .setGroup(group);
         lockButtons[3].getCaptionLabel().align(ControlP5Constants.CENTER,
@@ -205,7 +205,7 @@ public class FileBrowser {
         pageLabel = control.addButton("pageLabel")
             .setLock(true)
             .setPosition(840, 225)
-            .setSize(30, 150)
+            .setSize(30, 151)
             .setCaptionLabel("")
             .setGroup(group);
         pageLabel.getCaptionLabel().align(ControlP5Constants.CENTER,
@@ -646,11 +646,12 @@ public class FileBrowser {
         }
 
         //draw thumbnail window
-        parent.fill(0xffffff);
+        parent.fill(0xff5a5a5a);
         parent.stroke(0);
         parent.rectMode(PConstants.CORNERS);
-        parent.rect(30, 70, 840, 530);
-        parent.line(869, 70, 869, 530);
+        parent.rect(30, 70, 839, 530);
+        parent.noFill();
+        parent.rect(839, 70, 870, 530);
 
         //thumbnail pic
         parent.imageMode(PConstants.CENTER);
@@ -658,10 +659,8 @@ public class FileBrowser {
         //filename
         parent.textAlign(PConstants.CENTER, PConstants.CENTER);
         parent.textSize(15);
-        parent.fill(0);
 
         //selected highlight
-        parent.noFill();
         parent.rectMode(PConstants.CENTER);
         parent.stroke(0xff5522ff);
 
