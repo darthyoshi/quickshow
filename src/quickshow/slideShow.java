@@ -8,6 +8,7 @@ package quickshow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.PriorityQueue;
 
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -48,8 +49,9 @@ public class slideShow {
 
     private ArrayList<String> curTagTexts;
     private ArrayList<int[]> curTagTimes;
-    private String tagText = null;
-    private int[] tagTime = null;
+    private String tagText = "";
+    private PriorityQueue<Integer> tagStartTimes;
+    private PriorityQueue<Integer> tagEndTimes;
 
     private float curImgTime;
 
@@ -70,6 +72,8 @@ public class slideShow {
 
         curTagTexts = new ArrayList<String>();
         curTagTimes = new ArrayList<int[]>();
+        tagStartTimes = new PriorityQueue<Integer>();
+        tagEndTimes = new PriorityQueue<Integer>();
 
         group = control.addGroup("slideShow")
             .setCaptionLabel("")
@@ -271,21 +275,31 @@ public class slideShow {
         parent.image(curFrame, parent.width/2, parent.height/2);
 
         if(!transit) {
-            if(tagTime != null) {
-                if(
-                    (movie != null && movie.time() > tagTime[0] &&
-                    movie.time() < tagTime[1]) ||
-                    (curImgTime > tagTime[0] && curImgTime < tagTime[1])
-                ) {
-                    parent.fill(0xffffffff);
-                    parent.textAlign(PConstants.CENTER, PConstants.CENTER);
-                    parent.text(tagText, parent.width/2, parent.height * 11/12);
-                }
+            if(!tagStartTimes.isEmpty() && tagStartTimes.peek() <= curImgTime) {
+                tagStartTimes.poll();
+                tagText = genTagString();
+            }
+            
+            if(!tagEndTimes.isEmpty() && tagEndTimes.peek() <= curImgTime) {
+                tagEndTimes.poll();
+                tagText = genTagString();
+            }
+            
+            if(!tagText.equals("")) {
+                parent.fill(0xffffffff);
+                parent.textSize(32);
+                parent.textAlign(PConstants.CENTER, PConstants.CENTER);
 
-                else if((movie != null && movie.time() > tagTime[1]) ||
-                    curImgTime > tagTime[1])
-                {
-                    nextTag();
+                if(curVisualItem != null) {
+                    if(curVisualItem.isAtBottom()) {
+                        parent.text(tagText, parent.width/2,
+                            parent.height * 11/12);
+                    }
+                    
+                    else {
+                        parent.text(tagText, parent.width/2,
+                            parent.height / 12);
+                    }
                 }
             }
         }
@@ -411,41 +425,6 @@ public class slideShow {
     }
 
     /**
-     * Retrieves the next annotation
-     */
-    private void nextTag() {
-        if(!curTagTimes.isEmpty()) {
-            int i = 0;
-            float min = Float.MAX_VALUE;
-            int[] times;
-
-            for(int j = 0; j < curTagTimes.size(); j++) {
-                if((times = curTagTimes.get(j))[0] < min) {
-                    min = times[0];
-                    i = j;
-                }
-            }
-
-            tagTime = curTagTimes.remove(i);
-            tagText = curTagTexts.remove(i);
-
-            if(debug) {
-                Quickshow.println("next tag: \"" + tagText + "\", from " +
-                    tagTime[0] + "s to " + tagTime[1] + 's');
-            }
-        }
-
-        else {
-            tagText = null;
-            tagTime = null;
-
-            if(debug) {
-                Quickshow.println("No tags to show");
-            }
-        }
-    }
-
-    /**
      * Prepares the next VisualItem in the playlist.
      */
     private void nextVisualItem() {
@@ -468,10 +447,23 @@ public class slideShow {
         }
 
         if(curVisualItem != null) {
+            curTagTexts.clear();
+            curTagTimes.clear();
+            
+            tagStartTimes.clear();
+            tagEndTimes.clear();
+            
         	curTagTexts.addAll(curVisualItem.getTagTexts());
             curTagTimes.addAll(curVisualItem.getTagTimes());
 
-            nextTag();
+            Iterator<int[]> timeIter = curTagTimes.iterator();
+            int[] time;
+            while(timeIter.hasNext()) {
+                time = timeIter.next();
+                
+                tagStartTimes.add(time[0]);
+                tagEndTimes.add(time[1]);
+            }
 
             if(curVisualItem.checkType().equals("video")) {
                 movie = ((MovieItem)curVisualItem).getMovie();
@@ -607,6 +599,31 @@ public class slideShow {
      */
     private void toggleFade(boolean fade) {
         this.fade = fade;
+    }
+    
+    /**
+     * Generates the new caption string, comprised of all captions starting
+     *   before and ends after the current image timestamp.
+     * @return String.
+     */
+    private String genTagString() {
+        StringBuilder build = new StringBuilder();
+        
+        Iterator<String> textIter = curTagTexts.iterator();
+        Iterator<int[]> timeIter = curTagTimes.iterator();
+        int[] time;
+        String tmp;
+        
+        while(textIter.hasNext()) {
+            tmp = textIter.next();
+            time = timeIter.next();
+            
+            if(curImgTime > time[0] && curImgTime < time[1]) {
+                build.append(tmp).append('\n');
+            }
+        }
+        
+        return build.toString();
     }
 
     /**

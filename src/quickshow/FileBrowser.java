@@ -695,6 +695,7 @@ public class FileBrowser {
                 }
 
                 parent.fill(0xffffffff);
+                parent.textSize(16);
                 parent.text(fileName, 111 + col*162, 173 + row*115);
 
                 parent.noFill();

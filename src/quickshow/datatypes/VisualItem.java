@@ -15,6 +15,7 @@ public abstract class VisualItem extends MediaItem {
     private ArrayList<int[]> tagTimes;
     private PImage thumb;
     protected int displayTime = 0;
+    private boolean atBottom = false;
 
     /**
      * Class constructor.
@@ -80,5 +81,22 @@ public abstract class VisualItem extends MediaItem {
         
         tagTexts.addAll(tags);
         this.tagTimes.addAll(tagTimes);
+    }
+
+    /**
+     * Checks the position of the captions for this VisualItem.
+     * @return true if the captions will be at the bottom of the screen
+     */
+    public boolean isAtBottom() {
+        return atBottom;
+    }
+
+    /**
+     * Sets the position of the captions for this VisualItem.
+     * @param atBottom whether or not the captions will be at the bottom of the
+     *   screen
+     */
+    public void setAtBottom(boolean atBottom) {
+        this.atBottom = atBottom;
     }
 }
