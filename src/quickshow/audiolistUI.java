@@ -147,8 +147,8 @@ public class audiolistUI {
     		+ audio.getTitle() + " - " + audio.getLength());
 
         //Generate the Label for the listBoxItem
-        String songDisplay = (builder.length() >= 26 ?
-    		builder.substring(0, 25) + ".." : builder.toString());
+        String songDisplay = (builder.length() >= 25 ?
+    		builder.substring(0, 24) + ".." : builder.toString());
 
         if(debug) {
             Quickshow.println("Song being added: " + songDisplay);

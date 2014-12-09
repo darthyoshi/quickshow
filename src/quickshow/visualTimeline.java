@@ -100,22 +100,23 @@ public class visualTimeline {
                             (float) (timeLineHeight-15));
                     }
 
-                   new_height = scaleFactor * image.height;
-                   new_width = scaleFactor * image.width;
-
-                    y = (bounds[3]+bounds[1]-(int)Math.ceil(new_height))/2;
+                    new_height = scaleFactor * image.height;
+                    new_width = scaleFactor * image.width;
 
                     duration = item.getDisplayTime();
                     
                     width_by_sec = item.getDisplayTime() * WIDTH_PER_SEC;
                     
                     if(new_width > width_by_sec) {
-                    	new_width = width_by_sec - 1; 
+                    	new_width = width_by_sec - 1;
+                    	new_height = (int)((float)new_width*image.height/image.width);
                     }
+
+                    y = (bounds[3]+bounds[1]-(int)Math.ceil(new_height))/2;
                     
                     parent.rectMode(PConstants.CORNER);
                     parent.fill(0x6f40E0D0);
-                    parent.stroke(0x00000000);
+                    parent.stroke(0);
                     parent.rect(drawIndex, bounds[1], width_by_sec, timeLineHeight);
                     
                     parent.image(image, drawIndex+1, y, new_width,

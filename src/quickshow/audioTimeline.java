@@ -54,6 +54,11 @@ public class audioTimeline {
         parent.fill(90,90,90);
         parent.stroke(0);
         parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
+        
+        if(!spectraList.isEmpty()) {
+            int centerLine = (bounds[1]+bounds[3])/2;
+            parent.line(bounds[0], centerLine, bounds[2], centerLine);
+        }
     }
     
     /*

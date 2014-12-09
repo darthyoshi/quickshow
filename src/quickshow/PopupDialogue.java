@@ -21,6 +21,7 @@ import controlP5.Group;
 import controlP5.ListBoxItem;
 import controlP5.Slider;
 import controlP5.Textfield;
+import controlP5.Toggle;
 
 @SuppressWarnings("rawtypes")
 public class PopupDialogue {
@@ -34,15 +35,18 @@ public class PopupDialogue {
     private ArrayList<int[]> tagTimes;
     
     private Group popupGroup;
-    private static final int[] popupOrigin = {315, 202};
+    private static final int[] popupOrigin = {315, 150};
     private Slider imgDisplaySlider;
     private Button popupAccept, popupCancel;
     private Button tagAdd, tagRemove;
     private Textfield tagField, tagStartField, tagEndField;
     private Controller[] popupLock;
     private DropdownList tagList;
+    private Toggle tagPosition;
     private static final String tagListLbl = "Add New Caption";
-    private int offset;
+    private static final String[] toggleLbl = {"Bottom",
+        "Top"};
+    private int toggleIndex = 1;
 
     /**
      * Class constructor.
@@ -58,100 +62,115 @@ public class PopupDialogue {
         tagTimes = new ArrayList<int[]>();
 
         popupGroup = control.addGroup("popupUI")
-            .setLabel("")
-            .setVisible(false);
+            .setVisible(false)
+            .setLabel("");
 
-        popupLock = new Controller[8];
-
-        control.addTextarea("tagFieldLabel")
-            .setPosition(popupOrigin[0], popupOrigin[1]+20)
-            .setText("SET CAPTION TEXT")
-            .setGroup(popupGroup);
-
-        control.addTextarea("tagLabel")
-            .setPosition(popupOrigin[0], popupOrigin[1]+42)
-            .setText("CAPTION TIME")
-            .setGroup(popupGroup);
+        popupLock = new Controller[9];
 
         int[] lblOffset = new int[2];
 
-        lblOffset[0] = 130;
-        lblOffset[1] = 40;
-        control.addTextarea("tagStartLabel")
-            .setPosition(popupOrigin[0] + lblOffset[0] - 41,
-                popupOrigin[1] + lblOffset[1] + 2)
-            .setText("START")
-            .setGroup(popupGroup);
-        popupLock[0] = tagStartField = control.addTextfield("tagStartField")
-            .setPosition(popupOrigin[0] + lblOffset[0],
-                popupOrigin[1] + lblOffset[1])
-            .setSize(40, 20)
-            .setCaptionLabel("")
-            .setAutoClear(false)
-            .lock()
+        lblOffset[1] = 5;
+
+        control.addTextarea("tagFieldLabel")
+            .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1] + 20)
+            .setText("SET CAPTION TEXT")
             .setGroup(popupGroup);
 
-        lblOffset[0] = 210;
-        control.addTextarea("tagEndLabel")
-            .setPosition(popupOrigin[0] + lblOffset[0] - 28,
-                popupOrigin[1] + lblOffset[1] + 2)
-            .setText("END")
-            .setGroup(popupGroup);
-        popupLock[1] = tagEndField = control.addTextfield("tagEndField")
-            .setPosition(popupOrigin[0] + lblOffset[0],
-                popupOrigin[1] + lblOffset[1])
-            .setSize(40, 20)
-            .setCaptionLabel("")
-            .setAutoClear(false)
-            .lock()
-            .setGroup(popupGroup);
-
-        popupLock[2] = tagField = control.addTextfield("tagText")
-            .setPosition(popupOrigin[0], popupOrigin[1])
+        popupLock[0] = tagField = control.addTextfield("tagText")
+            .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1])
             .setSize(250, 20)
             .setCaptionLabel("")
             .setAutoClear(false)
             .lock()
             .setGroup(popupGroup);
 
-        popupLock[3] = imgDisplaySlider = control.addSlider("Image Display Time")
-            .setNumberOfTickMarks(9)
+        lblOffset[1] = 56;
+        control.addTextarea("tagLabel")
+            .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1] + 2)
+            .setText("CAPTION TIMESTAMPS (SEC)")
+            .setGroup(popupGroup);
+
+        lblOffset[0] = 41;
+        control.addTextarea("tagStartLabel")
+            .setPosition(popupOrigin[0] + lblOffset[0] - 41,
+                popupOrigin[1] + lblOffset[1] + 22)
+            .setText("START")
+            .setGroup(popupGroup);
+        popupLock[1] = tagStartField = control.addTextfield("tagStartField")
+            .setPosition(popupOrigin[0] + lblOffset[0],
+                popupOrigin[1] + lblOffset[1] + 20)
+            .setSize(40, 20)
+            .setCaptionLabel("")
+            .setAutoClear(false)
+            .lock()
+            .setGroup(popupGroup);
+
+        lblOffset[0] = 120;
+        control.addTextarea("tagEndLabel")
+            .setPosition(popupOrigin[0] + lblOffset[0] - 28,
+                popupOrigin[1] + lblOffset[1] + 22)
+            .setText("END")
+            .setGroup(popupGroup);
+        popupLock[2] = tagEndField = control.addTextfield("tagEndField")
+            .setPosition(popupOrigin[0] + lblOffset[0],
+                popupOrigin[1] + lblOffset[1] + 20)
+            .setSize(40, 20)
+            .setCaptionLabel("")
+            .setAutoClear(false)
+            .lock()
+            .setGroup(popupGroup);
+
+        popupLock[3] = imgDisplaySlider = control.addSlider("Display Time")
             .setSize(250, 10)
-            .setPosition(popupOrigin[0], popupOrigin[1] + 70)
+            .setNumberOfTickMarks(9)
+            .setSliderMode(Slider.FLEXIBLE)
+            .setPosition(popupOrigin[0], popupOrigin[1] + 115)
             .setRange(2f, 10f)
             .lock()
             .setValue(-1f)
             .setGroup(popupGroup);
         imgDisplaySlider.getCaptionLabel()
             .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
-
-        popupLock[4] = popupAccept = control.addButton("Accept")
+        
+        popupLock[4] = tagPosition = control.addToggle("tagPosition")
             .lock()
-            .setSize(70, 15)
-            .setPosition(popupOrigin[0] + 105, popupOrigin[1] + 105)
+            .setCaptionLabel(toggleLbl[toggleIndex])
+            .setSize(30, 15)
+            .setPosition(popupOrigin[0], popupOrigin[1] + 160)
+            .setGroup(popupGroup)
+            .setMode(ControlP5Constants.SWITCH);
+        tagPosition.getCaptionLabel()
+            .align(ControlP5Constants.RIGHT_OUTSIDE, ControlP5Constants.CENTER);
+
+        lblOffset[0] = 160;
+        lblOffset[1] = 195;
+        popupLock[5] = popupAccept = control.addButton("Accept")
+            .lock()
+            .setSize(90, 15)
+            .setPosition(popupOrigin[0] + lblOffset[0], popupOrigin[1] + lblOffset[1])
             .setGroup(popupGroup);
         popupAccept.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
-        popupLock[5] = popupCancel = control.addButton("Cancel")
+        popupLock[6] = popupCancel = control.addButton("Cancel")
             .lock()
-            .setSize(70, 15)
-            .setPosition(popupOrigin[0] + 180, popupOrigin[1] + 105)
+            .setSize(90, 15)
+            .setPosition(popupOrigin[0] + lblOffset[0], popupOrigin[1] + lblOffset[1] + 17)
             .setGroup(popupGroup);
         popupCancel.getCaptionLabel().alignX(ControlP5Constants.CENTER);
         
-        popupLock[6] = tagAdd = control.addButton("tagAdd")
+        popupLock[7] = tagAdd = control.addButton("tagAdd")
             .lock()
             .setCaptionLabel("Add Caption")
-            .setSize(122, 15)
-            .setPosition(popupOrigin[0], popupOrigin[1] - 25)
+            .setSize(140, 15)
+            .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1])
             .setGroup(popupGroup);
         tagAdd.getCaptionLabel().alignX(ControlP5Constants.CENTER);
         
-        popupLock[7] = tagRemove = control.addButton("tagRemove")
+        popupLock[8] = tagRemove = control.addButton("tagRemove")
             .lock()
             .setCaptionLabel("Remove Caption")
-            .setSize(122, 15)
-            .setPosition(popupOrigin[0] + 128, popupOrigin[1] - 25)
+            .setSize(140, 15)
+            .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1] + 17)
             .setGroup(popupGroup);
         tagRemove.getCaptionLabel().alignX(ControlP5Constants.CENTER);
         
@@ -161,7 +180,7 @@ public class PopupDialogue {
             .setCaptionLabel(tagListLbl)
             .setSize(250, 100)
             .setBarHeight(20)
-            .setPosition(popupOrigin[0], popupOrigin[1] - 30);
+            .setPosition(popupOrigin[0], popupOrigin[1]);
         tagList.getCaptionLabel().align(ControlP5Constants.LEFT,
             ControlP5Constants.CENTER);
         tagList.addItem(tagListLbl, -1);
@@ -193,8 +212,6 @@ public class PopupDialogue {
             else {
                 imgDisplaySlider.setValue(item.getDisplayTime());
             }
-
-            this.offset = offset;
             
             populateTags();
         }
@@ -215,7 +232,7 @@ public class PopupDialogue {
     }
 
     /**
-     * TODO add method header
+     * Loads the VisualItem captions.
      */
     private void populateTags() {
         tags.addAll(item.getTagTexts());
@@ -309,7 +326,17 @@ public class PopupDialogue {
     public void draw() {
         parent.stroke(0);
         parent.fill(0xff3333aa);
-        parent.rect(popupOrigin[0]-10, popupOrigin[1]-60, 270, 190);
+        parent.rect(popupOrigin[0]-10, popupOrigin[1]-32, 270, 270);
+        parent.line(popupOrigin[0]-10, popupOrigin[1]+48,
+            popupOrigin[0]+260, popupOrigin[1]+48);
+        parent.line(popupOrigin[0]-10, popupOrigin[1]+105,
+            popupOrigin[0]+260, popupOrigin[1]+105);
+        parent.line(popupOrigin[0]-10, popupOrigin[1]+150,
+            popupOrigin[0]+260, popupOrigin[1]+150);
+        parent.line(popupOrigin[0]-10, popupOrigin[1]+185,
+            popupOrigin[0]+260, popupOrigin[1]+185);
+        parent.line(popupOrigin[0]+150, popupOrigin[1]+185,
+            popupOrigin[0]+150, popupOrigin[1]+238);
     }
 
     /**
@@ -330,19 +357,10 @@ public class PopupDialogue {
             }
             Quickshow.println("passing: "+tags.size());
             item.setTags(tags, tagTimes);
+            item.setAtBottom(tagPosition.getState());
 
             togglePopup(false, null, null);
 
-            break;
-
-        case "Cancel":
-            togglePopup(false, null, null);
-
-            break;
-            
-        case "tagList":
-            tagList((int)event.getValue());
-            
             break;
             
         case "tagAdd":
@@ -350,12 +368,40 @@ public class PopupDialogue {
             
             break;
             
+        case "tagList":
+            tagList((int)event.getValue());
+            
+            break;
+            
         case "tagRemove":
             tagRemove();
             
             break;
+            
+        case "tagPosition":
+            tagPosition();
+
+            break;
+
+        case "Cancel":
+            togglePopup(false, null, null);
+
+            break;
         }
 
+    }
+
+    /**
+     * ControlP5 UI handler. Toggles the caption position setting.
+     */
+    private void tagPosition() {
+        toggleIndex = (++toggleIndex) % 2;
+        tagPosition.setCaptionLabel("Caption position: " +
+            toggleLbl[toggleIndex]);
+        
+        if(debug) {
+            Quickshow.println("Caption on bottom: " + tagPosition.getState());
+        }
     }
 
     /**
@@ -411,8 +457,8 @@ public class PopupDialogue {
         }
 
         if(!text.trim().equals("")) {
-            time[0] = getTagStartTime() - offset;
-            time[1] = getTagEndTime() - offset;
+            time[0] = getTagStartTime();
+            time[1] = getTagEndTime();
             
             if(time[0] >= 0 && time[1] >= 0) {
                 if(tagIndex >= 0) {
@@ -462,8 +508,8 @@ public class PopupDialogue {
         if(index >= 0) {
             tagIndex = index;
             
-            tagStartField.setText(Integer.toString(tagTimes.get(tagIndex)[0]+offset));
-            tagEndField.setText(Integer.toString(tagTimes.get(tagIndex)[1]+offset));
+            tagStartField.setText(Integer.toString(tagTimes.get(tagIndex)[0]));
+            tagEndField.setText(Integer.toString(tagTimes.get(tagIndex)[1]));
             
             tagField.setText(tags.get(tagIndex));
             
