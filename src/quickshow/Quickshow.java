@@ -252,7 +252,7 @@ public class Quickshow extends PApplet {
                 vTimeline.updateTimeStamps(selectedItemIndex);
                 vTimeline.calculateTimeLineBounds(vTimeline.getStartIndex());
             
-      //          ignoreNextMouseEvent  = true;
+                ignoreNextMouseEvent  = true;
             }
 
             break;
@@ -279,12 +279,12 @@ public class Quickshow extends PApplet {
                 closeFBActions();
             }
         }
-  /*      
+        
         else if(ignoreNextMouseEvent) {
             ignoreNextMouseEvent = false;
         }
-*/
-        else if(!popup.isEnabled()/* && !ignoreNextMouseEvent*/) {
+
+        else if(!popup.isEnabled() && !ignoreNextMouseEvent) {
             selectedItem = null;
             vTimeline.setSelectedIndex(-1);
 
