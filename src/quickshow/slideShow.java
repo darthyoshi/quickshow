@@ -162,13 +162,13 @@ public class slideShow {
             toggleShuffle(((Toggle)e.getController()).getState());
 
             break;
-            
+
         case "transitionToggle":
             if(debug) {
                 Quickshow.println("shuffle: " +
                     ((Toggle)e.getController()).getState());
             }
-            
+
             toggleFade(((Toggle)e.getController()).getState());
         }
     }
@@ -178,7 +178,7 @@ public class slideShow {
      */
     public void draw() {
         parent.background(0xff555555);
-     
+
         if(isPlaying) {
             if(!transit) {
                 if(curAudioItem != null) {
@@ -218,35 +218,35 @@ public class slideShow {
                             (parent.height - curFrame.height)/2,
                             curFrame
                         );
-                        
+
                         //Compensate for transparency
                         transitFrame.loadPixels();
                         float a, r, g, b;
                         for(int i = 0; i < transitFrame.pixels.length; i++) {
-                        	a = parent.alpha(transitFrame.pixels[i]) / 255f;
-                        	if(a < 1f) {
-                        		r = a*parent.red(transitFrame.pixels[i])+ 0x55*(1f-a);
-                        		g = a*parent.green(transitFrame.pixels[i])+ 0x55*(1f-a);
-                        		b = a*parent.blue(transitFrame.pixels[i])+ 0x55*(1f-a);
-                        		                        		
-                        		transitFrame.pixels[i] = parent.color(r, g, b);
-                        	}
+                            a = parent.alpha(transitFrame.pixels[i]) / 255f;
+                            if(a < 1f) {
+                                r = a*parent.red(transitFrame.pixels[i])+ 0x55*(1f-a);
+                                g = a*parent.green(transitFrame.pixels[i])+ 0x55*(1f-a);
+                                b = a*parent.blue(transitFrame.pixels[i])+ 0x55*(1f-a);
+
+                                transitFrame.pixels[i] = parent.color(r, g, b);
+                            }
                         }
                         transitFrame.updatePixels();
-                        
+
                         if(!fade) {
                             //set horizontal transition direction
                             double rand = Math.random();
                             transitDirection[0] = (rand < 0.33 ? 1 :
                                 (rand < 0.66 ? 0 : -1));
-    
+
                             //set vertical transition direction
                             rand = Math.random();
                             if(transitDirection[0] != 0) {
                                 transitDirection[1] = (rand < 0.33 ? 1 :
                                     (rand < 0.66 ? 0 : -1));
                             }
-    
+
                             else {
                                 transitDirection[1] = (rand < 0.5 ? 1 : -1);
                             }
@@ -275,7 +275,7 @@ public class slideShow {
                 }
             }
         }
-        
+
         parent.tint(255, 255);
         parent.imageMode(PConstants.CENTER);
         parent.image(curFrame, parent.width/2, parent.height/2);
@@ -285,12 +285,12 @@ public class slideShow {
                 tagStartTimes.poll();
                 tagText = genTagString();
             }
-            
+
             if(!tagEndTimes.isEmpty() && tagEndTimes.peek() <= curImgTime) {
                 tagEndTimes.poll();
                 tagText = genTagString();
             }
-            
+
             if(!tagText.equals("")) {
                 parent.fill(0xffffffff);
                 parent.textSize(32);
@@ -301,7 +301,7 @@ public class slideShow {
                         parent.text(tagText, parent.width/2,
                             parent.height * 11/12);
                     }
-                    
+
                     else {
                         parent.text(tagText, parent.width/2,
                             parent.height / 12);
@@ -323,10 +323,10 @@ public class slideShow {
             if(isPlaying) {
                 if(fade) {
                     fadeAlpha -= 255/25;
-                    
+
                     if(fadeAlpha <= 0) {
                         fadeAlpha = 255;
-                        
+
                         transit = false;
 
                         if(debug) {
@@ -334,13 +334,13 @@ public class slideShow {
                         }
                     }
                 }
-                
+
                 else {
                     transitDelta[0] += (int)(1f / 25f * parent.width) *
-                		transitDirection[0];
+                        transitDirection[0];
                     transitDelta[1] += (int)(1f / 25f * parent.height) *
-                		transitDirection[1];
-    
+                        transitDirection[1];
+
                     if(
                         (int)(1.5f*parent.width) <= transitDelta[0] ||
                         (int)(-1.5f*parent.width) >= transitDelta[0] ||
@@ -348,9 +348,9 @@ public class slideShow {
                         (int)(-1.5f*parent.height) >= transitDelta[1]
                     ) {
                         transitDelta[0] = transitDelta[1] = 0;
-    
+
                         transit = false;
-    
+
                         if(debug) {
                             Quickshow.println("slide show transition end");
                         }
@@ -455,18 +455,18 @@ public class slideShow {
         if(curVisualItem != null) {
             curTagTexts.clear();
             curTagTimes.clear();
-            
+
             tagStartTimes.clear();
             tagEndTimes.clear();
-            
-        	curTagTexts.addAll(curVisualItem.getTagTexts());
+
+            curTagTexts.addAll(curVisualItem.getTagTexts());
             curTagTimes.addAll(curVisualItem.getTagTimes());
 
             Iterator<int[]> timeIter = curTagTimes.iterator();
             int[] time;
             while(timeIter.hasNext()) {
                 time = timeIter.next();
-                
+
                 tagStartTimes.add(time[0]);
                 tagEndTimes.add(time[1]);
             }
@@ -606,7 +606,7 @@ public class slideShow {
     private void toggleFade(boolean fade) {
         this.fade = fade;
     }
-    
+
     /**
      * Generates the new caption string, comprised of all captions starting
      *   before and ends after the current image timestamp.
@@ -614,21 +614,21 @@ public class slideShow {
      */
     private String genTagString() {
         StringBuilder build = new StringBuilder();
-        
+
         Iterator<String> textIter = curTagTexts.iterator();
         Iterator<int[]> timeIter = curTagTimes.iterator();
         int[] time;
         String tmp;
-        
+
         while(textIter.hasNext()) {
             tmp = textIter.next();
             time = timeIter.next();
-            
+
             if(curImgTime > time[0] && curImgTime < time[1]) {
                 build.append(tmp).append('\n');
             }
         }
-        
+
         return build.toString();
     }
 

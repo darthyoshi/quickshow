@@ -78,7 +78,7 @@ public abstract class VisualItem extends MediaItem {
      */
     public void setTags(ArrayList<String> tags, ArrayList<int[]> tagTimes) {
         clearTags();
-        
+
         tagTexts.addAll(tags);
         this.tagTimes.addAll(tagTimes);
     }

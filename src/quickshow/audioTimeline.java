@@ -27,7 +27,7 @@ public class audioTimeline {
     private int index;
     private int num_pages;
     static final int[] bounds = {50, 420, 850, 498};
-    
+
     /**
      * Class constructor.
      * @param parent the instantiating Quickshow object
@@ -37,29 +37,29 @@ public class audioTimeline {
         this.parent = parent;
 
         selectedSongs = new ArrayList<AudioItem>();
-        
+
         spectraList = new ArrayList<float[][]>();
     }
-    
+
     /**
      * Callback method from drawing the timeline background.
      */
     public void drawBackgroundCanvas(){
         parent.rectMode(PConstants.CORNER);
         parent.imageMode(PConstants.CENTER);
-        
+
         parent.fill(90,90,90);
         parent.stroke(0);
         parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
-        
+
         if(!spectraList.isEmpty()) {
             int centerLine = (bounds[1]+bounds[3])/2;
             parent.line(bounds[0], centerLine, bounds[2], centerLine);
         }
     }
-    
+
     /*
-     * Referenced from processing forums. Modified function to suit 
+     * Referenced from processing forums. Modified function to suit
      * the needs of the application
      */
     /**
@@ -76,33 +76,33 @@ public class audioTimeline {
             int chunkStartIndex = 0;
             FFT fft;
             float leftSpectra[][];
-            
+
             spectraList.clear();
-            
+
             do {
                 //Will have to generate for all songs, but choose at index 0 for now
                 audioClip = songIter.next().getAudioSample();
-                
+
                 fft = new FFT( fftSize, audioClip.sampleRate());
-        
+
                 //Get audio sample from both channels
                 //if(!(audioClip.getChannel(AudioSample.LEFT) == null))
                 leftChannel = audioClip.getChannel(AudioSample.LEFT);
-        
+
                 //Allocate array for both channel sample
                 leftSample = new float[fftSize];
-        
+
                 //Calculate chunks for both channel
                 leftChunk = (leftChannel.length/fftSize + 1);
                 //Allocate the spectra for both channels
-                
+
                 leftSpectra = new float[leftChunk][fftSize/2];
-        
+
                 //generate waveform data for both channels
                 for(i = 0; i < leftChunk; ++i) {
                     chunkStartIndex = i * fftSize;
-                    
-                    // the chunk size will always be fftSize, except for the 
+
+                    // the chunk size will always be fftSize, except for the
                     // last chunk, which will be however many samples are left in source
                     leftchunkSize = Math.min(leftChannel.length - chunkStartIndex, fftSize);
                     // copy first chunk into our analysis array
@@ -112,13 +112,13 @@ public class audioTimeline {
                             0, // index to copy to
                             leftchunkSize // how many samples to copy
                             );
-                    
-                    // if the chunk was smaller than the fftSize, we need to pad the analysis buffer with zeroes        
+
+                    // if the chunk was smaller than the fftSize, we need to pad the analysis buffer with zeroes
                     if ( leftchunkSize < fftSize ){
                         // we use a system call for this
                         Arrays.fill( leftSample, leftchunkSize, leftSample.length - 1, 0.0f );
                     }
-                    
+
                     // now analyze this buffer
                     fft.forward(leftSample);
                     // and copy the resulting spectrum into our spectra array
@@ -126,12 +126,12 @@ public class audioTimeline {
                         leftSpectra[i][j] = fft.getBand(j);
                     }
                 }
-                
+
                 spectraList.add(leftSpectra);
             } while(songIter.hasNext());
         }
     }
-    
+
     /**
      * Callback method for drawing the waveforms.
      */
@@ -139,13 +139,13 @@ public class audioTimeline {
         if(index < spectraList.size()) {
             parent.stroke(0);
 
-            float[][] leftSpectra = spectraList.get(index); 
-        
+            float[][] leftSpectra = spectraList.get(index);
+
             float scaleMod = ((float) timeLineWidth / (float)leftSpectra.length);
-            
+
             int i;
             float total;
-            
+
             for(int s = 0; s < leftSpectra.length; s++) {
                 for(total = 0f, i = 0; i < leftSpectra[s].length-1; i++){
                     total += leftSpectra[s][i];
@@ -156,20 +156,20 @@ public class audioTimeline {
             }
         }
     }
-    
+
     /**
      * Retrieve the song list.
      * @param songList the list of AudioItems
      */
     public void receiveSelectedSongs(ArrayList <AudioItem> songList){
         clear();
-        
+
         selectedSongs.addAll(songList);
         num_pages = songList.size();
         index = 0;
         generateWaveForms();
     }
-    
+
     /**
      * Draws the timeline marker.
      * @param mouseX the x-coordinates of the mouse
@@ -177,18 +177,18 @@ public class audioTimeline {
      */
     public void displayTimeMarkers(int mouseX, int mouseY){
         if(!selectedSongs.isEmpty()) {
-            
+
             AudioItem tmp = getCurrSong();
             int currSongLength = tmp.getLength();
-            
+
             //See where in the song to show time stamp
             float scaleFactor = (float) mouseX/ (float) timeLineWidth;
-            
+
             float timeMarker = scaleFactor * currSongLength;
-            
+
             int min = (int) timeMarker/60;
             int sec = (int) timeMarker%60;
-            
+
             parent.fill(0xffffffff);
             parent.textAlign(PConstants.LEFT);
             int x_coord = mouseX < 450 ? mouseX + 5 : mouseX - 200;
@@ -216,7 +216,7 @@ public class audioTimeline {
         if(!selectedSongs.isEmpty()) {
             index = ((--index) < 0 ? selectedSongs.size()-1 : index);
         }
-    }   
+    }
 
     /**
      * Retrieves the current song index.
@@ -233,7 +233,7 @@ public class audioTimeline {
     public int getNumPages(){
         return (selectedSongs.isEmpty() ? 0 : num_pages);
     }
-    
+
     /**
      * Retrieves the current song.
      */
@@ -245,7 +245,7 @@ public class audioTimeline {
      * Removes all songs from the timeline.
      */
     public void clear() {
-        selectedSongs.clear(); 
+        selectedSongs.clear();
         spectraList.clear();
     }
 }

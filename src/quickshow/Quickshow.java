@@ -163,7 +163,7 @@ public class Quickshow extends PApplet {
             case "Shuffle Slides":
             case "transitionToggle":
                 show.controlEvent(theEvent);
-                
+
                 break;
 
             case "Clear selected songs":
@@ -223,15 +223,15 @@ public class Quickshow extends PApplet {
                 toggleMain(false);
 
                 break;
-                
+
             case "nextSong":
-            	aT.nextSong();
-            	break;
-            	
+                aT.nextSong();
+                break;
+
             case "prevSong" :
-            	aT.prevSong();
-            	break;
-            	
+                aT.prevSong();
+                break;
+
             case "Visual Item Properties":
                 popup.togglePopup(true, selectedItem, visualOffset);
 
@@ -253,7 +253,7 @@ public class Quickshow extends PApplet {
 
                 cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
                 cbU.setSlideShowTime(vTimeline.getTotalTime());
-            
+
                 ignoreNextMouseEvent  = true;
             }
 
@@ -261,7 +261,7 @@ public class Quickshow extends PApplet {
 
         case "AudioList":
             if(!popup.isEnabled()) {
-            	audioListbox.controlEvent(theEvent);
+                audioListbox.controlEvent(theEvent);
                 aT.receiveSelectedSongs(audioListbox.returnSelectedSongList());
             }
 
@@ -281,7 +281,7 @@ public class Quickshow extends PApplet {
                 closeFBActions();
             }
         }
-        
+
         else if(ignoreNextMouseEvent) {
             ignoreNextMouseEvent = false;
         }

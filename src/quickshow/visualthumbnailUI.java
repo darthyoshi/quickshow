@@ -77,21 +77,21 @@ public class visualthumbnailUI {
 
                     //Because of the thumbnail function, we can just pull the images
                     p = item.getThumbnail();
-                    
+
                     if(p != null) {
-	                    if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
-	                        if(p.height >= p.width){
-	                            scaleFactor = 1.0f*(MAX_THUMBNAIL_HEIGHT-15)/p.height;
-	                        }
-	                        else {
-	                            scaleFactor = 1.0f*(MAX_THUMBNAIL_WIDTH-15)/p.width;
-	                        }
-	                    }
-	
-	                    my_new_height = (float) p.height * scaleFactor;
-	                    my_new_width = (float) p.width * scaleFactor;
-	
-	                    parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
+                        if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
+                            if(p.height >= p.width){
+                                scaleFactor = 1.0f*(MAX_THUMBNAIL_HEIGHT-15)/p.height;
+                            }
+                            else {
+                                scaleFactor = 1.0f*(MAX_THUMBNAIL_WIDTH-15)/p.width;
+                            }
+                        }
+
+                        my_new_height = (float) p.height * scaleFactor;
+                        my_new_width = (float) p.width * scaleFactor;
+
+                        parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
                     }
 
                     //selected highlight
@@ -150,7 +150,7 @@ public class visualthumbnailUI {
                 if(vItem.getFileName().equalsIgnoreCase(item.getFileName())) {
                     break;
                 }
-                
+
                 i++;
             }
 
@@ -229,7 +229,7 @@ public class visualthumbnailUI {
      */
     public void selectAllImages() {
         ListIterator<VisualItem> itemIter = items.listIterator();
-        
+
         if(itemIter.hasNext()) {
             VisualItem v;
             int i = 0;
@@ -253,7 +253,7 @@ public class visualthumbnailUI {
      */
     public void selectAllClips() {
         ListIterator<VisualItem> itemIter = items.listIterator();
-        
+
         if(itemIter.hasNext()) {
             VisualItem v;
             int i = 0;

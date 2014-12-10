@@ -29,10 +29,10 @@ public class PopupDialogue {
 
     private VisualItem item = null;
     private int tagIndex = -1;
-    
+
     private ArrayList<String> tags;
     private ArrayList<int[]> tagTimes;
-    
+
     private Group popupGroup;
     private static final int[] popupOrigin = {315, 150};
     private Slider imgDisplaySlider;
@@ -43,8 +43,7 @@ public class PopupDialogue {
     private DropdownList tagList;
     private Toggle tagPosition;
     private static final String tagListLbl = "Add New Caption";
-    private static final String[] toggleLbl = {"Bottom",
-        "Top"};
+    private static final String[] toggleLbl = {"Bottom", "Top"};
     private int toggleIndex = 1;
 
     /**
@@ -56,7 +55,7 @@ public class PopupDialogue {
         this.parent = parent;
 
         debug = parent.getDebugFlag();
-        
+
         tags = new ArrayList<String>();
         tagTimes = new ArrayList<int[]>();
 
@@ -126,7 +125,7 @@ public class PopupDialogue {
             .setGroup(popupGroup);
         imgDisplaySlider.getCaptionLabel()
             .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
-        
+
         popupLock[4] = tagPosition = control.addToggle("tagPosition")
             .setCaptionLabel(" Caption on " + toggleLbl[toggleIndex])
             .setSize(30, 15)
@@ -140,30 +139,32 @@ public class PopupDialogue {
         lblOffset[1] = 195;
         popupLock[5] = popupAccept = control.addButton("Accept")
             .setSize(90, 15)
-            .setPosition(popupOrigin[0] + lblOffset[0], popupOrigin[1] + lblOffset[1])
+            .setPosition(popupOrigin[0] + lblOffset[0],
+                popupOrigin[1] + lblOffset[1])
             .setGroup(popupGroup);
         popupAccept.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
         popupLock[6] = popupCancel = control.addButton("Cancel")
             .setSize(90, 15)
-            .setPosition(popupOrigin[0] + lblOffset[0], popupOrigin[1] + lblOffset[1] + 17)
+            .setPosition(popupOrigin[0] + lblOffset[0],
+                popupOrigin[1] + lblOffset[1] + 17)
             .setGroup(popupGroup);
         popupCancel.getCaptionLabel().alignX(ControlP5Constants.CENTER);
-        
+
         popupLock[7] = tagAdd = control.addButton("tagAdd")
             .setCaptionLabel("Add Caption")
             .setSize(140, 15)
             .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1])
             .setGroup(popupGroup);
         tagAdd.getCaptionLabel().alignX(ControlP5Constants.CENTER);
-        
+
         popupLock[8] = tagRemove = control.addButton("tagRemove")
             .setCaptionLabel("Remove Caption")
             .setSize(140, 15)
             .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1] + 17)
             .setGroup(popupGroup);
         tagRemove.getCaptionLabel().alignX(ControlP5Constants.CENTER);
-        
+
         tagList = control.addDropdownList("tagList")
             .actAsPulldownMenu(true)
             .setGroup(popupGroup)
@@ -186,7 +187,7 @@ public class PopupDialogue {
         this.item = item;
 
         popupGroup.setVisible(toggle);
-    
+
         if(item != null) {
             if(item.checkType().equalsIgnoreCase("video")) {
                 imgDisplaySlider.setVisible(false);
@@ -196,19 +197,19 @@ public class PopupDialogue {
             else {
                 imgDisplaySlider.setValue(item.getDisplayTime());
             }
-            
+
             populateTags();
         }
-        
+
         else {
             tagList.clear();
             tags.clear();
             tagTimes.clear();
-            
+
             tagList.addItem(tagListLbl, -1);
-            
+
             imgDisplaySlider.setValue(-1f);
-            
+
             tagStartField.setText("");
             tagEndField.setText("");
             tagField.setText("");
@@ -221,17 +222,17 @@ public class PopupDialogue {
     private void populateTags() {
         tags.addAll(item.getTagTexts());
         tagTimes.addAll(item.getTagTimes());
-        
+
         String tmp;
         for(int i = 0; i < tags.size(); i++) {
             tmp = tags.get(i);
             if(tmp.length() >= 30) {
                 tmp = tags.get(i).substring(0, 29)+"..";
             }
-            
+
             tagList.addItem(tags.get(i), i);
         }
-        
+
         tagIndex = -1;
     }
 
@@ -346,22 +347,22 @@ public class PopupDialogue {
             togglePopup(false, null, null);
 
             break;
-            
+
         case "tagAdd":
             tagAdd();
-            
+
             break;
-            
+
         case "tagList":
             tagList((int)event.getValue());
-            
+
             break;
-            
+
         case "tagRemove":
             tagRemove();
-            
+
             break;
-            
+
         case "tagPosition":
             tagPosition();
 
@@ -382,7 +383,7 @@ public class PopupDialogue {
         toggleIndex = (++toggleIndex) % 2;
         tagPosition.setCaptionLabel(" Caption on " +
             toggleLbl[toggleIndex]);
-        
+
         if(debug) {
             Quickshow.println("Caption on bottom: " + tagPosition.getState());
         }
@@ -399,32 +400,32 @@ public class PopupDialogue {
         if(tagIndex >= 0) {
             tags.remove(tagIndex);
             tagTimes.remove(tagIndex);
-            
+
             tagList.clear();
             tagList.addItem(tagListLbl, -1);
-            
+
             String tmp;
             for(int i = 0; i < tags.size(); i++) {
                 tmp = tags.get(i);
                 if(tmp.length() >= 30) {
                     tmp = tags.get(i).substring(0, 29)+"..";
                 }
-                
+
                 tagList.addItem(tags.get(i), i);
             }
-            
+
             tagStartField.setText("");
             tagEndField.setText("");
-            
+
             tagField.setText("");
-            
+
             tagIndex = -1;
         }
 
         if(debug) {
             Quickshow.println("New caption count: " + tags.size());
         }
-        
+
         tagList.setCaptionLabel(tagListLbl);
     }
 
@@ -443,36 +444,36 @@ public class PopupDialogue {
         if(!text.trim().equals("")) {
             time[0] = getTagStartTime();
             time[1] = getTagEndTime();
-            
+
             if(time[0] >= 0 && time[1] >= 0) {
                 if(tagIndex >= 0) {
                     tags.set(tagIndex, text);
                     tagTimes.set(tagIndex, time);
                 }
-                
+
                 else {
                     tags.add(text);
                     tagTimes.add(time);
                 }
-    
+
                 if(text.length() >= 30) {
                     text = text.substring(0, 29) + "..";
                 }
-                
+
                 for(String blah:tags) {
                     Quickshow.println(blah);
                 }
-    
+
                 if(tagIndex >= 0) {
                     tagList.getItem(tagIndex+1).setText(text);
                 }
-                
+
                 else {
                     tagList.addItem(text, tags.size()-1);
                 }
             }
         }
-        
+
         if(debug) {
             Quickshow.println(
                 "Caption start: " + (time[0] >= 0 ? time[0] : "N/A") +
@@ -480,7 +481,7 @@ public class PopupDialogue {
                 "s\nNew caption count: " + tags.size()
             );
         }
-        
+
         tagList.setCaptionLabel(tagListLbl);
     }
 
@@ -491,23 +492,23 @@ public class PopupDialogue {
     private void tagList(int index) {
         if(index >= 0) {
             tagIndex = index;
-            
+
             tagStartField.setText(Integer.toString(tagTimes.get(tagIndex)[0]));
             tagEndField.setText(Integer.toString(tagTimes.get(tagIndex)[1]));
-            
+
             tagField.setText(tags.get(tagIndex));
-            
+
             tagAdd.setCaptionLabel("Edit Caption");
         }
-        
+
         else {
             tagIndex = -1;
-            
+
             tagAdd.setCaptionLabel("Add Caption");
-            
+
             tagStartField.setText("");
             tagEndField.setText("");
-            
+
             tagField.setText("");
         }
 

@@ -74,7 +74,7 @@ public class visualTimeline {
                 int width_by_sec;
                 int j = start_index;
                 VisualItem item;
-                
+
                 ListIterator<int[]> stampIter = timeStamps
                     .listIterator(start_index);
                 int[] stamp;
@@ -99,21 +99,21 @@ public class visualTimeline {
                         item.getDisplayTime() :
                         (startTime + SEC_PER_PAGE - stamp[0])
                     );
-                    
+
                     width_by_sec = duration * WIDTH_PER_SEC;
-                    
+
                     if(new_width > width_by_sec) {
-                    	new_width = width_by_sec - 1;
-                    	new_height = (int)((float)new_width*image.height/image.width);
+                        new_width = width_by_sec - 1;
+                        new_height = (int)((float)new_width*image.height/image.width);
                     }
 
                     y = (bounds[3]+bounds[1]-(int)Math.ceil(new_height))/2;
-                    
+
                     parent.rectMode(PConstants.CORNER);
                     parent.fill(0x6f40E0D0);
                     parent.stroke(0);
                     parent.rect(drawIndex, bounds[1], width_by_sec, timeLineHeight);
-                    
+
                     parent.image(image, drawIndex+1, y, new_width, new_height);
 
                     if(selectedIndex == j) {
@@ -122,7 +122,7 @@ public class visualTimeline {
                         parent.rectMode(PConstants.CORNER);
                         parent.rect(drawIndex, bounds[1]+1, width_by_sec-1, timeLineHeight-2);
                     }
-                    
+
                     //Increment the x index
                     drawIndex += width_by_sec;
 
@@ -149,12 +149,12 @@ public class visualTimeline {
             itemsForDisplay.add(item);
 
             tmp = item.getDisplayTime();
-            
+
             times = new int[2];
             times[0] = totalTime;
             totalTime += tmp;
             times[1] = totalTime;
-            
+
             timeStamps.add(times);
         }
     }
@@ -189,33 +189,33 @@ public class visualTimeline {
      * Goes to the next page on the timeline.
      */
     public void showNextOnTimeline() {
-     	if(start_index + 1 < itemsForDisplay.size()) {
-    	    if(debug) {
-    	        Quickshow.println((timeStamps.get(start_index)[0]+SEC_PER_PAGE)+
-	                " "+totalTime + "\ntrue ");
-    	    }
-    	    
-    	    if(timeStamps.get(start_index)[0]+SEC_PER_PAGE < totalTime) {
-    	        start_index++;
+        if(start_index + 1 < itemsForDisplay.size()) {
+            if(debug) {
+                Quickshow.println((timeStamps.get(start_index)[0]+SEC_PER_PAGE)+
+                    " "+totalTime + "\ntrue ");
+            }
 
-    	        if(debug) {
-    	            Quickshow.print("true");
-    	        }
-    	    }
+            if(timeStamps.get(start_index)[0]+SEC_PER_PAGE < totalTime) {
+                start_index++;
 
-    	    if(debug) {
-    	        Quickshow.println();
-    	    }
-    	}
+                if(debug) {
+                    Quickshow.print("true");
+                }
+            }
+
+            if(debug) {
+                Quickshow.println();
+            }
+        }
     }
 
     /**
      * Goes to the previous page on the timeline.
      */
     public void showPrevOnTimeline(){
-    	if(start_index > 0) {
-    		start_index--;
-    	}
+        if(start_index > 0) {
+            start_index--;
+        }
     }
 
     /**
@@ -240,21 +240,21 @@ public class visualTimeline {
             parent.fill(0xff555555);
             parent.stroke(0);
             parent.rectMode(PConstants.CORNER);
-            
+
             int x_coord, align, textOffset;
-            
+
             if(mouseX < 450) {
                 x_coord = mouseX;
                 align = PConstants.LEFT;
                 textOffset = 5;
             }
-            
+
             else {
                 x_coord = mouseX-prevThumbnail.width;
                 align = PConstants.RIGHT;
                 textOffset = -5;
             }
-            
+
             parent.rect(x_coord, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
 
             parent.image(prevThumbnail, x_coord, bounds[1]-60);
@@ -304,7 +304,7 @@ public class visualTimeline {
         if(start_index < timeStamps.size()) {
             ListIterator<int[]> stampIter = timeStamps
                 .listIterator(start_index);
-            
+
             int[] stamp;
 
             if(stampIter.hasNext()) {
@@ -395,27 +395,27 @@ public class visualTimeline {
         int[] result = {0, 0};
 
         curr_items_displayed = 0;
-        
+
         if(start_index < timeStamps.size()) {
             ListIterator<int[]> stampIter = timeStamps.listIterator(start_index);
-            
+
             if(stampIter.hasNext()) {
                 int[] stamp = stampIter.next();
-                
+
                 result[0] = stamp[0];
                 result[1] = stamp[1];
-                
+
                 curr_items_displayed++;
-                
+
                 while(stampIter.hasNext() && result[1] < result[0] + SEC_PER_PAGE) {
                     stamp = stampIter.next();
-                    
+
                     result[1] = stamp[1];
-                    
+
                     curr_items_displayed++;
                 }
             }
-            
+
             if(debug) {
                 Quickshow.println("start index: " + start_index +
                     "\nitems displayed: " + curr_items_displayed +

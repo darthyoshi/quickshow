@@ -53,7 +53,7 @@ public class audiolistUI {
         //Vectors to store information about the Listbox
         songList = new ArrayList<AudioItem>();
         selectedIndex = new IntList();
-        
+
         //Need to find a way to display the list without initializing
         ListBoxItem lbi;
         for (int i=0;i<25;i++) {
@@ -69,9 +69,9 @@ public class audiolistUI {
      * Clear songs in the selectedSongList.
      */
     public void clearSelectedSongs() {
-    	for(Integer val : selectedIndex) {
-    		list.getItem(val).setColorBackground(0xffff0000);
-    	}
+        for(Integer val : selectedIndex) {
+            list.getItem(val).setColorBackground(0xffff0000);
+        }
         selectedIndex.clear();
     }
 
@@ -80,11 +80,11 @@ public class audiolistUI {
      * @return an ArrayList containing the selected AudioItems
      */
     public ArrayList<AudioItem> returnSelectedSongList(){
-    	ArrayList<AudioItem> result = new ArrayList<AudioItem>();
-    	
-    	for(Integer index : selectedIndex) {
-    		result.add(songList.get(index));
-    	}
+        ArrayList<AudioItem> result = new ArrayList<AudioItem>();
+
+        for(Integer index : selectedIndex) {
+            result.add(songList.get(index));
+        }
 
         return result;
     }
@@ -97,7 +97,7 @@ public class audiolistUI {
         if(debug) {
             Quickshow.println("Size of fileList: " + fileList.size());
         }
-        
+
         //only add if items are not already in list
         AudioItem item;
         ListIterator<AudioItem> itemIter;
@@ -120,7 +120,7 @@ public class audiolistUI {
                 songList.add(vItem);
             }
         }
-        
+
         //Display the songs on the list
         ListIterator<AudioItem> songIter = songList.listIterator(oldListSize);
         while(songIter.hasNext()){
@@ -148,11 +148,11 @@ public class audiolistUI {
      */
     private void addToList(AudioItem audio){
         StringBuilder builder = new StringBuilder(audio.getAuthor() + " - "
-    		+ audio.getTitle() + " - " + audio.getLength());
+            + audio.getTitle() + " - " + audio.getLength());
 
         //Generate the Label for the listBoxItem
         String songDisplay = (builder.length() >= 25 ?
-    		builder.substring(0, 24) + ".." : builder.toString());
+            builder.substring(0, 24) + ".." : builder.toString());
 
         if(debug) {
             Quickshow.println("Song being added: " + songDisplay);
@@ -173,23 +173,23 @@ public class audiolistUI {
      * Callback method for handling ControlP5 UI events.
      * @param theEvent the ControlEvent to handle
      */
-	public void controlEvent(ControlEvent theEvent) {
-		int val = (int)theEvent.getGroup().getValue();
- 
-		if(MAX_SONGS > selectedIndex.size() && num_items > 0 && val < num_items) {
+    public void controlEvent(ControlEvent theEvent) {
+        int val = (int)theEvent.getGroup().getValue();
+
+        if(MAX_SONGS > selectedIndex.size() && num_items > 0 && val < num_items) {
             if(selectedIndex.hasValue(val)) {
-            	selectedIndex.remove(selectedIndex.index(val));
+                selectedIndex.remove(selectedIndex.index(val));
 
-            	list.getItem(val).setColorBackground(0xffff0000);
+                list.getItem(val).setColorBackground(0xffff0000);
             }
-            
-            else {
-	            selectedIndex.append(val);
 
-	            list.getItem(val).setColorBackground(0xff2299ff);
+            else {
+                selectedIndex.append(val);
+
+                list.getItem(val).setColorBackground(0xff2299ff);
             }
         }
-		
-	}
+
+    }
 
 }
