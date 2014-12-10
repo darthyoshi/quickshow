@@ -189,12 +189,23 @@ public class visualTimeline {
      * Goes to the next page on the timeline.
      */
     public void showNextOnTimeline() {
-        //TODO stop scroll when last item on timeline is only item drawn
-        //  or when box of last item is fully drawn
-    	if(start_index + curr_items_displayed + 1 < itemsForDisplay.size() &&
-	        timeStamps.get(start_index+curr_items_displayed)[1] <= totalTime
-        ) {
-    		start_index++;
+     	if(start_index + 1 < itemsForDisplay.size()) {
+    	    if(debug) {
+    	        Quickshow.println((timeStamps.get(start_index)[0]+SEC_PER_PAGE)+
+	                " "+totalTime + "\ntrue ");
+    	    }
+    	    
+    	    if(timeStamps.get(start_index)[0]+SEC_PER_PAGE < totalTime) {
+    	        start_index++;
+
+    	        if(debug) {
+    	            Quickshow.print("true");
+    	        }
+    	    }
+
+    	    if(debug) {
+    	        Quickshow.println();
+    	    }
     	}
     }
 
@@ -382,7 +393,7 @@ public class visualTimeline {
      */
     public int[] getCurPageStamps() {
         int[] result = {0, 0};
-        
+
         curr_items_displayed = 0;
         
         if(start_index < timeStamps.size()) {
@@ -407,7 +418,9 @@ public class visualTimeline {
             
             if(debug) {
                 Quickshow.println("start index: " + start_index +
-                    "\nitems displayed: " + curr_items_displayed);
+                    "\nitems displayed: " + curr_items_displayed +
+                    "\ncurrent page bounds: " + result[0] + '-' +
+                    result[1] + " of " + totalTime);
             }
         }
 
