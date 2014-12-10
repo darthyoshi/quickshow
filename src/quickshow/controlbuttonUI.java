@@ -13,6 +13,7 @@ import controlP5.Controller;
 import controlP5.Group;
 import controlP5.Toggle;
 
+@SuppressWarnings("rawtypes")
 public class controlbuttonUI {
 	private Group mainUIGroup;
     private Button playButton;
@@ -46,7 +47,7 @@ public class controlbuttonUI {
 	public controlbuttonUI(ControlP5 control){
 	    mainUIGroup = control.addGroup("buttonUI").setLabel("");
 		
-        lockControllers = new Controller[14];
+        lockControllers = new Controller[16];
 		
 		//For the entire slideshow
 		lockControllers[0] = playButton = control.addButton("Play")
@@ -73,7 +74,7 @@ public class controlbuttonUI {
 		//For audioList
 		lockControllers[2] = clearSongsButton = control
 	        .addButton("Clear selected songs")
-	        .setPosition(675, 402)
+	        .setPosition(670, 402)
 	        .setSize(200, 15)
 	        .setGroup(mainUIGroup);
 		clearSongsButton.getCaptionLabel().alignX(ControlP5Constants.CENTER);
@@ -114,14 +115,16 @@ public class controlbuttonUI {
 		
 		//To control the visual timeline thumbnail
 		lockControllers[8] = nextSlides = control.addButton("Next")
-		    .setPosition(497, 580)
-		    .setSize(69, 15)
+		    .setPosition(851, 500)
+		    .setSize(20, 77)
+		    .setCaptionLabel(">")
 		    .setGroup(mainUIGroup);
 		nextSlides.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
 		lockControllers[9] = prevSlides = control.addButton("Previous")
-		    .setPosition(337, 580)
-		    .setSize(69, 15)
+		    .setPosition(30, 500)
+		    .setSize(20, 77)
+		    .setCaptionLabel("<")
 		    .setGroup(mainUIGroup);
 		prevSlides.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
@@ -143,7 +146,7 @@ public class controlbuttonUI {
 		
 		//Load media
 		lockControllers[10] = loadMedia = control.addButton("Load Media")
-		    .setPosition(675, 10)
+		    .setPosition(670, 10)
 		    .setSize(200, 15)
 		    .setGroup(mainUIGroup);
 		loadMedia.getCaptionLabel().alignX(ControlP5Constants.CENTER);
@@ -156,15 +159,15 @@ public class controlbuttonUI {
 	        .setGroup(mainUIGroup);
 		editVisualItem.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		nextSong = control.addButton("nextSong")
-		    .setPosition(870, 421)
+		lockControllers[13] = nextSong = control.addButton("nextSong")
+		    .setPosition(851, 421)
 		    .setSize(20, 77)
 		    .setCaptionLabel(">")
 		    .setGroup(mainUIGroup);
 		nextSong.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		prevSong = control.addButton("prevSong")
-		    .setPosition(10, 421)
+		lockControllers[14] = prevSong = control.addButton("prevSong")
+		    .setPosition(30, 421)
 		    .setSize(20, 77)
 		    .setCaptionLabel("<")
 		    .setGroup(mainUIGroup);
@@ -178,7 +181,7 @@ public class controlbuttonUI {
 			.setGroup(mainUIGroup);
 		pageIndex.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 		
-		lockControllers[13] = transitionToggle = control
+		lockControllers[15] = transitionToggle = control
 	        .addToggle("transitionToggle")
 	        .setGroup(mainUIGroup)
 	        .setPosition(400, 10)
@@ -194,8 +197,6 @@ public class controlbuttonUI {
 	 */
 	public void toggle(boolean visible) {
 	    mainUIGroup.setVisible(visible);
-        
-        setLock(!visible);
     }
 	
 	/**

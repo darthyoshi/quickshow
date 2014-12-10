@@ -14,26 +14,21 @@ import processing.core.PImage;
 import quickshow.datatypes.VisualItem;
 
 public class visualTimeline {
-    private final static int timeLineWidth = 840;
+    private final static int timeLineWidth = 800;
     private final static int timeLineHeight = 78;
-    private final static int MAX_THUMBNAIL_DISPLAY = 8;
     private final static int WIDTH_PER_SEC = 15;
     private int start_index = 0;
     private float scaleFactor;
     private Quickshow parent;
     private boolean debug;
-    private int num_pages = 0;
-    private int curr_page_index = 0;
     private int curr_items_displayed = 0;
-    private int prev_items_displayed = 0;
     private int totalTime = 0;
     private int curr_Time = 0;
     private int curr_img_length = 0;
-    private int overall_img_length = 0;
     private int selectedIndex = -1;
     private ArrayList<int[]> timeStamps;
     private ArrayList<int[]> timeLineBounds;
-    final static int[] bounds = {30, 499, 870, 577};
+    final static int[] bounds = {50, 499, 850, 577};
 
     private ArrayList <VisualItem> itemsForDisplay;
 
@@ -59,15 +54,6 @@ public class visualTimeline {
         parent.fill(90,90,90);
         parent.stroke(0);
         parent.rect(bounds[0], bounds[1], timeLineWidth, timeLineHeight);
-    /*
-        parent.stroke(0xffffffff);
-        short x;
-        for(short i = 1; i < 30; i++) {
-            x = (short)(i*28 + 30);
-
-            parent.stroke((i%5 == 0 ? 0xff55aaff : 0xffffffff));
-            parent.line(x, bounds[1]+2, x, bounds[3]-2);
-        }*/
     }
 
     /**
@@ -126,8 +112,8 @@ public class visualTimeline {
                         parent.fill(0x55ff3210);
                         parent.stroke(0xffff2233);
                         parent.rectMode(PConstants.CORNER);
-                        parent.rect(drawIndex, bounds[1], width_by_sec,
-                            timeLineHeight);
+                        parent.rect(drawIndex, bounds[1]+1, width_by_sec,
+                            timeLineHeight-2);
                     }
 
                     //Increment the x index
@@ -169,9 +155,6 @@ public class visualTimeline {
 
         curr_Time = 0;
         calculateTimeLineBounds(0);
-
-        num_pages = itemsForDisplay.size()/MAX_THUMBNAIL_DISPLAY + 1;
-        curr_page_index = 1;
     }
 
     /**
@@ -187,7 +170,7 @@ public class visualTimeline {
                 VisualItem item;
                 PImage image;
 
-                int drawIndex = bounds[0];
+                int drawIndex = bounds[0]+2;
                 curr_items_displayed = 0;
 
                 float time_scaled_width;
@@ -241,7 +224,6 @@ public class visualTimeline {
                 if(debug) {
                     Quickshow.println("curr_Items display: " + curr_items_displayed);
                 }
-                overall_img_length += curr_img_length;
             }
         }
     }
@@ -268,8 +250,6 @@ public class visualTimeline {
 
         //Reset the display index
         start_index = 0;
-        curr_page_index = 0;
-        num_pages = 0;
         totalTime = 0;
         curr_items_displayed = 0;
     }
@@ -278,13 +258,11 @@ public class visualTimeline {
      * Goes to the next page on the timeline.
      */
     public void showNextOnTimeline(){
-        start_index = start_index + curr_items_displayed + 1;
-        if(start_index >= itemsForDisplay.size()) start_index = 0;
-        prev_items_displayed = curr_items_displayed;
-        calculateTimeLineBounds(start_index);
+    	if(start_index + curr_items_displayed + 1 < itemsForDisplay.size()) {
+    		start_index++;
+    	}
 
-        //wrap page index
-        curr_page_index = (++curr_page_index) > num_pages ? 1 : curr_page_index;
+        calculateTimeLineBounds(start_index);
     }
 
     /**
@@ -292,15 +270,11 @@ public class visualTimeline {
      * TODO make sure to wrap around back to the end of the time line
      */
     public void showPrevOnTimeline(){
-        start_index = start_index - prev_items_displayed - 1;
-        if(start_index < 0) {
-            start_index = 0;
-            //start_index = itemsForDisplay.size() - 1;
-        }
-        calculateTimeLineBounds(start_index);
-
-        //wrap page index
-        curr_page_index = (--curr_page_index) < 1 ? num_pages : curr_page_index;
+    	if(start_index > 0) {
+    		start_index--;
+    	}
+        
+    	calculateTimeLineBounds(start_index);
     }
 
     /**
@@ -479,7 +453,14 @@ public class visualTimeline {
         int[] result = {0, 0};
         if(!timeStamps.isEmpty()) {
             result[0] = timeStamps.get(start_index)[0];
-            result[1] = timeStamps.get(curr_items_displayed+start_index-1)[1];
+            
+            int tmp = curr_items_displayed+start_index;
+            
+            if(tmp == timeStamps.size()) {
+            	tmp--;
+            }
+            
+            result[1] = timeStamps.get(tmp)[1];
         }
 
         return result;

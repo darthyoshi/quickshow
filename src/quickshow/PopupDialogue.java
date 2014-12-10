@@ -18,7 +18,6 @@ import controlP5.ControlP5Constants;
 import controlP5.Controller;
 import controlP5.DropdownList;
 import controlP5.Group;
-import controlP5.ListBoxItem;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
@@ -81,7 +80,6 @@ public class PopupDialogue {
             .setSize(250, 20)
             .setCaptionLabel("")
             .setAutoClear(false)
-            .lock()
             .setGroup(popupGroup);
 
         lblOffset[1] = 56;
@@ -102,7 +100,6 @@ public class PopupDialogue {
             .setSize(40, 20)
             .setCaptionLabel("")
             .setAutoClear(false)
-            .lock()
             .setGroup(popupGroup);
 
         lblOffset[0] = 120;
@@ -117,7 +114,6 @@ public class PopupDialogue {
             .setSize(40, 20)
             .setCaptionLabel("")
             .setAutoClear(false)
-            .lock()
             .setGroup(popupGroup);
 
         popupLock[3] = imgDisplaySlider = control.addSlider("Display Time")
@@ -126,15 +122,13 @@ public class PopupDialogue {
             .setSliderMode(Slider.FLEXIBLE)
             .setPosition(popupOrigin[0], popupOrigin[1] + 115)
             .setRange(2f, 10f)
-            .lock()
             .setValue(-1f)
             .setGroup(popupGroup);
         imgDisplaySlider.getCaptionLabel()
             .align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
         
         popupLock[4] = tagPosition = control.addToggle("tagPosition")
-            .lock()
-            .setCaptionLabel(toggleLbl[toggleIndex])
+            .setCaptionLabel(" Caption on " + toggleLbl[toggleIndex])
             .setSize(30, 15)
             .setPosition(popupOrigin[0], popupOrigin[1] + 160)
             .setGroup(popupGroup)
@@ -145,21 +139,18 @@ public class PopupDialogue {
         lblOffset[0] = 160;
         lblOffset[1] = 195;
         popupLock[5] = popupAccept = control.addButton("Accept")
-            .lock()
             .setSize(90, 15)
             .setPosition(popupOrigin[0] + lblOffset[0], popupOrigin[1] + lblOffset[1])
             .setGroup(popupGroup);
         popupAccept.getCaptionLabel().alignX(ControlP5Constants.CENTER);
 
         popupLock[6] = popupCancel = control.addButton("Cancel")
-            .lock()
             .setSize(90, 15)
             .setPosition(popupOrigin[0] + lblOffset[0], popupOrigin[1] + lblOffset[1] + 17)
             .setGroup(popupGroup);
         popupCancel.getCaptionLabel().alignX(ControlP5Constants.CENTER);
         
         popupLock[7] = tagAdd = control.addButton("tagAdd")
-            .lock()
             .setCaptionLabel("Add Caption")
             .setSize(140, 15)
             .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1])
@@ -167,7 +158,6 @@ public class PopupDialogue {
         tagAdd.getCaptionLabel().alignX(ControlP5Constants.CENTER);
         
         popupLock[8] = tagRemove = control.addButton("tagRemove")
-            .lock()
             .setCaptionLabel("Remove Caption")
             .setSize(140, 15)
             .setPosition(popupOrigin[0], popupOrigin[1] + lblOffset[1] + 17)
@@ -195,14 +185,8 @@ public class PopupDialogue {
     public void togglePopup(boolean toggle, VisualItem item, Integer offset) {
         this.item = item;
 
-        if(!toggle || item != null) {
-            popupGroup.setVisible(toggle);
-
-            for(Controller popup : popupLock) {
-                popup.setLock(!toggle);
-            }
-        }
-
+        popupGroup.setVisible(toggle);
+    
         if(item != null) {
             if(item.checkType().equalsIgnoreCase("video")) {
                 imgDisplaySlider.setVisible(false);
@@ -396,7 +380,7 @@ public class PopupDialogue {
      */
     private void tagPosition() {
         toggleIndex = (++toggleIndex) % 2;
-        tagPosition.setCaptionLabel("Caption position: " +
+        tagPosition.setCaptionLabel(" Caption on " +
             toggleLbl[toggleIndex]);
         
         if(debug) {

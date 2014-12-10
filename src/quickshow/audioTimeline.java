@@ -18,16 +18,15 @@ import ddf.minim.analysis.FFT;
 
 public class audioTimeline {
     private Quickshow parent;
-    private boolean debug;
 
     //Generate the wave form image
     private ArrayList<float[][]> spectraList;
-    private static final int timeLineWidth = 840;
+    private static final int timeLineWidth = 800;
     private static final int timeLineHeight = 78;
     private ArrayList <AudioItem> selectedSongs;
     private int index;
     private int num_pages;
-    static final int[] bounds = {30, 420, 870, 498};
+    static final int[] bounds = {50, 420, 850, 498};
     
     /**
      * Class constructor.
@@ -36,8 +35,6 @@ public class audioTimeline {
      */
     public audioTimeline(Quickshow parent, Minim minim){
         this.parent = parent;
-        
-        debug = parent.getDebugFlag();
 
         selectedSongs = new ArrayList<AudioItem>();
         

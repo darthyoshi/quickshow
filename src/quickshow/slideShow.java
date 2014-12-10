@@ -213,20 +213,26 @@ public class slideShow {
                             parent.height,
                             PConstants.RGB
                         );
-                        transitFrame.loadPixels();
-                        for(
-                            int i = 0;
-                            i < transitFrame.pixels.length;
-                            i++
-                        ) {
-                            transitFrame.pixels[i] = 0xff555555;
-                        }
-                        transitFrame.updatePixels();
                         transitFrame.set(
                             (parent.width - curFrame.width)/2,
                             (parent.height - curFrame.height)/2,
                             curFrame
                         );
+                        
+                        //Compensate for transparency
+                        transitFrame.loadPixels();
+                        float a, r, g, b;
+                        for(int i = 0; i < transitFrame.pixels.length; i++) {
+                        	a = parent.alpha(transitFrame.pixels[i]) / 255f;
+                        	if(a < 1f) {
+                        		r = a*parent.red(transitFrame.pixels[i])+ 0x55*(1f-a);
+                        		g = a*parent.green(transitFrame.pixels[i])+ 0x55*(1f-a);
+                        		b = a*parent.blue(transitFrame.pixels[i])+ 0x55*(1f-a);
+                        		                        		
+                        		transitFrame.pixels[i] = parent.color(r, g, b);
+                        	}
+                        }
+                        transitFrame.updatePixels();
                         
                         if(!fade) {
                             //set horizontal transition direction

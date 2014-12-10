@@ -25,10 +25,12 @@ import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.ControlP5Constants;
+import controlP5.Controller;
 import controlP5.DropdownList;
 import controlP5.Group;
 import controlP5.Textfield;
 
+@SuppressWarnings("rawtypes")
 public class FileBrowser {
     private boolean debug;
 
@@ -54,7 +56,7 @@ public class FileBrowser {
     private boolean dblClick = false;
 
     private Group group;
-    private Button[] lockButtons;
+	private Controller[] controllers;
     private Textfield pathField;
     private Button pageLabel;
     private DropdownList mediaTypeList;
@@ -113,79 +115,71 @@ public class FileBrowser {
 
         group = control.addGroup("fileBrowser").setLabel("").setVisible(false);
 
-        lockButtons = new Button[7];
+        controllers = new Controller[8];
 
-        pathField = control.addTextfield("pathField")
+        controllers[7] = pathField = control.addTextfield("pathField")
             .setCaptionLabel("")
             .setText(this.curDir)
             .setPosition(30, 30)
             .setSize(780, 30)
-            .setLock(true)
             .setFocus(false)
             .setAutoClear(false)
             .setGroup(group);
 
-        lockButtons[0] = control.addButton("openButton")
+        controllers[0] = control.addButton("openButton")
             .setCaptionLabel("Open")
             .setPosition(750, 540)
             .setSize(55, 30)
-            .setLock(true)
             .setGroup(group);
-        lockButtons[0].getCaptionLabel().align(ControlP5Constants.CENTER,
+        controllers[0].getCaptionLabel().align(ControlP5Constants.CENTER,
     		ControlP5Constants.CENTER);
 
-        lockButtons[1] = control.addButton("cancelButton")
+        controllers[1] = control.addButton("cancelButton")
             .setCaptionLabel("Cancel")
-            .setLock(true)
             .setSize(55, 30)
             .setPosition(815, 540)
             .setGroup(group);
-        lockButtons[1].getCaptionLabel().align(ControlP5Constants.CENTER,
+        controllers[1].getCaptionLabel().align(ControlP5Constants.CENTER,
     		ControlP5Constants.CENTER);
 
-        lockButtons[2] = control.addButton("scrollUpButton")
+        controllers[2] = control.addButton("scrollUpButton")
             .setSize(30, 75)
-            .setLock(true)
             .setPosition(840, 146)
             .setCaptionLabel("^")
             .setGroup(group);
-        lockButtons[2].getCaptionLabel().align(ControlP5Constants.CENTER,
+        controllers[2].getCaptionLabel().align(ControlP5Constants.CENTER,
     		ControlP5Constants.CENTER);
 
-        lockButtons[3] = control.addButton("scrollTopButton")
+        controllers[3] = control.addButton("scrollTopButton")
             .setSize(30, 75)
-            .setLock(true)
             .setPosition(840, 71)
             .setCaptionLabel("^\n^")
             .setGroup(group);
-        lockButtons[3].getCaptionLabel().align(ControlP5Constants.CENTER,
+        controllers[3].getCaptionLabel().align(ControlP5Constants.CENTER,
     		ControlP5Constants.CENTER);
 
-        lockButtons[4] = control.addButton("scrollDownButton")
+        controllers[4] = control.addButton("scrollDownButton")
             .setSize(30, 75)
-            .setLock(true)
             .setPosition(840, 380)
             .setCaptionLabel("v")
             .setGroup(group);
-        lockButtons[4].getCaptionLabel().align(ControlP5Constants.CENTER,
+        controllers[4].getCaptionLabel().align(ControlP5Constants.CENTER,
     		ControlP5Constants.CENTER);
 
-        lockButtons[5] = control.addButton("scrollBottomButton")
+        controllers[5] = control.addButton("scrollBottomButton")
             .setSize(30, 75)
-            .setLock(true)
             .setPosition(840, 455)
             .setCaptionLabel("v\nv")
             .setGroup(group);
-        lockButtons[5].getCaptionLabel().align(ControlP5Constants.CENTER,
+        controllers[5].getCaptionLabel().align(ControlP5Constants.CENTER,
     		ControlP5Constants.CENTER);
 
-        lockButtons[6] = control.addButton("parentDirButton")
+        controllers[6] = control.addButton("parentDirButton")
             .setCaptionLabel("..")
-            .setLock(true)
             .setGroup(group)
             .setPosition(815, 30)
             .setSize(55, 30);
-        lockButtons[6].getCaptionLabel().align(ControlP5Constants.CENTER,
+        controllers[6].getCaptionLabel().align(ControlP5Constants.CENTER,
     		ControlP5Constants.CENTER);
 
         String label = "Visual (bmp, jpg, png, gif, mov, avi, mpg, mp4)";
@@ -406,7 +400,7 @@ public class FileBrowser {
             break;
 
         case 1:
-            File file = new File(curDir + '/' +
+    	    File file = new File(curDir + '/' +
                 fileNames.get(selectedIndex.get(0)));
 
             if(file.isDirectory()) {
@@ -423,9 +417,9 @@ public class FileBrowser {
             else {
                 loadVisual();
             }
-
-            selectedIndex.clear();
         }
+
+        selectedIndex.clear();
 
         if(!results.isEmpty()) {
             toggle(false);
@@ -1098,7 +1092,11 @@ public class FileBrowser {
                 col*162 + 111 + 62 >= mouseX;
 
             if(rowSelect && colSelect) {
-                selectedIndex.append(curDisplayIndex+5*row+col);
+            	int tmp = curDisplayIndex+5*row+col;
+            	
+            	if(tmp < fileNames.size()) {
+            		selectedIndex.append(tmp);
+            	}
             }
 
             if(!dblClick) {
@@ -1270,12 +1268,6 @@ public class FileBrowser {
      */
     public void toggle(boolean visible) {
         group.setVisible(visible);
-
-        pathField.setLock(!visible);
-
-        for(Button button : lockButtons) {
-            button.setLock(!visible);
-        }
     }
 
     /**

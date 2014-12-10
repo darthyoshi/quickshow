@@ -77,19 +77,22 @@ public class visualthumbnailUI {
 
                     //Because of the thumbnail function, we can just pull the images
                     p = item.getThumbnail();
-                    if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
-                        if(p.height >= p.width){
-                            scaleFactor = 1.0f*(MAX_THUMBNAIL_HEIGHT-15)/p.height;
-                        }
-                        else {
-                            scaleFactor = 1.0f*(MAX_THUMBNAIL_WIDTH-15)/p.width;
-                        }
+                    
+                    if(p != null) {
+	                    if (p.height > MAX_THUMBNAIL_HEIGHT || p.width > MAX_THUMBNAIL_WIDTH){
+	                        if(p.height >= p.width){
+	                            scaleFactor = 1.0f*(MAX_THUMBNAIL_HEIGHT-15)/p.height;
+	                        }
+	                        else {
+	                            scaleFactor = 1.0f*(MAX_THUMBNAIL_WIDTH-15)/p.width;
+	                        }
+	                    }
+	
+	                    my_new_height = (float) p.height * scaleFactor;
+	                    my_new_width = (float) p.width * scaleFactor;
+	
+	                    parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
                     }
-
-                    my_new_height = (float) p.height * scaleFactor;
-                    my_new_width = (float) p.width * scaleFactor;
-
-                    parent.image(p, xStartIndex, yStartIndex, my_new_width, my_new_height);
 
                     //selected highlight
                     if(selectedIndex.hasValue(j)) {
@@ -135,9 +138,11 @@ public class visualthumbnailUI {
 
         //only add if items are not already in list
         VisualItem item;
+        int i;
         ListIterator<VisualItem> itemIter;
         for(VisualItem vItem : vItems) {
             itemIter = items.listIterator();
+            i = 0;
 
             while(itemIter.hasNext()) {
                 item = itemIter.next();
@@ -145,9 +150,11 @@ public class visualthumbnailUI {
                 if(vItem.getFileName().equalsIgnoreCase(item.getFileName())) {
                     break;
                 }
+                
+                i++;
             }
 
-            if(!itemIter.hasNext()) {
+            if(i == items.size()) {
                 items.add(vItem);
             }
         }

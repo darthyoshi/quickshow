@@ -251,6 +251,9 @@ public class Quickshow extends PApplet {
 
                 vTimeline.updateTimeStamps(selectedItemIndex);
                 vTimeline.calculateTimeLineBounds(vTimeline.getStartIndex());
+
+                cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
+                cbU.setSlideShowTime(vTimeline.getTotalTime());
             
                 ignoreNextMouseEvent  = true;
             }

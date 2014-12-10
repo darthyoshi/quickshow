@@ -45,7 +45,7 @@ public class audiolistUI {
         control.setFont(control.getFont().getFont(), 15);
         list = control.addListBox(title)
             .setSize(width, height)
-            .setPosition(675, 50)
+            .setPosition(670, 50)
             .disableCollapse()
             .setBarHeight(18);
         list.setGroup(group);
@@ -101,8 +101,10 @@ public class audiolistUI {
         //only add if items are not already in list
         AudioItem item;
         ListIterator<AudioItem> itemIter;
+        int i;
         for(AudioItem vItem : fileList) {
             itemIter = songList.listIterator();
+            i = 0;
 
             while(itemIter.hasNext()) {
                 item = itemIter.next();
@@ -110,9 +112,11 @@ public class audiolistUI {
                 if(vItem.getFileName().equalsIgnoreCase(item.getFileName())) {
                     break;
                 }
+
+                i++;
             }
 
-            if(!itemIter.hasNext()) {
+            if(i == songList.size()) {
                 songList.add(vItem);
             }
         }
