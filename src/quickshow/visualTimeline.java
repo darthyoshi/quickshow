@@ -317,14 +317,14 @@ public class visualTimeline {
 
             parent.fill(0xffff0055);
             parent.textAlign(PConstants.RIGHT);
-            parent.text(text, x_coord-5, bounds[1]);
+            parent.text(text, x_coord-5, bounds[1] + 20);
 
             min = stamp[1]/60;
             sec = stamp[1]%60;
             text = String.format("%d:%02d", min, sec);
 
             parent.textAlign(PConstants.LEFT);
-            parent.text(text, x_coord+prevThumbnail.width+5, bounds[1]);
+            parent.text(text, x_coord+prevThumbnail.width+5, bounds[1] + 20);
         }
     }
 
