@@ -106,7 +106,7 @@ public class visualthumbnailUI {
                         parent.textSize(16);
                         parent.text(
                             selectedIndex.index(j)+1,
-                            10 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            20 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
                             15 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
                     }

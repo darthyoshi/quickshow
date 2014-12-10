@@ -16,15 +16,14 @@ import quickshow.datatypes.VisualItem;
 public class visualTimeline {
     private final static int timeLineWidth = 800;
     private final static int timeLineHeight = 78;
-    private final static int WIDTH_PER_SEC = 15;
+    private final static int SEC_PER_PAGE = 40;
+    private final static int WIDTH_PER_SEC = timeLineWidth/SEC_PER_PAGE;
     private int start_index = 0;
     private float scaleFactor;
     private Quickshow parent;
     private boolean debug;
     private int curr_items_displayed = 0;
     private int totalTime = 0;
-    private int curr_Time = 0;
-    private int curr_img_length = 0;
     private int selectedIndex = -1;
     private ArrayList<int[]> timeStamps;
     private ArrayList<int[]> timeLineBounds;
@@ -69,14 +68,20 @@ public class visualTimeline {
                 parent.imageMode(PConstants.CORNER);
                 PImage image;
 
-                int drawIndex = bounds[0] + 2;
+                int drawIndex = bounds[0];
                 int y, duration;
                 float new_height, new_width;
                 int width_by_sec;
                 int j = start_index;
                 VisualItem item;
+                
+                ListIterator<int[]> stampIter = timeStamps
+                    .listIterator(start_index);
+                int[] stamp;
+                int startTime = timeStamps.get(start_index)[0];
 
                 do {
+                    stamp = stampIter.next();
                     item = itemIter.next();
                     image = item.getThumbnail();
 
@@ -89,9 +94,13 @@ public class visualTimeline {
                     new_height = scaleFactor * image.height;
                     new_width = scaleFactor * image.width;
 
-                    duration = item.getDisplayTime();
+                    duration = (
+                        stamp[1] <= startTime + SEC_PER_PAGE ?
+                        item.getDisplayTime() :
+                        (startTime + SEC_PER_PAGE - stamp[0])
+                    );
                     
-                    width_by_sec = item.getDisplayTime() * WIDTH_PER_SEC;
+                    width_by_sec = duration * WIDTH_PER_SEC;
                     
                     if(new_width > width_by_sec) {
                     	new_width = width_by_sec - 1;
@@ -105,27 +114,21 @@ public class visualTimeline {
                     parent.stroke(0);
                     parent.rect(drawIndex, bounds[1], width_by_sec, timeLineHeight);
                     
-                    parent.image(image, drawIndex+1, y, new_width,
-                        new_height);
+                    parent.image(image, drawIndex+1, y, new_width, new_height);
 
                     if(selectedIndex == j) {
                         parent.fill(0x55ff3210);
                         parent.stroke(0xffff2233);
                         parent.rectMode(PConstants.CORNER);
-                        parent.rect(drawIndex, bounds[1]+1, width_by_sec,
-                            timeLineHeight-2);
+                        parent.rect(drawIndex, bounds[1]+1, width_by_sec-1, timeLineHeight-2);
                     }
-
+                    
                     //Increment the x index
-                    drawIndex += width_by_sec+1;
-                    curr_img_length = drawIndex;
-
-                    //Get the duration of the currently drawn images
-                    if(curr_Time < totalTime) curr_Time += duration;
+                    drawIndex += width_by_sec;
 
                     j++;
                 } while(itemIter.hasNext() &&
-                    drawIndex + width_by_sec <= timeLineWidth);
+                    stamp[1] <= startTime + SEC_PER_PAGE);
             }
         }
     }
@@ -146,85 +149,13 @@ public class visualTimeline {
             itemsForDisplay.add(item);
 
             tmp = item.getDisplayTime();
-            totalTime += tmp;
+            
             times = new int[2];
-            times[0] = totalTime - tmp;
+            times[0] = totalTime;
+            totalTime += tmp;
             times[1] = totalTime;
+            
             timeStamps.add(times);
-        }
-
-        curr_Time = 0;
-        calculateTimeLineBounds(0);
-    }
-
-    /**
-     * Calculates the start and end timestamps for each VisualItem.
-     * @param start the index of the first VisualItem to process
-     */
-    public void calculateTimeLineBounds(int start){
-        //Get initial draw index
-        if(start < itemsForDisplay.size()) {
-            ListIterator<VisualItem> itemIter = itemsForDisplay.listIterator(start);
-
-            if(itemIter.hasNext()) {
-                VisualItem item;
-                PImage image;
-
-                int drawIndex = bounds[0]+2;
-                curr_items_displayed = 0;
-
-                float time_scaled_width;
-                float width_by_sec;
-
-                int[] tbBounds, curBounds;
-                ListIterator<int[]> boundIter = timeLineBounds
-                    .listIterator(start);
-
-                //Go through the list and calculate placements along the time line
-                do {
-                    item = itemIter.next();
-                    image = item.getThumbnail();
-
-                    //Adjust each image to fit on timeline maintaining Aspect Ratio
-                    if (image.height > timeLineHeight){
-                        scaleFactor = 1.0f/((float) image.height/
-                            (float) (timeLineHeight-15));
-                    }
-
-                    time_scaled_width = scaleFactor * image.width;
-                    width_by_sec = item.getDisplayTime() * WIDTH_PER_SEC;
-                    
-                    if(time_scaled_width > width_by_sec) {
-                    	time_scaled_width = width_by_sec; 
-                    }
-                    drawIndex += width_by_sec+1;
-                    curr_img_length = drawIndex;
-
-                    tbBounds = new int[2];
-                    tbBounds[0] = (int) (drawIndex - width_by_sec);
-                    tbBounds[1] = drawIndex;
-
-                    if(boundIter.hasNext()) {
-                        curBounds = boundIter.next();
-                        curBounds[0] = tbBounds[0];
-                        curBounds[1] = tbBounds[1];
-                    }
-
-                    else {
-                        boundIter.add(tbBounds);
-                    }
-
-                    //Check to see if the image can be drawn in timeline
-                    if(drawIndex + width_by_sec > timeLineWidth) break;
-
-                    //track of how many items are on the visualtimeline
-                    curr_items_displayed++;
-                } while(itemIter.hasNext());
-
-                if(debug) {
-                    Quickshow.println("curr_Items display: " + curr_items_displayed);
-                }
-            }
         }
     }
 
@@ -257,24 +188,23 @@ public class visualTimeline {
     /**
      * Goes to the next page on the timeline.
      */
-    public void showNextOnTimeline(){
-    	if(start_index + curr_items_displayed + 1 < itemsForDisplay.size()) {
+    public void showNextOnTimeline() {
+        //TODO stop scroll when last item on timeline is only item drawn
+        //  or when box of last item is fully drawn
+    	if(start_index + curr_items_displayed + 1 < itemsForDisplay.size() &&
+	        timeStamps.get(start_index+curr_items_displayed)[1] <= totalTime
+        ) {
     		start_index++;
     	}
-
-        calculateTimeLineBounds(start_index);
     }
 
     /**
      * Goes to the previous page on the timeline.
-     * TODO make sure to wrap around back to the end of the time line
      */
     public void showPrevOnTimeline(){
     	if(start_index > 0) {
     		start_index--;
     	}
-        
-    	calculateTimeLineBounds(start_index);
     }
 
     /**
@@ -287,11 +217,10 @@ public class visualTimeline {
     /**
      * Displays the marker in the visual timeline and the thumbnail
      *   that the image is hovering over.
-     * @param x the x-coordinate of the mouse
-     * @param y the y-coordinate of the mouse
+     * @param mouseX the x-coordinate of the mouse
      */
-    public void displayTimeMarker(int x, int y){
-        int index = getTimelineIndex(x, y);
+    public void displayTimeMarker(int mouseX){
+        int index = getTimelineIndex(mouseX);
 
         //If legal index was found then generate the marker and preview thumbnail
         if(index > -1) {
@@ -301,30 +230,33 @@ public class visualTimeline {
             parent.stroke(0);
             parent.rectMode(PConstants.CORNER);
             
-            int x_coord = x < 450 ? x : x-prevThumbnail.width;
+            int x_coord, align, textOffset;
+            
+            if(mouseX < 450) {
+                x_coord = mouseX;
+                align = PConstants.LEFT;
+                textOffset = 5;
+            }
+            
+            else {
+                x_coord = mouseX-prevThumbnail.width;
+                align = PConstants.RIGHT;
+                textOffset = -5;
+            }
             
             parent.rect(x_coord, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
 
             parent.image(prevThumbnail, x_coord, bounds[1]-60);
             parent.stroke(0xffff0000);
-            parent.line(x, bounds[1] + 2 , x, bounds[3] - 2);
+            parent.line(mouseX, bounds[1] + 2 , mouseX, bounds[3] - 2);
 
 
             int[] stamp = timeStamps.get(index);
-            int min = stamp[0]/60;
-            int sec = stamp[0]%60;
-            String text = String.format("%d:%02d", min, sec);
+            String text = String.format("%d:%02d - %d:%02d", stamp[0]/60, stamp[0]%60, stamp[1]/60, stamp[1]%60);
 
             parent.fill(0xffff0055);
-            parent.textAlign(PConstants.RIGHT);
-            parent.text(text, x_coord-5, bounds[1] + 20);
-
-            min = stamp[1]/60;
-            sec = stamp[1]%60;
-            text = String.format("%d:%02d", min, sec);
-
-            parent.textAlign(PConstants.LEFT);
-            parent.text(text, x_coord+prevThumbnail.width+5, bounds[1] + 20);
+            parent.textAlign(align);
+            parent.text(text, mouseX + textOffset, bounds[1] - 40 + prevThumbnail.height);
         }
     }
 
@@ -353,38 +285,37 @@ public class visualTimeline {
     /**
      * Determines the index of the VisualItem at the mouse pointer.
      * @param mouseX the x-coordinates of the mouse
-     * @param mouseY the y-coordinates of the mouse
      * @return integer
      */
-    public int getTimelineIndex(int mouseX, int mouseY) {
+    public int getTimelineIndex(int mouseX) {
         int index = -1;
 
-        if(start_index < timeLineBounds.size()) {
-            ListIterator<int[]> boundIter = timeLineBounds
+        if(start_index < timeStamps.size()) {
+            ListIterator<int[]> stampIter = timeStamps
                 .listIterator(start_index);
             
-            int[] tBound;
+            int[] stamp;
 
-            if(boundIter.hasNext()) {
-                //Get relative to current pixel length
-                float timeScale = (float) mouseX/curr_img_length;
-                //Locate where in timeline to show preview
-                float where = (timeScale * curr_img_length);
+            if(stampIter.hasNext()) {
                 int i = start_index;
 
-                //Find the image that falls within the bounds
-                do {
-                    tBound = boundIter.next();
+                //get second associated with x-position
+                int time = ((mouseX - bounds[0])/WIDTH_PER_SEC) +
+                    timeStamps.get(start_index)[0];
 
-                    if(where >= tBound[0] &&
-                        where < tBound[1])
+                //find the image at current second
+                do {
+                    stamp = stampIter.next();
+
+                    if(time >= stamp[0] &&
+                        time < stamp[1])
                     {
                         index = i;
                         break;
                     }
 
                     i++;
-                } while(boundIter.hasNext());
+                } while(stampIter.hasNext());
             }
         }
 
@@ -451,16 +382,33 @@ public class visualTimeline {
      */
     public int[] getCurPageStamps() {
         int[] result = {0, 0};
-        if(!timeStamps.isEmpty()) {
-            result[0] = timeStamps.get(start_index)[0];
+        
+        curr_items_displayed = 0;
+        
+        if(start_index < timeStamps.size()) {
+            ListIterator<int[]> stampIter = timeStamps.listIterator(start_index);
             
-            int tmp = curr_items_displayed+start_index;
-            
-            if(tmp == timeStamps.size()) {
-            	tmp--;
+            if(stampIter.hasNext()) {
+                int[] stamp = stampIter.next();
+                
+                result[0] = stamp[0];
+                result[1] = stamp[1];
+                
+                curr_items_displayed++;
+                
+                while(stampIter.hasNext() && result[1] < result[0] + SEC_PER_PAGE) {
+                    stamp = stampIter.next();
+                    
+                    result[1] = stamp[1];
+                    
+                    curr_items_displayed++;
+                }
             }
             
-            result[1] = timeStamps.get(tmp)[1];
+            if(debug) {
+                Quickshow.println("start index: " + start_index +
+                    "\nitems displayed: " + curr_items_displayed);
+            }
         }
 
         return result;

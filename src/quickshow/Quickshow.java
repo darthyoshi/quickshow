@@ -250,7 +250,6 @@ public class Quickshow extends PApplet {
                 cbU.setLock(false);
 
                 vTimeline.updateTimeStamps(selectedItemIndex);
-                vTimeline.calculateTimeLineBounds(vTimeline.getStartIndex());
 
                 cbU.setTimeLinePageIndex(vTimeline.getCurPageStamps());
                 cbU.setSlideShowTime(vTimeline.getTotalTime());
@@ -308,7 +307,7 @@ public class Quickshow extends PApplet {
                 if(mouseX > bounds[0] && mouseX < bounds[2] &&
                     mouseY > bounds[1] && mouseY < bounds[3])
                 {
-                    selectedItemIndex = vTimeline.getTimelineIndex(mouseX, mouseY);
+                    selectedItemIndex = vTimeline.getTimelineIndex(mouseX);
                     vTimeline.setSelectedIndex(selectedItemIndex);
                     selectedItem = vTimeline.getItemAt(selectedItemIndex);
 
@@ -361,7 +360,7 @@ public class Quickshow extends PApplet {
                 if(mouseX > bounds[0] && mouseX < bounds[2] &&
                     mouseY > bounds[1] && mouseY < bounds[3])
                 {
-                    vTimeline.displayTimeMarker(mouseX, mouseY);
+                    vTimeline.displayTimeMarker(mouseX);
                 }
             }
         }
