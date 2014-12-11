@@ -19,7 +19,7 @@ import ddf.minim.Minim;
 
 @SuppressWarnings("serial")
 public class Quickshow extends PApplet {
-    private boolean debug = true;
+    private boolean debug = false;
 
     private ControlP5 control;
     private audiolistUI audioListbox;
