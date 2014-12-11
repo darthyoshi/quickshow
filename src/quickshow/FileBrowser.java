@@ -36,6 +36,7 @@ public class FileBrowser {
 
     private Quickshow parent;
     private String curDir;
+    private char separator;
 
     private ArrayList<String> fileNames;
     private ArrayList<PImage> thumbs;
@@ -83,19 +84,22 @@ public class FileBrowser {
 
         debug = parent.getDebugFlag();
 
-        String[] pathParts = (new File(curDir)).getAbsolutePath().split("\\/");
+        separator = File.separatorChar;
+
+        String[] pathParts = (new File(curDir)).getAbsolutePath().split("\\" +
+            separator);
         StringBuilder path = new StringBuilder();
 
         if(debug) {
             PApplet.print("curDir: ");
             for(String part:pathParts) {
-                PApplet.print(part + '/');
+                PApplet.print(part + separator);
             }
             Quickshow.println("\ncurDir depth: " + pathParts.length);
         }
 
         for(short i = 0; i < pathParts.length - 1; i++) {
-            path.append(pathParts[i] + '/');
+            path.append(pathParts[i] + separator);
         }
 
         path.deleteCharAt(path.length()-1);
@@ -400,7 +404,7 @@ public class FileBrowser {
             break;
 
         case 1:
-            File file = new File(curDir + '/' +
+            File file = new File(curDir + separator +
                 fileNames.get(selectedIndex.get(0)));
 
             if(file.isDirectory()) {
@@ -438,10 +442,10 @@ public class FileBrowser {
                 String fullPath;
                 String[] fileNameParts;
                 PImage thumb;
-                PImage thumb1 = parent
-                    .loadImage("data/img/folderThumbNail.png");
-                PImage thumb2 = parent
-                    .loadImage("data/img/audioThumbNail.png");
+                PImage thumb1 = parent.loadImage("data" + separator + "img" +
+                    separator + "folderThumbNail.png");
+                PImage thumb2 = parent.loadImage("data" + separator + "img" +
+                    separator + "audioThumbNail.png");
                 int[] thumbDims = newImageDims(thumb1);
 
                 thumb1.resize(thumbDims[0], thumbDims[1]);
@@ -459,7 +463,7 @@ public class FileBrowser {
                     fileName = fileIter.next();
 
                     if(thumb == null) {
-                        fullPath = curDir + '/' + fileName;
+                        fullPath = curDir + separator + fileName;
 
                         //directory thumbnail
                         thumb = thumb1;
@@ -766,7 +770,8 @@ public class FileBrowser {
             short i, j;
             int[] thumbDims;
 
-            PImage thumb = parent.loadImage("data/img/folderThumbNail.png");
+            PImage thumb = parent.loadImage("data" + separator + "img" + 
+                separator + "folderThumbNail.png");
             thumb.resize(thumbWidth, thumbHeight);
 
             pathField.setText(file.getAbsolutePath());
@@ -794,7 +799,8 @@ public class FileBrowser {
 
             //list audio files
             if(isAudioMode) {
-                thumb = parent.loadImage("data/img/audioThumbNail.png");
+                thumb = parent.loadImage("data" + separator + "img" +
+                    separator + "audioThumbNail.png");
                 thumb.resize(thumbWidth, thumbHeight);
 
                 fileIter = files.listIterator();
@@ -803,7 +809,7 @@ public class FileBrowser {
                     fileNameParts = fileName.split("\\.");
 
                     if(debug) {
-                        Quickshow.println(curDir + '/' + fileName);
+                        Quickshow.println(curDir + separator + fileName);
                     }
 
                     for(i = 0; i < FileExtensions.AUDIO_EXT.length; i++) {
@@ -832,7 +838,7 @@ public class FileBrowser {
                 while(fileIter.hasNext()) {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
-                    fullPath = curDir + '/' + fileName;
+                    fullPath = curDir + separator + fileName;
 
                     if(debug) {
                         Quickshow.println(fullPath);
@@ -876,7 +882,7 @@ public class FileBrowser {
                 while(fileIter.hasNext()) {
                     fileName = fileIter.next().getName();
                     fileNameParts = fileName.split("\\.");
-                    fullPath = curDir + '/' + fileName;
+                    fullPath = curDir + separator + fileName;
 
                     //queue video for thumbnail generation
                     for(i = 0; i < FileExtensions.VIDEO_EXT.length; i++) {
@@ -929,11 +935,11 @@ public class FileBrowser {
         for(Integer index : selectedIndex) {
             if(index < fileNames.size()) {
                 fileName = fileNames.get(index);
-                file = new File(curDir + '/' + fileName);
+                file = new File(curDir + separator + fileName);
 
                 if(file.isFile()) {
                     results.add(new AudioItem(minim,
-                        curDir + '/' + fileNames.get(index)));
+                        curDir + separator + fileNames.get(index)));
                 }
             }
         }
@@ -951,7 +957,7 @@ public class FileBrowser {
         for(Integer index : selectedIndex) {
             if(index < fileNames.size()) {
                 fileName = fileNames.get(index);
-                file = new File(curDir + '/' + fileName);
+                file = new File(curDir + separator + fileName);
 
                 if(file.isFile()) {
                     fileNameParts = fileName.split("\\.");
@@ -964,7 +970,7 @@ public class FileBrowser {
                             results.add(
                                 new ImageItem(
                                     parent,
-                                    curDir + '/' + fileName,
+                                    curDir + separator + fileName,
                                     thumbs.get(index)
                                 )
                             );
@@ -976,13 +982,14 @@ public class FileBrowser {
                     //file is video
                     if(i == FileExtensions.IMG_EXT.length) {
                         if(debug) {
-                            Quickshow.println("Adding video to results arraylist");
+                            Quickshow
+                                .println("Adding video to results arraylist");
                         }
 
                         results.add(
                             new MovieItem(
                                 parent,
-                                curDir + '/' + fileName,
+                                curDir + separator + fileName,
                                 thumbs.get(index)
                             )
                         );
@@ -1000,7 +1007,7 @@ public class FileBrowser {
 
         if(isAudioMode) {
             for(String fileName : fileNames) {
-                file = new File(curDir + '/' + fileName);
+                file = new File(curDir + separator + fileName);
 
                 if(file.isFile()) {
                     results.add(new AudioItem(minim, file.getAbsolutePath()));
@@ -1028,7 +1035,7 @@ public class FileBrowser {
                     fileName = fileNameIter.next();
                     thumb = thumbIter.next();
 
-                    file = new File(curDir + '/' + fileName);
+                    file = new File(curDir + separator + fileName);
 
                     if(file.isFile()) {
                         fileNameParts = fileName.split("\\.");
@@ -1041,7 +1048,7 @@ public class FileBrowser {
                                 results.add(
                                     new ImageItem(
                                         parent,
-                                        curDir + '/' + fileName,
+                                        curDir + separator + fileName,
                                         thumb
                                     )
                                 );
@@ -1055,7 +1062,7 @@ public class FileBrowser {
                             results.add(
                                 new MovieItem(
                                     parent,
-                                    curDir + '/' + fileName,
+                                    curDir + separator + fileName,
                                     thumb
                                 )
                             );
