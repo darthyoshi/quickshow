@@ -422,7 +422,7 @@ public class Quickshow extends PApplet {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        PApplet.main(new String[] { "quickshow.Quickshow" });
+        PApplet.main(new String[] { quickshow.Quickshow.class.getName() });
     }
 
     public void keyPressed() {
