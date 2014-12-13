@@ -36,7 +36,7 @@ public class FileBrowser {
 
     private Quickshow parent;
     private String curDir;
-    private static final char separator = File.separatorChar;
+    private static char separator;
 
     private ArrayList<String> fileNames;
     private ArrayList<PImage> thumbs;
@@ -83,6 +83,8 @@ public class FileBrowser {
         this.parent = parent;
 
         debug = parent.getDebugFlag();
+        
+        separator = File.separatorChar;
 
         String[] pathParts = (new File(curDir)).getAbsolutePath().split("\\" +
             separator);
