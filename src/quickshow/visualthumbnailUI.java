@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import processing.core.PConstants;
+import processing.core.PFont;
 import processing.core.PImage;
 import processing.data.IntList;
 import quickshow.datatypes.VisualItem;
 
 public class visualthumbnailUI {
     private Quickshow parent;
-
+	private PFont font;
     private boolean debug = true;
 
     private ArrayList <VisualItem> items;
@@ -34,14 +35,16 @@ public class visualthumbnailUI {
 
     private float my_new_height;
     private float my_new_width;
+
     private static final int bounds[] = {30, 30, 650, 400};
 
     /**
      * Class constructor.
      * @param parent the instantiating Quickshow object
      */
-    public visualthumbnailUI(Quickshow parent){
+    public visualthumbnailUI(Quickshow parent, PFont font){
         this.parent = parent;
+        this.font = font;
 
         debug = parent.getDebugFlag();
         items = new ArrayList<VisualItem>();
@@ -102,12 +105,37 @@ public class visualthumbnailUI {
                         parent.rect(xStartIndex, yStartIndex,
                             MAX_THUMBNAIL_WIDTH - 2, MAX_THUMBNAIL_HEIGHT - 4);
 
-                        parent.fill(0xffff00ff);
-                        parent.textSize(16);
+                        parent.textFont(font);
+
+                        //text shadow
+                        parent.fill(0);
+                        parent.text(
+                            selectedIndex.index(j)+1,
+                            21 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            21 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
+                        );
+                        parent.text(
+                            selectedIndex.index(j)+1,
+                            21 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            19 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
+                        );
+                        parent.text(
+                            selectedIndex.index(j)+1,
+                            19 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            21 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
+                        );
+                        parent.text(
+                            selectedIndex.index(j)+1,
+                            19 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            19 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
+                        );
+
+                        //text
+                        parent.fill(0xffffffff);
                         parent.text(
                             selectedIndex.index(j)+1,
                             20 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
-                            15 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
+                            20 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
                     }
 

@@ -10,6 +10,7 @@ package quickshow;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import quickshow.datatypes.AudioItem;
 import quickshow.datatypes.MediaItem;
 import quickshow.datatypes.VisualItem;
@@ -65,14 +66,14 @@ public class Quickshow extends PApplet {
 
         popup = new PopupDialogue(this, control);
 
-        //Test purposes delete/modify this after
-        aT = new audioTimeline(this, minim);
+        PFont font = loadFont("data/SansSerif.plain-15.vlw");
 
-        vTimeline = new visualTimeline(this);
-        thumbnails = new visualthumbnailUI(this);
-        //Test purposes delete/modify lines above
+        aT = new audioTimeline(this, minim, font);
 
-        browse = new FileBrowser(this, minim, control, ".");
+        vTimeline = new visualTimeline(this, font);
+        thumbnails = new visualthumbnailUI(this, font);
+
+        browse = new FileBrowser(this, minim, control, ".", font);
     }
 
     public void draw() {

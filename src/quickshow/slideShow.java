@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import processing.core.PConstants;
+import processing.core.PFont;
 import processing.core.PImage;
 import processing.video.Movie;
 import quickshow.datatypes.AudioItem;
@@ -57,6 +58,8 @@ public class slideShow {
 
     private boolean isPlaying = false, isEnabled = false, shuffle = false;
 
+	private PFont font;
+
     /**
      * Class constructor.
      * @param parent the instantiating Quickshow object
@@ -64,6 +67,8 @@ public class slideShow {
      */
     public slideShow(Quickshow parent, ControlP5 control) {
         this.parent = parent;
+
+        font = parent.loadFont("data/SansSerif.bold-32.vlw");
 
         debug = parent.getDebugFlag();
 
@@ -225,9 +230,12 @@ public class slideShow {
                         for(int i = 0; i < transitFrame.pixels.length; i++) {
                             a = parent.alpha(transitFrame.pixels[i]) / 255f;
                             if(a < 1f) {
-                                r = a*parent.red(transitFrame.pixels[i])+ 0x55*(1f-a);
-                                g = a*parent.green(transitFrame.pixels[i])+ 0x55*(1f-a);
-                                b = a*parent.blue(transitFrame.pixels[i])+ 0x55*(1f-a);
+                                r = a*parent.red(transitFrame.pixels[i]) +
+                            		0x55*(1f-a);
+                                g = a*parent.green(transitFrame.pixels[i]) +
+                            		0x55*(1f-a);
+                                b = a*parent.blue(transitFrame.pixels[i]) +
+                            		0x55*(1f-a);
 
                                 transitFrame.pixels[i] = parent.color(r, g, b);
                             }
@@ -292,17 +300,41 @@ public class slideShow {
             }
 
             if(!tagText.equals("")) {
-                parent.fill(0xffffffff);
-                parent.textSize(32);
+                parent.fill(0);
+                parent.textFont(font);
                 parent.textAlign(PConstants.CENTER, PConstants.CENTER);
 
                 if(curVisualItem != null) {
                     if(curVisualItem.isAtBottom()) {
+                    	//text shadow
+                        parent.text(tagText, parent.width/2 + 1,
+                            parent.height * 11/12 + 1);
+                        parent.text(tagText, parent.width/2 + 1,
+                            parent.height * 11/12 - 1);
+                        parent.text(tagText, parent.width/2 - 1,
+                            parent.height * 11/12 + 1);
+                        parent.text(tagText, parent.width/2 - 1,
+                            parent.height * 11/12 - 1);
+
+                        //text
+                        parent.fill(0xffffffff);
                         parent.text(tagText, parent.width/2,
                             parent.height * 11/12);
                     }
 
                     else {
+                    	//text shadow
+                        parent.text(tagText, parent.width/2 + 1,
+                            parent.height / 12 + 1);
+                        parent.text(tagText, parent.width/2 + 1,
+                            parent.height / 12 - 1);
+                        parent.text(tagText, parent.width/2 - 1,
+                            parent.height / 12 + 1);
+                        parent.text(tagText, parent.width/2 - 1,
+                            parent.height / 12 - 1);
+
+                        //text
+                        parent.fill(0xffffffff);
                         parent.text(tagText, parent.width/2,
                             parent.height / 12);
                     }
@@ -461,6 +493,8 @@ public class slideShow {
 
             curTagTexts.addAll(curVisualItem.getTagTexts());
             curTagTimes.addAll(curVisualItem.getTagTimes());
+
+            tagText = "";
 
             Iterator<int[]> timeIter = curTagTimes.iterator();
             int[] time;

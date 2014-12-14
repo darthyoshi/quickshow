@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import processing.core.PConstants;
+import processing.core.PFont;
 import processing.core.PImage;
 import quickshow.datatypes.VisualItem;
 
@@ -30,13 +31,15 @@ public class visualTimeline {
     final static int[] bounds = {50, 499, 850, 577};
 
     private ArrayList <VisualItem> itemsForDisplay;
+	private PFont font;
 
     /**
      * Class constructor.
      * @param parent the instantiating Quickshow object
      */
-    public visualTimeline(Quickshow parent){
+    public visualTimeline(Quickshow parent, PFont font){
         this.parent = parent;
+        this.font = font;
         itemsForDisplay = new ArrayList<VisualItem>();
         timeStamps = new ArrayList<int[]>();
         timeLineBounds = new ArrayList<int[]>();
@@ -255,19 +258,35 @@ public class visualTimeline {
                 textOffset = -5;
             }
 
-            parent.rect(x_coord, bounds[1]-60, prevThumbnail.width, prevThumbnail.height);
+            parent.rect(x_coord, bounds[1]-60,
+        		prevThumbnail.width, prevThumbnail.height);
 
             parent.image(prevThumbnail, x_coord, bounds[1]-60);
-            parent.stroke(0xffff0000);
+            parent.stroke(0xffff0055);
             parent.line(mouseX, bounds[1] + 2 , mouseX, bounds[3] - 2);
 
-
             int[] stamp = timeStamps.get(index);
-            String text = String.format("%d:%02d - %d:%02d", stamp[0]/60, stamp[0]%60, stamp[1]/60, stamp[1]%60);
+            String text = String.format("%d:%02d - %d:%02d", stamp[0]/60,
+        		stamp[0]%60, stamp[1]/60, stamp[1]%60);
 
-            parent.fill(0xffff0055);
+            parent.textFont(font);
             parent.textAlign(align);
-            parent.text(text, mouseX + textOffset, bounds[1] - 40 + prevThumbnail.height);
+
+            //text shadow
+            parent.fill(0);
+            parent.text(text, mouseX + textOffset + 1,
+        		bounds[1] - 40 + prevThumbnail.height + 1);
+            parent.text(text, mouseX + textOffset + 1,
+        		bounds[1] - 40 + prevThumbnail.height - 1);
+            parent.text(text, mouseX + textOffset - 1,
+    			bounds[1] - 40 + prevThumbnail.height + 1);
+            parent.text(text, mouseX + textOffset - 1,
+        		bounds[1] - 40 + prevThumbnail.height - 1);
+
+            //text
+            parent.fill(0xffffffff);
+            parent.text(text, mouseX + textOffset,
+        		bounds[1] - 40 + prevThumbnail.height);
         }
     }
 

@@ -13,6 +13,7 @@ import java.util.ListIterator;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PFont;
 import processing.core.PImage;
 import processing.data.IntList;
 import processing.video.Movie;
@@ -68,6 +69,8 @@ public class FileBrowser {
 
     private boolean isAudioMode = false;
 
+	private PFont fileFont;
+
     private static final int thumbWidth = 136, thumbHeight = 102;
 
     /**
@@ -78,9 +81,11 @@ public class FileBrowser {
      * @param curDir the initial FileBrowser directory
      */
     public FileBrowser(Quickshow parent, ddf.minim.Minim minim,
-        ControlP5 control, String curDir)
+        ControlP5 control, String curDir, PFont font)
     {
         this.parent = parent;
+
+        fileFont = font;
 
         debug = parent.getDebugFlag();
         
@@ -662,7 +667,7 @@ public class FileBrowser {
 
         //filename
         parent.textAlign(PConstants.CENTER, PConstants.CENTER);
-        parent.textSize(15);
+        parent.textFont(fileFont);
 
         //selected highlight
         parent.rectMode(PConstants.CENTER);
@@ -692,15 +697,23 @@ public class FileBrowser {
                     fileName = fileName.substring(0, 14) + "..";
                 }
 
+                //text shadow
+                parent.fill(0);
+                parent.text(fileName, 112 + col*162, 174 + row*115);
+                parent.text(fileName, 112 + col*162, 172 + row*115);
+                parent.text(fileName, 110 + col*162, 174 + row*115);
+                parent.text(fileName, 110 + col*162, 172 + row*115);
+
+                //text
                 parent.fill(0xffffffff);
-                parent.textSize(16);
                 parent.text(fileName, 111 + col*162, 173 + row*115);
 
                 parent.noFill();
                 if(selectedIndex.size() > 0 &&
                     selectedIndex.hasValue((int)imgIndex+curDisplayIndex))
                 {
-                    parent.rect(109 + col*162, 128 + row*115, thumbWidth + 10, thumbHeight + 10);
+                    parent.rect(109 + col*162, 128 + row*115,
+                		thumbWidth + 10, thumbHeight + 10);
                 }
             }
         }

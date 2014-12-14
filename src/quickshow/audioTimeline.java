@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import processing.core.PConstants;
+import processing.core.PFont;
 import quickshow.datatypes.AudioItem;
 import ddf.minim.*;
 import ddf.minim.analysis.FFT;
@@ -18,6 +19,7 @@ import ddf.minim.analysis.FFT;
 
 public class audioTimeline {
     private Quickshow parent;
+    private PFont font;
 
     //Generate the wave form image
     private ArrayList<float[][]> spectraList;
@@ -33,9 +35,11 @@ public class audioTimeline {
      * @param parent the instantiating Quickshow object
      * @param minim the Minim object handling the audio files
      */
-    public audioTimeline(Quickshow parent, Minim minim){
+    public audioTimeline(Quickshow parent, Minim minim, PFont font){
         this.parent = parent;
 
+        this.font = font;
+        
         selectedSongs = new ArrayList<AudioItem>();
 
         spectraList = new ArrayList<float[][]>();
@@ -189,11 +193,38 @@ public class audioTimeline {
             int min = (int) timeMarker/60;
             int sec = (int) timeMarker%60;
 
+            int align, offset;
+            
+            if(mouseX < 450) {
+            	align = PConstants.LEFT;
+            	offset = 5;
+            }
+            else {
+            	align = PConstants.RIGHT;
+            	offset = -5;
+            }
+
+            parent.textFont(font);
+            parent.textAlign(align);
+            
+            String time = String.format("%d:%02d", min, sec);
+            String meta = tmp.getAuthor() + " - " + tmp.getTitle();
+
+            //text shadow
+            parent.fill(0);
+            parent.text(time, mouseX + offset + 1, mouseY - 10 + 1);
+            parent.text(time, mouseX + offset + 1, mouseY - 10 - 1);
+            parent.text(time, mouseX + offset - 1, mouseY - 10 + 1);
+            parent.text(time, mouseX + offset - 1, mouseY - 10 - 1);
+            parent.text(meta, mouseX + offset + 1, mouseY + 10 + 1);
+            parent.text(meta, mouseX + offset + 1, mouseY + 10 - 1);
+            parent.text(meta, mouseX + offset - 1, mouseY + 10 + 1);
+            parent.text(meta, mouseX + offset - 1, mouseY + 10 - 1);
+
+            //text
             parent.fill(0xffffffff);
-            parent.textAlign(PConstants.LEFT);
-            int x_coord = mouseX < 450 ? mouseX + 5 : mouseX - 200;
-            parent.text(String.format("%d:%02d", min, sec), x_coord, mouseY - 10);
-            parent.text(tmp.getAuthor() + " - " + tmp.getTitle(), x_coord, mouseY + 10);
+            parent.text(time, mouseX + offset, mouseY - 10);
+            parent.text(meta, mouseX + offset, mouseY + 10);
 
             parent.stroke(0xffff0000);
             parent.line(mouseX, bounds[1] + 2 , mouseX, bounds[3] - 2);

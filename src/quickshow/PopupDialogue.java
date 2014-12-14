@@ -333,14 +333,15 @@ public class PopupDialogue {
         case "Accept":
             int duration = (int)imgDisplaySlider.getValue();
 
-            if(debug) {
-                Quickshow.println("Item duration: " + duration + 's');
-            }
-
             if(item.checkType().equalsIgnoreCase("image")) {
                 ((ImageItem)item).setDisplayTime(duration);
             }
-            Quickshow.println("passing: "+tags.size());
+
+            if(debug) {
+                Quickshow.println("Item duration: " + duration + 's');
+                Quickshow.println("passing: "+tags.size());
+            }
+
             item.setTags(tags, tagTimes);
             item.setAtBottom(tagPosition.getState());
 
@@ -460,8 +461,10 @@ public class PopupDialogue {
                     text = text.substring(0, 29) + "..";
                 }
 
-                for(String blah:tags) {
-                    Quickshow.println(blah);
+                if(debug) {
+                    for(String tag:tags) {
+                        Quickshow.println(tag);
+                    }
                 }
 
                 if(tagIndex >= 0) {
