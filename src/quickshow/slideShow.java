@@ -36,7 +36,7 @@ public class slideShow {
     private PImage curFrame, transitFrame;
     private int[] transitDelta = {0, 0}, transitDirection = {1, 1};
     private int fadeAlpha = 255;
-    private boolean transit = false, fade = true;
+    private boolean transit = false, fade = false;
     private Movie movie;
 
     private int frameWidth, frameHeight;
