@@ -507,8 +507,8 @@ public class slideShow {
 
             if(curVisualItem.checkType().equals("video")) {
                 movie = ((MovieItem)curVisualItem).getMovie();
-                movie.volume(0.0f);
                 movie.play();
+                movie.volume(0.0f);
             }
 
             else {
