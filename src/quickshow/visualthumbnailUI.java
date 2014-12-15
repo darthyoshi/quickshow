@@ -106,27 +106,28 @@ public class visualthumbnailUI {
                             MAX_THUMBNAIL_WIDTH - 2, MAX_THUMBNAIL_HEIGHT - 4);
 
                         parent.textFont(font);
+                        parent.textAlign(PConstants.LEFT);
 
                         //text shadow
                         parent.fill(0);
                         parent.text(
                             selectedIndex.index(j)+1,
-                            21 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            11 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
                             21 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
                         parent.text(
                             selectedIndex.index(j)+1,
-                            21 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            11 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
                             19 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
                         parent.text(
                             selectedIndex.index(j)+1,
-                            19 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            9 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
                             21 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
                         parent.text(
                             selectedIndex.index(j)+1,
-                            19 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            9 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
                             19 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
 
@@ -134,7 +135,7 @@ public class visualthumbnailUI {
                         parent.fill(0xffffffff);
                         parent.text(
                             selectedIndex.index(j)+1,
-                            20 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
+                            10 + xStartIndex - MAX_THUMBNAIL_WIDTH/2,
                             20 + yStartIndex - MAX_THUMBNAIL_HEIGHT/2
                         );
                     }
