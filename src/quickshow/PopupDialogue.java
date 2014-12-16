@@ -297,7 +297,7 @@ public class PopupDialogue {
         }
 
         catch(NumberFormatException e) {
-            result = 0;
+            result = 5;
         }
 
         tagEndField.setText("");
@@ -331,14 +331,16 @@ public class PopupDialogue {
     public void controlEvent(ControlEvent event) {
         switch(event.getName()) {
         case "Accept":
-            int duration = (int)imgDisplaySlider.getValue();
 
             if(item.checkType().equalsIgnoreCase("image")) {
+                int duration = (int)imgDisplaySlider.getValue();
                 ((ImageItem)item).setDisplayTime(duration);
+                Quickshow.println("Item duration: " + duration + 's');
             }
 
+            tagAdd();
+
             if(debug) {
-                Quickshow.println("Item duration: " + duration + 's');
                 Quickshow.println("passing: "+tags.size());
             }
 
